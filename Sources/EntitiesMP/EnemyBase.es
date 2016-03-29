@@ -231,7 +231,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("%s killed %s"), (const char *) GetClass()->ec_pdecDLLClass->dec_strName, (const char *) strPlayerName);
+    str.PrintF(TRANSV("%s killed %s"), (const char *) GetClass()->ec_pdecDLLClass->dec_strName, (const char *) strPlayerName);
     return str;
   }
 
@@ -896,7 +896,7 @@ functions:
     // if boss, clear boss
     if (m_bBoss) {
       if (((CMusicHolder&)*m_penMainMusicHolder).m_penBoss != this) {
-        CPrintF(TRANS("More than one boss active!\n"));
+        CPrintF(TRANSV("More than one boss active!\n"));
         ((CMusicHolder&)*m_penMainMusicHolder).m_penBoss = NULL;
       }
     }

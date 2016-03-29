@@ -11,7 +11,7 @@
 #endif
 
 extern int yylex(void);
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern int yyparse(void);
 
 extern FILE *_fInput;

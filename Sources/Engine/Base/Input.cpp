@@ -87,9 +87,9 @@ void CInput::SetKeyNames( void)
   // -------- Get number of joysticks ----------
   // get number of joystics
   INDEX ctJoysticksPresent = PlatformGetJoystickCount();
-  CPrintF(TRANS("  joysticks found: %d\n"), ctJoysticksPresent);
+  CPrintF(TRANSV("  joysticks found: %d\n"), ctJoysticksPresent);
   ctJoysticksPresent = Min(ctJoysticksPresent, inp_ctJoysticksAllowed);
-  CPrintF(TRANS("  joysticks allowed: %d\n"), ctJoysticksPresent);
+  CPrintF(TRANSV("  joysticks allowed: %d\n"), ctJoysticksPresent);
 
   // -------- Enumerate axis and buttons for joysticks ----------
   for (INDEX iJoy=0; iJoy<MAX_JOYSTICKS; iJoy++) {
@@ -108,7 +108,7 @@ void CInput::AddJoystickAbbilities(INDEX iJoy)
   CTString strJoystickName;
   strJoystickName.PrintF("Joy %d", iJoy+1);
   CTString strJoystickNameTra;
-  strJoystickNameTra.PrintF(TRANS("Joy %d"), iJoy+1);
+  strJoystickNameTra.PrintF(TRANSV("Joy %d"), iJoy+1);
 
   // for each axis
   for( UINT iAxis=0; iAxis<6; iAxis++) {
@@ -156,7 +156,7 @@ void CInput::AddJoystickAbbilities(INDEX iJoy)
  */
 void CInput::Initialize( void )
 {
-  CPrintF(TRANS("Detecting input devices...\n"));
+  CPrintF(TRANSV("Detecting input devices...\n"));
   SetKeyNames();
   CPrintF("\n");
 }
