@@ -111,7 +111,7 @@ properties:
  // attack temporary -> DO NOT USE
  60 FLOAT m_fShootTime = 0.0f,                // time when entity will try to shoot on enemy
  61 FLOAT m_fDamageConfused = 0.0f,           // damage amount when entity shoot concentration is spoiled
- 62 INDEX m_iChargeHitAnimation = 0.0f,       // charge hit (close attack) properties
+ 62 INDEX m_iChargeHitAnimation = 0,       // charge hit (close attack) properties
  63 FLOAT m_fChargeHitDamage = 0.0f,
  64 FLOAT m_fChargeHitAngle = 0.0f,
  65 FLOAT m_fChargeHitSpeed = 0.0f,
@@ -231,7 +231,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("%s killed %s"), GetClass()->ec_pdecDLLClass->dec_strName, strPlayerName);
+    str.PrintF(TRANS("%s killed %s"), (const char *) GetClass()->ec_pdecDLLClass->dec_strName, (const char *) strPlayerName);
     return str;
   }
 
@@ -544,7 +544,7 @@ functions:
   const CTString &GetDescription(void) const {
     ((CTString&)m_strDescription).PrintF("-><none>");
     if (m_penMarker!=NULL) {
-      ((CTString&)m_strDescription).PrintF("->%s", m_penMarker->GetName());
+      ((CTString&)m_strDescription).PrintF("->%s", (const char *) m_penMarker->GetName());
     }
     return m_strDescription;
   }
@@ -608,7 +608,7 @@ functions:
     }
     pes->es_ctAmmount = 1;
     pes->es_fValue = GetHealth();
-    pes->es_iScore = m_iScore;
+    pes->es_iScore = (INDEX) m_iScore;
     return TRUE;
   }
 
@@ -648,7 +648,7 @@ functions:
       UBYTE ubR, ubG, ubB, ubA;
       FLOAT fColorFactor=fNewDamage/m_fMaxHealth*255.0f;
       ColorToRGBA(m_colBurning, ubR, ubG, ubB, ubA);
-      ubR=ClampDn(ubR-fColorFactor, 32.0f);
+      ubR=(UBYTE)ClampDn(ubR-fColorFactor, 32.0f);
       m_colBurning=RGBAToColor(ubR, ubR, ubR, ubA);
     }
 
@@ -1573,8 +1573,8 @@ functions:
   };
 
   // prepare propelled projectile
-  void PreparePropelledProjectile(CPlacement3D &plProjectile, FLOAT3D vShootTarget,
-    FLOAT3D &vOffset, ANGLE3D &aOffset)
+  void PreparePropelledProjectile(CPlacement3D &plProjectile, const FLOAT3D vShootTarget,
+    const FLOAT3D &vOffset, const ANGLE3D &aOffset)
   {
     FLOAT3D vDiff = (vShootTarget - (GetPlacement().pl_PositionVector + vOffset*GetRotationMatrix())).SafeNormalize();
     
@@ -1597,8 +1597,8 @@ functions:
   };
 
   // prepare free flying projectile
-  void PrepareFreeFlyingProjectile(CPlacement3D &plProjectile, FLOAT3D vShootTarget,
-    FLOAT3D &vOffset, ANGLE3D &aOffset)
+  void PrepareFreeFlyingProjectile(CPlacement3D &plProjectile, const FLOAT3D vShootTarget,
+    const FLOAT3D &vOffset, const ANGLE3D &aOffset)
   {
     FLOAT3D vDiff = (vShootTarget - (GetPlacement().pl_PositionVector + vOffset*GetRotationMatrix())).SafeNormalize();
     
@@ -1621,7 +1621,7 @@ functions:
   };
 
   // shoot projectile on enemy
-  CEntity *ShootProjectile(enum ProjectileType pt, FLOAT3D &vOffset, ANGLE3D &aOffset) {
+  CEntity *ShootProjectile(enum ProjectileType pt, const FLOAT3D &vOffset, const ANGLE3D &aOffset) {
     ASSERT(m_penEnemy != NULL);
 
     // target enemy body
@@ -1643,7 +1643,7 @@ functions:
   };
 
   // shoot projectile at an exact spot
-  CEntity *ShootProjectileAt(FLOAT3D vShootTarget, enum ProjectileType pt, FLOAT3D &vOffset, ANGLE3D &aOffset) {
+  CEntity *ShootProjectileAt(FLOAT3D vShootTarget, enum ProjectileType pt, const FLOAT3D &vOffset, const ANGLE3D &aOffset) {
   
     // launch
     CPlacement3D pl;
@@ -1658,7 +1658,7 @@ functions:
   };
 
   // shoot projectile on enemy
-  CEntity *ShootPredictedProjectile(enum ProjectileType pt, FLOAT3D vPredictedPos, FLOAT3D &vOffset, ANGLE3D &aOffset) {
+  CEntity *ShootPredictedProjectile(enum ProjectileType pt, const FLOAT3D vPredictedPos, const FLOAT3D &vOffset, const ANGLE3D &aOffset) {
     ASSERT(m_penEnemy != NULL);
 
     // target enemy body (predicted)
@@ -2766,7 +2766,7 @@ procedures:
     if (penKiller!=NULL) {
       // give him score
       EReceiveScore eScore;
-      eScore.iPoints = m_iScore;
+      eScore.iPoints = (INDEX) m_iScore;
       penKiller->SendEvent(eScore);
       if( CountAsKill())
       {

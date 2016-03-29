@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/CRCTable.h>
 #include <Engine/Base/FileName.h>
@@ -48,7 +48,7 @@ extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileNa
 static CDynamicStackArray<CCRCEntry> _aceEntries;
 static CNameTable_CCRCEntry _ntEntries;
 
-extern BOOL CRCT_bGatherCRCs = FALSE;  // set while gathering CRCs of all loaded files
+BOOL CRCT_bGatherCRCs = FALSE;  // set while gathering CRCs of all loaded files
 
 // init CRC table
 void CRCT_Init(void)
@@ -169,13 +169,14 @@ ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
     // read the name
     CTString strName;
     strmFiles>>strName;
+    CTFileName fname = strName;
     // try to find it in table
-    CCRCEntry *pce = _ntEntries.Find(strName);
+    CCRCEntry *pce = _ntEntries.Find(fname);
     // if not there
     if (pce==NULL) {
-      CRCT_AddFile_t(strName);
+      CRCT_AddFile_t(fname);
       // add it now
-      pce = _ntEntries.Find(strName);
+      pce = _ntEntries.Find(fname);
     }
     // add the crc
     CRC_AddLONG(ulCRC, pce->ce_ulCRC);

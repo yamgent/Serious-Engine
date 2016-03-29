@@ -1,10 +1,10 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
-#include <Engine/CurrentVersion.h>
 #include "MenuPrinting.h"
 #include <GameMP/LCDDrawing.h>
+#include <Engine/CurrentVersion.h>
 #include "LevelInfo.h"
 #include "VarList.h"
 
@@ -18,9 +18,10 @@ CMenuGadget *_pmgLastActivatedGadget = NULL;
 extern CSoundData *_psdPress;
 extern PIX  _pixCursorPosI;
 extern PIX  _pixCursorPosJ;
-extern BOOL _bDefiningKey = FALSE;
-extern BOOL _bEditingString = FALSE;
 extern INDEX sam_bWideScreen;
+
+BOOL _bDefiningKey = FALSE;
+BOOL _bEditingString = FALSE;
 
 
 CMenuGadget::CMenuGadget( void)
@@ -101,17 +102,17 @@ void CMenuGadget::OnMouseOver(PIX pixI, PIX pixJ)
 COLOR CMenuGadget::GetCurrentColor(void)
 {
   // use normal colors
-  COLOR colUnselected = LCDGetColor(C_GREEN, "unselected");
-  COLOR colSelected   = LCDGetColor(C_WHITE, "selected");
+  COLOR colUnselected = _pGame->LCDGetColor(C_GREEN, "unselected");
+  COLOR colSelected   = _pGame->LCDGetColor(C_WHITE, "selected");
   // if disabled
   if (!mg_bEnabled) {
     // use a bit darker colors
-    colUnselected = LCDGetColor(C_dGREEN, "disabled unselected");
-    colSelected   = LCDGetColor(C_GRAY, "disabled selected");
+    colUnselected = _pGame->LCDGetColor(C_dGREEN, "disabled unselected");
+    colSelected   = _pGame->LCDGetColor(C_GRAY, "disabled selected");
     // if label
     if (mg_bLabel) {
       // use white
-      colUnselected = colSelected = LCDGetColor(C_WHITE, "label");
+      colUnselected = colSelected = _pGame->LCDGetColor(C_WHITE, "label");
     }
   }
   // use unselected color
@@ -138,7 +139,7 @@ void CMGTitle::Render( CDrawPort *pdp)
   PIX pixI = box.Center()(1);
   PIX pixJ = box.Min()(2);
 
-  pdp->PutTextC( mg_strText, pixI, pixJ, LCDGetColor(C_WHITE|CT_OPAQUE, "title"));
+  pdp->PutTextC( mg_strText, pixI, pixJ, _pGame->LCDGetColor(C_WHITE|CT_OPAQUE, "title"));
 }
 
 CMGButton::CMGButton( void)
@@ -202,14 +203,14 @@ void CMGButton::Render( CDrawPort *pdp)
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
   COLOR col = GetCurrentColor();
   if(mg_bEditing) {
-    col = LCDGetColor(C_GREEN|0xFF, "editing");
+    col = _pGame->LCDGetColor(C_GREEN|0xFF, "editing");
   }
   
   COLOR colRectangle = col;
   if( mg_bHighlighted) {
-    col = LCDGetColor(C_WHITE|0xFF, "hilited");
+    col = _pGame->LCDGetColor(C_WHITE|0xFF, "hilited");
     if( !mg_bFocused) {
-      colRectangle = LCDGetColor(C_WHITE|0xFF, "hilited rectangle");
+      colRectangle = _pGame->LCDGetColor(C_WHITE|0xFF, "hilited rectangle");
     }
   }
   if (mg_bMental) {
@@ -244,10 +245,10 @@ void CMGButton::Render( CDrawPort *pdp)
     PIX pixWidth  = box.Size()(1)+1;
     PIX pixHeight = box.Size()(2);
     if (mg_strLabel!="") {
-      pixLeft = box.Min()(1)+box.Size()(1)*0.55f;
-      pixWidth  = box.Size()(1)*0.45f+1;
+      pixLeft = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+      pixWidth = (PIX) (box.Size()(1)*0.45f+1);
     }
-    pdp->Fill( pixLeft, pixUp, pixWidth, pixHeight, LCDGetColor(C_dGREEN|0x40, "edit fill"));
+    pdp->Fill( pixLeft, pixUp, pixWidth, pixHeight, _pGame->LCDGetColor(C_dGREEN|0x40, "edit fill"));
   }
 
 
@@ -255,9 +256,9 @@ void CMGButton::Render( CDrawPort *pdp)
 
   // print text
   if (mg_strLabel!="") {
-    PIX pixIL = box.Min()(1)+box.Size()(1)*0.45f;
-    PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-    PIX pixJ = box.Min()(2);
+    PIX pixIL = (PIX) (box.Min()(1)+box.Size()(1)*0.45f);
+    PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+    PIX pixJ  = (PIX) (box.Min()(2));
 
     pdp->PutTextR( mg_strLabel, pixIL, pixJ, col);
     pdp->PutText( mg_strText, pixIR, pixJ, col);
@@ -284,13 +285,13 @@ void CMGButton::Render( CDrawPort *pdp)
   if( mg_bEditing && (((ULONG)(_pTimer->GetRealTimeTick()*2))&1)) {
     PIX pixX = box.Min()(1) + GetCharOffset( pdp, iCursor);
     if (mg_strLabel!="") {
-      pixX += box.Size()(1)*0.55f;
+      pixX += (PIX) (box.Size()(1)*0.55f);
     }
-    PIX pixY = box.Min()(2);
+    PIX pixY = (PIX) (box.Min()(2));
     if (!pdp->dp_FontData->fd_bFixedWidth) {
-      pixY -= pdp->dp_fTextScaling *2;
+      pixY -= (PIX) (pdp->dp_fTextScaling *2);
     }
-    pdp->PutText( "|", pixX, pixY, LCDGetColor(C_WHITE|0xFF, "editing cursor"));
+    pdp->PutText( "|", pixX, pixY, _pGame->LCDGetColor(C_WHITE|0xFF, "editing cursor"));
   }
 }
 
@@ -298,7 +299,7 @@ void CMGButton::Render( CDrawPort *pdp)
 PIX CMGButton::GetCharOffset( CDrawPort *pdp, INDEX iCharNo)
 {
   if (pdp->dp_FontData->fd_bFixedWidth) {
-    return (pdp->dp_FontData->fd_pixCharWidth+pdp->dp_pixTextCharSpacing)*(iCharNo-0.5f);
+    return ((PIX) ((pdp->dp_FontData->fd_pixCharWidth+pdp->dp_pixTextCharSpacing)*(iCharNo-0.5f)));
   }
   CTString strCut(mg_strText);
   strCut.TrimLeft( strlen(mg_strText)-iCharNo);
@@ -329,11 +330,11 @@ void CMGModel::Render( CDrawPort *pdp)
   dpModel.Lock();
   dpModel.FillZBuffer(1.0f);
 
-  LCDSetDrawport(&dpModel);
+  _pGame->LCDSetDrawport(&dpModel);
   // clear menu here
   dpModel.Fill(C_BLACK|255);
-  LCDRenderClouds1();
-  LCDRenderClouds2();
+  _pGame->LCDRenderClouds1();
+  _pGame->LCDRenderClouds2();
 
   // prepare projection
   CRenderModel rmRenderModel;
@@ -392,13 +393,13 @@ void CMGModel::Render( CDrawPort *pdp)
   mg_moModel.RenderModel( rmRenderModel);
   EndModelRenderingView();
 
-  LCDScreenBox(LCDGetColor(C_GREEN, "model box")|GetCurrentColor());
+  _pGame->LCDScreenBox(_pGame->LCDGetColor(C_GREEN, "model box")|GetCurrentColor());
 
   dpModel.Unlock();
 
   pdp->Unlock();
   pdp->Lock();
-  LCDSetDrawport(pdp);
+  _pGame->LCDSetDrawport(pdp);
 
   // print the model name
   {
@@ -606,9 +607,9 @@ void CMGHighScore::Render( CDrawPort *pdp)
 {
   SetFontMedium(pdp);
 
-  COLOR colHeader = LCDGetColor(C_GREEN|255, "hiscore header");
-  COLOR colData = LCDGetColor(C_mdGREEN|255, "hiscore data");
-  COLOR colLastSet = LCDGetColor(C_mlGREEN|255, "hiscore last set");
+  COLOR colHeader = _pGame->LCDGetColor(C_GREEN|255, "hiscore header");
+  COLOR colData = _pGame->LCDGetColor(C_mdGREEN|255, "hiscore data");
+  COLOR colLastSet = _pGame->LCDGetColor(C_mlGREEN|255, "hiscore last set");
   INDEX iLastSet = _pGame->gm_iLastSetHighScore;
 
   CTString strText;
@@ -654,14 +655,14 @@ void CMGHighScore::Render( CDrawPort *pdp)
     strHighScores[i+1][5].PrintF("%9d", _pGame->gm_ahseHighScores[i].hse_ctScore);
   }}
 
-  PIX pixJ = pdp->GetHeight()*0.25f;
+  PIX pixJ = (PIX) (pdp->GetHeight()*0.25f);
   {for (INDEX iRow=0; iRow<HIGHSCORE_COUNT+1; iRow++) {
     COLOR col = (iRow==0) ? colHeader : colData;
     if (iLastSet!=-1 && iRow-1==iLastSet) {
       col = colLastSet;
     }
     {for (INDEX iColumn=0; iColumn<HSCOLUMNS; iColumn++) {
-      PIX pixI = pdp->GetWidth()*afI[iColumn];
+      PIX pixI = (PIX) (pdp->GetWidth()*afI[iColumn]);
       if (iColumn==1) {
         pdp->PutText(strHighScores[iRow][iColumn], pixI, pixJ, col);
       } else {
@@ -669,9 +670,9 @@ void CMGHighScore::Render( CDrawPort *pdp)
       }
     }}
     if (iRow==0) {
-      pixJ+=pdp->GetHeight()*0.06f;
+      pixJ+=(PIX) (pdp->GetHeight()*0.06f);
     } else {
-      pixJ+=pdp->GetHeight()*0.04f;
+      pixJ+=(PIX) (pdp->GetHeight()*0.04f);
     }
   }}
 }
@@ -744,9 +745,9 @@ void CMGTrigger::Render( CDrawPort *pdp)
   SetFontMedium(pdp);
 
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIL = box.Min()(1)+box.Size()(1)*0.45f;
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixJ = box.Min()(2);
+  PIX pixIL = (PIX) (box.Min()(1)+box.Size()(1)*0.45f);
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixJ  = (PIX) (box.Min()(2));
 
   COLOR col = GetCurrentColor();
   if (!mg_bVisual || mg_strValue=="") {
@@ -832,7 +833,7 @@ BOOL CMGSlider::OnKeyDown( int iVKey)
       FLOAT fRatio = FLOAT(_pixCursorPosI-boxSlider.Min()(1))/boxSlider.Size()(1);
       fRatio = (fRatio-0.01f)/(0.99f-0.01f);
       fRatio = Clamp(fRatio, 0.0f, 1.0f);
-      mg_iCurPos = fRatio*(mg_iMaxPos-mg_iMinPos) + mg_iMinPos;
+      mg_iCurPos = (INDEX) (fRatio*(mg_iMaxPos-mg_iMinPos) + mg_iMinPos);
       ApplyCurrentPosition();
       return TRUE;
     }
@@ -845,10 +846,10 @@ PIXaabbox2D CMGSlider::GetSliderBox(void)
 {
   extern CDrawPort *pdp;
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixJ  = box.Min()(2);
-  PIX pixJSize  = box.Size()(2)*0.95f;
-  PIX pixISizeR = box.Size()(1)*0.45f;
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixJ  = (PIX) (box.Min()(2));
+  PIX pixJSize  = (PIX) (box.Size()(2)*0.95f);
+  PIX pixISizeR = (PIX) (box.Size()(1)*0.45f);
   if( sam_bWideScreen) pixJSize++;
   return PIXaabbox2D( PIX2D(pixIR+1, pixJ+1), PIX2D(pixIR+pixISizeR-2, pixJ+pixJSize-2));
 }
@@ -861,19 +862,19 @@ void CMGSlider::Render( CDrawPort *pdp)
   // get geometry
   COLOR col = GetCurrentColor();
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIL = box.Min()(1)+box.Size()(1)*0.45f;
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixJ  = box.Min()(2);
-  PIX pixJSize  = box.Size()(2)*0.95f;
-  PIX pixISizeR = box.Size()(1)*0.45f;
+  PIX pixIL = (PIX) (box.Min()(1)+box.Size()(1)*0.45f);
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixJ  = (PIX) (box.Min()(2));
+  PIX pixJSize  = (PIX) (box.Size()(2)*0.95f);
+  PIX pixISizeR = (PIX) (box.Size()(1)*0.45f);
   if( sam_bWideScreen) pixJSize++;
 
   // print text left of slider
   pdp->PutTextR( mg_strText, pixIL, pixJ, col);
 
   // draw box around slider
-  LCDDrawBox(0, -1, PIXaabbox2D( PIX2D(pixIR+1, pixJ), PIX2D(pixIR+pixISizeR-2, pixJ+pixJSize-2)), 
-    LCDGetColor(C_GREEN|255, "slider box"));
+  PIXaabbox2D aabbox( PIX2D(pixIR+1, pixJ), PIX2D(pixIR+pixISizeR-2, pixJ+pixJSize-2));
+  _pGame->LCDDrawBox(0, -1, aabbox, _pGame->LCDGetColor(C_GREEN|255, "slider box"));
     
   // draw filled part of slider
   pdp->Fill( pixIR+2, pixJ+1, (pixISizeR-5)*mg_fFactor, (pixJSize-4), col);
@@ -908,10 +909,10 @@ PIXaabbox2D CMGVarButton::GetSliderBox(void)
 { 
   extern CDrawPort *pdp;
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixJ  = box.Min()(2);
-  PIX pixISize = box.Size()(1)*0.13f;
-  PIX pixJSize = box.Size()(2);
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixJ  = (PIX) (box.Min()(2));
+  PIX pixISize = (PIX) (box.Size()(1)*0.13f);
+  PIX pixJSize = (PIX) (box.Size()(2));
   return PIXaabbox2D( PIX2D(pixIR, pixJ+1), PIX2D(pixIR+pixISize-4, pixJ+pixJSize-6));
 }
 
@@ -933,7 +934,7 @@ BOOL CMGVarButton::OnKeyDown(int iVKey)
       // if mouse is within
       if( boxSlider>=PIX2D(_pixCursorPosI, _pixCursorPosJ)) {
         // set new position exactly where mouse pointer is
-        mg_pvsVar->vs_iValue = (FLOAT)(_pixCursorPosI-boxSlider.Min()(1))/boxSlider.Size()(1) * (mg_pvsVar->vs_ctValues);
+        mg_pvsVar->vs_iValue = (INDEX) ((FLOAT)(_pixCursorPosI-boxSlider.Min()(1))/boxSlider.Size()(1) * (mg_pvsVar->vs_ctValues));
         _bVarChanged = TRUE;
       } 
       // handled
@@ -998,15 +999,15 @@ void CMGVarButton::Render( CDrawPort *pdp)
   SetFontMedium(pdp);
 
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIL = box.Min()(1)+box.Size()(1)*0.45f;
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixIC = box.Center()(1);
-  PIX pixJ  = box.Min()(2);
+  PIX pixIL = (PIX) (box.Min()(1)+box.Size()(1)*0.45f);
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixIC = (PIX) (box.Center()(1));
+  PIX pixJ  = (PIX) (box.Min()(2));
 
   if (mg_pvsVar->vs_bSeparator)
   {
     mg_bEnabled = FALSE;
-    COLOR col = LCDGetColor(C_WHITE|255, "separator");
+    COLOR col = _pGame->LCDGetColor(C_WHITE|255, "separator");
     CTString strText = mg_pvsVar->vs_strName;
     pdp->PutTextC(strText, pixIC, pixJ, col);
   }
@@ -1024,10 +1025,10 @@ void CMGVarButton::Render( CDrawPort *pdp)
       // need slider?
       if( mg_pvsVar->vs_iSlider>0) {
         // draw box around slider
-        PIX pixISize = box.Size()(1)*0.13f;
-        PIX pixJSize = box.Size()(2);
-        LCDDrawBox( 0,-1, PIXaabbox2D( PIX2D(pixIR, pixJ+1), PIX2D(pixIR+pixISize-4, pixJ+pixJSize-6)), 
-          LCDGetColor(C_GREEN|255, "slider box"));
+        PIX pixISize = (PIX) (box.Size()(1)*0.13f);
+        PIX pixJSize = (PIX) (box.Size()(2));
+        PIXaabbox2D aabbox( PIX2D(pixIR, pixJ+1), PIX2D(pixIR+pixISize-4, pixJ+pixJSize-6));
+        _pGame->LCDDrawBox( 0, -1, aabbox, _pGame->LCDGetColor(C_GREEN|255, "slider box"));
         // draw filled part of slider
         if( mg_pvsVar->vs_iSlider==1) {
           // fill slider
@@ -1040,7 +1041,7 @@ void CMGVarButton::Render( CDrawPort *pdp)
           pdp->Fill( pixIR+1+(mg_pvsVar->vs_iValue*fUnitWidth), pixJ+2, fUnitWidth, pixJSize-9, col);
         }
         // move text printout to the right of slider
-        pixIR += box.Size()(1)*0.15f;
+        pixIR += (PIX) (box.Size()(1)*0.15f);
       }
     }
     // write right text
@@ -1257,7 +1258,7 @@ void CMGFileButton::Render( CDrawPort *pdp)
     PIX pixI = box.Min()(1);
     PIX pixJ = box.Min()(2);
 
-    COLOR col = LCDGetColor(C_mlGREEN|255, "file info");
+    COLOR col = _pGame->LCDGetColor(C_mlGREEN|255, "file info");
     pdp->PutText( mg_strInfo, pixI, pixJ, col);
   }
 }
@@ -1323,7 +1324,7 @@ int CompareSessions(const void *pv0, const void *pv1)
   switch(_iSort) {
   case 0: iResult = stricmp(ns0.ns_strSession, ns1.ns_strSession); break;
   case 1: iResult = stricmp(ns0.ns_strWorld, ns1.ns_strWorld); break;
-  case 2: iResult = Sgn(ns0.ns_tmPing-ns1.ns_tmPing); break;
+  case 2: iResult = (int) (Sgn(ns0.ns_tmPing-ns1.ns_tmPing)); break;
   case 3: iResult = Sgn(ns0.ns_ctPlayers-ns1.ns_ctPlayers); break;
   case 4: iResult = stricmp(ns0.ns_strGameType, ns1.ns_strGameType); break;
   case 5: iResult = stricmp(ns0.ns_strMod,  ns1.ns_strMod ); break;
@@ -1379,7 +1380,7 @@ void SortAndFilterServers(void)
     _lhServers.AddTail(pnsNew->ns_lnNode);
   }}
 
-  _lhServers.Sort(CompareSessions, offsetof(CNetworkSession, ns_lnNode));
+  _lhServers.Sort(CompareSessions, _offsetof(CNetworkSession, ns_lnNode));
 }
 
 void CMGServerList::Render(CDrawPort *pdp)
@@ -1431,11 +1432,11 @@ void CMGServerList::Render(CDrawPort *pdp)
   apixSeparatorI[1] = apixSeparatorI[2]-pixSizeMapName-pixLineSize;
   PIX pixSizeServerName = apixSeparatorI[1]-apixSeparatorI[0]-pixLineSize;
 
-  PIX pixTopJ = pixDPSizeJ*0.15f;
-  PIX pixBottomJ = pixDPSizeJ*0.82f;
+  PIX pixTopJ = (PIX) (pixDPSizeJ*0.15f);
+  PIX pixBottomJ = (PIX) (pixDPSizeJ*0.82f);
 
-  PIX pixFilterTopJ = pixTopJ+pixLineSize*3+pixCharSizeJ+pixLineSize*3;
-  PIX pixListTopJ = pixFilterTopJ+pixLineSize+pixCharSizeJ+pixLineSize;
+  PIX pixFilterTopJ = (PIX) (pixTopJ+pixLineSize*3+pixCharSizeJ+pixLineSize*3);
+  PIX pixListTopJ = (PIX) (pixFilterTopJ+pixLineSize+pixCharSizeJ+pixLineSize);
   INDEX ctSessionsOnScreen = (pixBottomJ-pixListTopJ)/pixCharSizeJ;
   pixBottomJ = pixListTopJ + pixCharSizeJ*ctSessionsOnScreen + pixLineSize*2;
 
@@ -1538,12 +1539,12 @@ static PIXaabbox2D GetSliderBox(INDEX iFirst, INDEX iVisible, INDEX iTotal,
     return boxFull;
   }
   FLOAT fSize = ClampUp(FLOAT(iVisible)/iTotal, 1.0f);
-  PIX pixFull = boxFull.Size()(2);
-  PIX pixSize = PIX(pixFull*fSize);
+  PIX pixFull = (PIX) (boxFull.Size()(2));
+  PIX pixSize = (PIX) (pixFull*fSize);
   pixSize = ClampDn(pixSize, boxFull.Size()(1));
-  PIX pixTop = pixFull*(FLOAT(iFirst)/iTotal)+boxFull.Min()(2);
-  PIX pixI0 = boxFull.Min()(1);
-  PIX pixI1 = boxFull.Max()(1);
+  PIX pixTop = (PIX) (pixFull*(FLOAT(iFirst)/iTotal)+boxFull.Min()(2));
+  PIX pixI0 = (PIX) (boxFull.Min()(1));
+  PIX pixI1 = (PIX) (boxFull.Max()(1));
   return PIXaabbox2D(PIX2D(pixI0, pixTop), PIX2D(pixI1, pixTop+pixSize));
 }
 
@@ -1709,7 +1710,7 @@ void CMGChangePlayer::SetPlayerText(void)
   if (iPlayer<0 || iPlayer>7) {
     mg_strText = "????";
   } else {
-    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer+1, pc.GetNameForPrinting());
+    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer+1, (const char *) pc.GetNameForPrinting());
   }
 }
 
@@ -1904,9 +1905,9 @@ void CMGKeyDefinition::Render( CDrawPort *pdp)
   SetFontMedium(pdp);
 
   PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
-  PIX pixIL = box.Min()(1)+box.Size()(1)*0.45f;
-  PIX pixIR = box.Min()(1)+box.Size()(1)*0.55f;
-  PIX pixJ = box.Min()(2);
+  PIX pixIL = (PIX) (box.Min()(1)+box.Size()(1)*0.45f);
+  PIX pixIR = (PIX) (box.Min()(1)+box.Size()(1)*0.55f);
+  PIX pixJ = (PIX) (box.Min()(2));
 
   COLOR col = GetCurrentColor();
   pdp->PutTextR( mg_strLabel, pixIL, pixJ, col);

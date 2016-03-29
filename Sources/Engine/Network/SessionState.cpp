@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Build.h>
 #include <Engine/Network/Network.h>
@@ -259,7 +259,7 @@ void CSessionState::Start_AtServer_t(void)     // throw char *
   _pNetwork->SendToServerReliable(nmRegisterMainSessionState);
 
   for(TIME tmWait=0; tmWait<net_tmConnectionTimeout*1000; 
-      Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+      _pTimer->Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
     _pNetwork->TimerLoop();
     if (_cmiComm.Client_Update() == FALSE) {
 			break;
@@ -302,7 +302,8 @@ void CSessionState::Start_AtClient_t(INDEX ctLocalPlayers)     // throw char *
 
   // send registration request
   CNetworkMessage nmRegisterSessionState(MSG_REQ_CONNECTREMOTESESSIONSTATE);
-  nmRegisterSessionState<<INDEX('VTAG')<<INDEX(_SE_BUILD_MAJOR)<<INDEX(_SE_BUILD_MINOR);
+  #define VTAG 0x56544147  // Looks like 'VTAG' in ASCII.
+  nmRegisterSessionState<<INDEX(VTAG)<<INDEX(_SE_BUILD_MAJOR)<<INDEX(_SE_BUILD_MINOR);
   nmRegisterSessionState<<_strModName;
   extern CTString net_strConnectPassword;
   extern CTString net_strVIPPassword;
@@ -423,7 +424,7 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
   _bRunNetUpdates = TRUE;
   // repeat until timed out
   for(TIME tmWait=0; tmWait<net_tmConnectionTimeout*1000;
-    Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+    _pTimer->Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
     // update network connection sockets
     if (_cmiComm.Client_Update() == FALSE) {
 			break;
@@ -478,13 +479,13 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
       ses_strDisconnected = strReason;
       // no more client/server updates in the progres hook
       _bRunNetUpdates = FALSE;
-      ThrowF_t(TRANS("Disconnected: %s\n"), strReason);
+      ThrowF_t(TRANS("Disconnected: %s\n"), (const char *) strReason);
 	  // otherwise
     } else {
       // no more client/server updates in the progres hook
       _bRunNetUpdates = FALSE;
       // it is invalid message
-      ThrowF_t(TRANS("Invalid stream while waiting for %s"), strName);
+      ThrowF_t(TRANS("Invalid stream while waiting for %s"), (const char *) strName);
     }
 
     // if client is disconnected
@@ -503,7 +504,7 @@ void CSessionState::WaitStream_t(CTMemoryStream &strmMessage, const CTString &st
 //	_pNetwork->SendToServerReliable(nmConfirmDisconnect);
 
   
-  ThrowF_t(TRANS("Timeout while waiting for %s"), strName);
+  ThrowF_t(TRANS("Timeout while waiting for %s"), (const char *) strName);
 }
 
 // check if disconnected
@@ -1341,7 +1342,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
           FatalError(TRANS("Cannot load Player class:\n%s"), strError);
         }
         if (!_pNetwork->IsPlayerLocal(penNewPlayer)) {
-          CPrintF(TRANS("%s joined\n"), penNewPlayer->GetPlayerName());
+          CPrintF(TRANS("%s joined\n"), (const char *) penNewPlayer->GetPlayerName());
         }
       } else {
         // attach entity to client data
@@ -1350,7 +1351,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
         penNewPlayer->CharacterChanged(pcCharacter);
 
         if (!_pNetwork->IsPlayerLocal(penNewPlayer)) {
-          CPrintF(TRANS("%s rejoined\n"), penNewPlayer->GetPlayerName());
+          CPrintF(TRANS("%s rejoined\n"), (const char *) penNewPlayer->GetPlayerName());
         }
       }
 
@@ -1365,7 +1366,7 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
       _pNetwork->ga_World.DeletePredictors();
 
       // inform entity of disconnnection
-      CPrintF(TRANS("%s left\n"), ses_apltPlayers[iPlayer].plt_penPlayerEntity->GetPlayerName());
+      CPrintF(TRANS("%s left\n"), (const char *) ses_apltPlayers[iPlayer].plt_penPlayerEntity->GetPlayerName());
       ses_apltPlayers[iPlayer].plt_penPlayerEntity->Disconnect();
       // deactivate the player
       ses_apltPlayers[iPlayer].Deactivate();
@@ -1441,9 +1442,9 @@ void CSessionState::ProcessGameStreamBlock(CNetworkMessage &nmMessage)
       // report who paused
       if (ses_bPause!=bPauseBefore) {
         if (ses_bPause) {
-          CPrintF(TRANS("Paused by '%s'\n"), strPauser);
+          CPrintF(TRANS("Paused by '%s'\n"), (const char *) strPauser);
         } else {
-          CPrintF(TRANS("Unpaused by '%s'\n"), strPauser);
+          CPrintF(TRANS("Unpaused by '%s'\n"), (const char *) strPauser);
         }
       }
     }
@@ -1631,8 +1632,8 @@ void CSessionState::ReadWorldAndState_t(CTStream *pstr)   // throw char *
     ThrowF_t(
       TRANS("Cannot play demo because file '%s'\n"
       "is older than file '%s'!\n"),
-      CTString(pstr->GetDescription()),
-      CTString(_pNetwork->ga_fnmWorld));
+      (const char *) CTString(pstr->GetDescription()),
+      (const char *) CTString(_pNetwork->ga_fnmWorld));
   }
 
   // prepare the world for loading
@@ -1857,7 +1858,7 @@ void CSessionState::RestoreOldLevel(const CTString &strFileName)
     ReadWorldAndState_t(&prlOld->rl_strmSessionState);
     _pTimer->SetCurrentTick(ses_tmLastProcessedTick);
   } catch (char *strError) {
-    FatalError(TRANS("Cannot restore old level '%s':\n%s"), prlOld->rl_strFileName, strError);
+    FatalError(TRANS("Cannot restore old level '%s':\n%s"), (const char *) prlOld->rl_strFileName, strError);
   }
   // delete it
   delete prlOld;
@@ -2030,7 +2031,7 @@ void CSessionState::SessionStateLoop(void)
         CTString strReason;
         nmReliable>>strReason;
         ses_strDisconnected = strReason;
-        CPrintF(TRANS("Disconnected: %s\n"), strReason);
+        CPrintF(TRANS("Disconnected: %s\n"), (const char *) strReason);
         // disconnect
         _cmiComm.Client_Close();
       // if this is recon response
@@ -2038,7 +2039,7 @@ void CSessionState::SessionStateLoop(void)
         // just print it
         CTString strResponse;
         nmReliable>>strResponse;
-        CPrintF("%s", "|"+strResponse+"\n");
+        CPrintF("%s", (const char *) ("|"+strResponse+"\n"));
       // otherwise
       } else {
         CPrintF(TRANS("Session state: Unexpected reliable message during game: %s(%d)\n"),
@@ -2092,11 +2093,11 @@ void CSessionState::SessionStateLoop(void)
         DumpSyncToFile_t(strmFile, ses_iExtensiveSyncCheck);
       }
       // inform user
-      CPrintF("Sync data dumped to '%s'\n", strFileName);
+      CPrintF("Sync data dumped to '%s'\n", (const char *) strFileName);
     }
     catch (char *strError)
     {
-      CPrintF("Cannot dump sync data: %s\n", strError);
+      CPrintF("Cannot dump sync data: %s\n", (const char *) strError);
     }
   }
 

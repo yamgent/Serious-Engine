@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Shaders/StdH.h"
 #include <Engine/Ska/Render.h>
 #include <Shaders/Common.h>
 

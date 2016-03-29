@@ -1,7 +1,10 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-// set this to 1 to enable checks whether somethig is deleted while iterating some array/container
-#define CHECKARRAYLOCKING 0
+#ifndef SE_INCL_ENGINE_H
+#define SE_INCL_ENGINE_H
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
 
 #ifdef _WIN32
   #ifndef PLATFORM_WIN32
@@ -9,8 +12,10 @@
   #endif
 #endif
 
+// set this to 1 to enable checks whether somethig is deleted while iterating some array/container
+#define CHECKARRAYLOCKING 0
+
 #include <stdlib.h>
-#include <malloc.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,6 +24,10 @@
 #include <math.h>
 #include <search.h>   // for qsort
 #include <float.h>    // for FPU control
+
+#if !PLATFORM_MACOSX
+#include <malloc.h>
+#endif
 
 /* rcg10042001 !!! FIXME: Move these somewhere. */
 #if (defined PLATFORM_WIN32)
@@ -52,6 +61,10 @@
 #include <Engine/Base/ProgressHook.h>
 #include <Engine/Base/Registry.h>
 #include <Engine/Base/IFeel.h>
+
+#include <Engine/Base/DynamicLoader.h>  // rcg10082001
+#include <Engine/Base/FileSystem.h>  // rcg10082001
+#include <Engine/Base/ThreadLocalStorage.h>  // rcg10242001
 
 #include <Engine/Entities/EntityClass.h>
 #include <Engine/Entities/EntityCollision.h>
@@ -152,24 +165,31 @@
 #include <Engine/Templates/Selection.h>
 #include <Engine/Templates/Selection.cpp>
 
-
 // some global stuff
-ENGINE_API void SE_InitEngine( CTString strGameID);
+
+// rcg10072001 (argv0) is, literally, argv[0] from your mainline. We need this
+//  on some platforms to determine where the program is running from in the
+//  filesystem.
+ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID);
 ENGINE_API void SE_EndEngine(void);
 ENGINE_API void SE_LoadDefaultFonts(void);
 ENGINE_API void SE_UpdateWindowHandle( HWND hwndWindowed);
 ENGINE_API void SE_PretouchIfNeeded(void);
 
-extern ENGINE_API CTString _strEngineBuild;  // not valid before InitEngine()!
-extern ENGINE_API ULONG _ulEngineBuildMajor;
-extern ENGINE_API ULONG _ulEngineBuildMinor;
+ENGINE_API extern CTString _strEngineBuild;  // not valid before InitEngine()!
+ENGINE_API extern ULONG _ulEngineBuildMajor;
+ENGINE_API extern ULONG _ulEngineBuildMinor;
 
-extern ENGINE_API BOOL _bDedicatedServer;
-extern ENGINE_API BOOL _bWorldEditorApp; // is this world edtior app
-extern ENGINE_API CTString _strLogFile;
+ENGINE_API extern BOOL _bDedicatedServer;
+ENGINE_API extern BOOL _bWorldEditorApp; // is this world editor app
+ENGINE_API extern CTString _strLogFile;
 
 // temporary vars for adjustments
 ENGINE_API extern FLOAT tmp_af[10];
 ENGINE_API extern INDEX tmp_ai[10];
 ENGINE_API extern INDEX tmp_i;
 ENGINE_API extern INDEX tmp_fAdd;
+
+#endif /* include-once blocker. */
+
+

@@ -1,6 +1,7 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
+#include "Engine/Base/CRC.h"
 
 // Note: this CRC calculation algorithm, although originating from MSDN examples,
 // is in fact identical to the Adler32 used in ZIP's CRC calculation.

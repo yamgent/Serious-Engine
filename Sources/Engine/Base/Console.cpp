@@ -1,9 +1,9 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Console.h>
-#include <Engine/Base/Console_Internal.h>
+#include <Engine/Base/Console_internal.h>
 
 #include <Engine/Base/Timer.h>
 #include <Engine/Base/ErrorReporting.h>
@@ -13,11 +13,11 @@
 
 #include <Engine/Math/Functions.h>
 
-extern CConsole *_pConsole = NULL;
+CConsole *_pConsole = NULL;
 
 extern INDEX con_iLastLines;
-extern BOOL con_bCapture = FALSE;
-extern CTString con_strCapture = "";
+BOOL con_bCapture = FALSE;
+CTString con_strCapture = "";
 
 
 // Constructor.
@@ -262,7 +262,7 @@ void CConsole::CloseLog(void)
 }
 
 // Print formated text to the main console.
-extern void CPrintF(const char *strFormat, ...)
+void CPrintF(const char *strFormat, ...)
 {
   if (_pConsole==NULL) {
     return;
@@ -272,6 +272,7 @@ extern void CPrintF(const char *strFormat, ...)
   va_start(arg, strFormat);
   CTString strBuffer;
   strBuffer.VPrintF(strFormat, arg);
+  va_end(arg);
 
   // print it to the main console
   _pConsole->PutString(strBuffer);

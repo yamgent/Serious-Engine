@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Brushes/Brush.h>
 #include <Engine/Brushes/BrushArchive.h>
@@ -25,13 +25,13 @@
 CLightSource::CLightSource(void)
 {
   // set invalid properties, must be initialized by its entity
-  ls_ulFlags = -1;
+  ls_ulFlags = (ULONG) -1;
   ls_rHotSpot = -1;
   ls_rFallOff = -1;
   ls_colColor = 0;
   ls_colAmbient = 0;
-  ls_ubLightAnimationObject = -1;
-  ls_ubPolygonalMask = -1;
+  ls_ubLightAnimationObject = (UBYTE) -1;
+  ls_ubPolygonalMask = (UBYTE) -1;
   ls_penEntity = NULL;
   ls_plftLensFlare = NULL;
   ls_paoLightAnimation = NULL;
@@ -384,7 +384,7 @@ static inline BOOL IsPolygonInfluencedByPointLight(CBrushPolygon *pbpo)
 }
 
 
-extern CEntity *_penLightUpdating = NULL;
+CEntity *_penLightUpdating = NULL;
 
 void CLightSource::FindShadowLayersPoint(BOOL bSelectedOnly)
 {

@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Shaders/StdH.h"
 
 #define TEXTURE_COUNT 2
 #define UVMAPS_COUNT  2
@@ -70,8 +70,8 @@ SHADER_MAIN(MultiLayer)
     if(ctTexCoords>0 && ptxcOld!=NULL) {
       for(INDEX itxc=0;itxc<ctTexCoords;itxc++)
       {
-        ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
-        ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
+        ptxcNew[itxc].uv.u = ptxcOld[itxc].uv.u * fLayerTiling;
+        ptxcNew[itxc].uv.v = ptxcOld[itxc].uv.v * fLayerTiling;
       }
       shaSetTexCoords(ptxcNew);
     }
@@ -99,8 +99,8 @@ SHADER_MAIN(MultiLayer)
     if(ctTexCoords>0 && ptxcOld!=NULL) {
       for(INDEX itxc=0; itxc<ctTexCoords; itxc++)
       {
-        ptxcNew[itxc].u = ptxcOld[itxc].u * fLayerTiling;
-        ptxcNew[itxc].v = ptxcOld[itxc].v * fLayerTiling;
+        ptxcNew[itxc].uv.u = ptxcOld[itxc].uv.u * fLayerTiling;
+        ptxcNew[itxc].uv.v = ptxcOld[itxc].uv.v * fLayerTiling;
       }
       shaSetTexCoords(ptxcNew);
     }

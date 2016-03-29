@@ -1,5 +1,11 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
+#ifndef SE_INCL_NETWORKPROFILE_H
+#define SE_INCL_NETWORKPROFILE_H
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
+
 #ifndef __ENGINE_BASE_PROFILING_H__
 #include <Engine/Base/Profiling.h>
 #endif
@@ -37,3 +43,7 @@ public:
   // constructor
   CNetworkProfile(void);
 };
+
+#endif  // include-once blocker.
+
+

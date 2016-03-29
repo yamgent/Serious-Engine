@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Models/MipMaker.h>
 #include <Engine/Math/Vector.h>
@@ -158,8 +158,8 @@ void CMipModel::FromObject3D_t( CObject3D &objRestFrame, CObject3D &objMipSource
     INDEX ctPolygonVertices = opoPolygon.opo_PolygonEdges.Count();
     // allocate polygon vertices
     CMipPolygonVertex *ppvPolygonVertices[ 32];
-    INDEX iPolygonVertice=0;
-    for( ; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
+    INDEX iPolygonVertice;
+    for( iPolygonVertice=0; iPolygonVertice<ctPolygonVertices; iPolygonVertice++)
     {
       // allocate one polygon vertex
       ppvPolygonVertices[ iPolygonVertice] = new( CMipPolygonVertex);

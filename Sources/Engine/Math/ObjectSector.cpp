@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Math/Object3D.h>
 #include <Engine/Templates/BSP_internal.h>
@@ -31,8 +31,8 @@
 #define EDX_EPSILON DOUBLE(0.00390625*mth_fCSGEpsilon) // 1/2^8
 
 // use O(nlogn) instead O(n2) algorithms for object optimization
-extern INDEX wld_bFastObjectOptimization = 1.0f;
-extern FLOAT mth_fCSGEpsilon = 1.0f;
+INDEX wld_bFastObjectOptimization = 1;
+FLOAT mth_fCSGEpsilon = 1.0f;
 
 /*
  * Compare two vertices.
@@ -219,6 +219,10 @@ BOOL FindEdge( CStaticArray<CObjectEdge *> &apedSorted,
 /*
  * Get start and end vertices.
  */
+// rcg10162001 wtf...I had to move this into the class definition itself.
+//  I think it's an optimization bug; I didn't have this problem when I
+//  didn't give GCC the "-O2" option.
+#if 0
 void CObjectPolygonEdge::GetVertices(CObjectVertex *&povxStart, CObjectVertex *&povxEnd)
 {
   ASSERT(ope_Edge!=NULL);
@@ -230,6 +234,8 @@ void CObjectPolygonEdge::GetVertices(CObjectVertex *&povxStart, CObjectVertex *&
     povxEnd = ope_Edge->oed_Vertex1;
   }
 }
+#endif
+
 
 /*
  * Default constructor.

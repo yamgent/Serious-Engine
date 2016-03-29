@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 
 #define ID_EMITER_VER "EMT0"
 
@@ -18,12 +18,32 @@ CEmittedParticle::CEmittedParticle(void)
 
 void CEmittedParticle::Write_t( CTStream &strm)
 {
-  strm.WriteRawChunk_t( this, sizeof(CEmittedParticle));
+  strm<<ep_vLastPos;
+  strm<<ep_vPos;
+  strm<<ep_fLastRot;
+  strm<<ep_fRot;
+  strm<<ep_fRotSpeed;
+  strm<<ep_vSpeed;
+  strm<<ep_colLastColor;
+  strm<<ep_colColor;
+  strm<<ep_tmEmitted;
+  strm<<ep_tmLife;
+  strm<<ep_fStretch;
 }
 
 void CEmittedParticle::Read_t( CTStream &strm)
 {
-  strm.ReadRawChunk_t( this, sizeof(CEmittedParticle));
+  strm>>ep_vLastPos;
+  strm>>ep_vPos;
+  strm>>ep_fLastRot;
+  strm>>ep_fRot;
+  strm>>ep_fRotSpeed;
+  strm>>ep_vSpeed;
+  strm>>ep_colLastColor;
+  strm>>ep_colColor;
+  strm>>ep_tmEmitted;
+  strm>>ep_tmLife;
+  strm>>ep_fStretch;
 }
 
 CEmiter::CEmiter(void)

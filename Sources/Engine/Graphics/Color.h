@@ -92,6 +92,8 @@
 #define C_vlPINK    0xF68C8C00UL
 
 // CT RGBA masks and shifts
+// Beware that changing these breaks the GNU C version of some
+//  inline assembly.  --ryan.
 #define CT_RMASK  0xFF000000UL
 #define CT_GMASK  0x00FF0000UL
 #define CT_BMASK  0x0000FF00UL
@@ -190,12 +192,18 @@ __forceinline ULONG ByteSwap( ULONG ul)
 {
 /* rcg10052001 Platform-wrappers. */
 #if (defined USE_PORTABLE_C)
-	return( ((ul << 24)            ) |
-            ((ul << 8) & 0x00FF0000) |
-            ((ul >> 8) & 0x0000FF00) |
-            ((ul >> 24)            ) );
+	ul = ( ((ul << 24)            ) |
+           ((ul << 8) & 0x00FF0000) |
+           ((ul >> 8) & 0x0000FF00) |
+           ((ul >> 24)            ) );
 
-#elif (defined _MSC_VER)
+    #if (defined PLATFORM_BIGENDIAN)
+    BYTESWAP(ul);  // !!! FIXME: May not be right!
+    #endif
+
+    return(ul);
+
+#elif (defined __MSVC_INLINE__)
   ULONG ulRet;
   __asm {
     mov   eax,dword ptr [ul]
@@ -203,7 +211,8 @@ __forceinline ULONG ByteSwap( ULONG ul)
     mov   dword ptr [ulRet],eax
   }
   return ulRet;
-#elif (defined __GNUC__)
+
+#elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
     "bswapl   %%eax    \n\t"
         : "=a" (ul)
@@ -216,18 +225,28 @@ __forceinline ULONG ByteSwap( ULONG ul)
 #endif
 }
 
-__forceinline ULONG rgba2argb( COLOR col)
+__forceinline ULONG rgba2argb( ULONG ul)
 {
 #if (defined USE_PORTABLE_C)
-	return( (col << 24) | (col >> 8) );
+	return( (ul << 24) | (ul >> 8) );
 
-#elif (defined _MSC_VER)
+#elif (defined __MSVC_INLINE__)
   ULONG ulRet;
   __asm {
-    mov   eax,dword ptr [col]
+    mov   eax,dword ptr [ul]
     ror   eax,8
     mov   dword ptr [ulRet],eax
   }
+  return ulRet;
+
+#elif (defined __GNU_INLINE__)
+  ULONG ulRet;
+  __asm__ __volatile__ (
+    "rorl   $8, %%eax       \n\t"
+        : "=a" (ulRet)
+        : "a" (ul)
+        : "cc"
+  );
   return ulRet;
 
 #else
@@ -235,24 +254,35 @@ __forceinline ULONG rgba2argb( COLOR col)
 #endif
 }
 
-__forceinline ULONG abgr2argb( ULONG ul)
+__forceinline ULONG abgr2argb( COLOR col)
 {
 #if (defined USE_PORTABLE_C)
 	// this could be simplified, this is just a safe conversion from asm code
-	ul = ( ((ul << 24)            ) |
-         ((ul << 8) & 0x00FF0000) |
-         ((ul >> 8) & 0x0000FF00) |
-         ((ul >> 24)            ) );
-	return( (ul << 24) | (ul >> 8) );
+	col = ( ((col << 24)            ) |
+            ((col << 8) & 0x00FF0000) |
+            ((col >> 8) & 0x0000FF00) |
+            ((col >> 24)            ) );
+	return( (col << 24) | (col >> 8) );
 
-#elif (defined _MSC_VER)
+#elif (defined __MSVC_INLINE__)
   ULONG ulRet;
   __asm {
-    mov   eax,dword ptr [ul]
+    mov   eax,dword ptr [col]
     bswap eax
     ror   eax,8
     mov   dword ptr [ulRet],eax
   }
+  return ulRet;
+
+#elif (defined __GNU_INLINE__)
+  ULONG ulRet;
+  __asm__ __volatile__ (
+    "bswapl %%eax           \n\t"
+    "rorl   $8, %%eax       \n\t"
+        : "=a" (ulRet)
+        : "a" (col)
+        : "cc"
+  );
   return ulRet;
 
 #else
@@ -268,7 +298,10 @@ extern void abgr2argb( ULONG *pulSrc, ULONG *pulDst, INDEX ct);
 // fast memory copy of ULONGs
 inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
 {
-#if (defined _MSC_VER)
+#if ((defined USE_PORTABLE_C) || (PLATFORM_MACOSX))
+  memcpy( pulDst, pulSrc, ctLongs*4);
+
+#elif (defined __MSVC_INLINE__)
   __asm {
     cld
     mov   esi,dword ptr [pulSrc]
@@ -276,8 +309,23 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
     mov   ecx,dword ptr [ctLongs]
     rep   movsd
   }
+
+#elif (defined __GNU_INLINE__)
+    // I haven't benchmarked it, but in many cases, memcpy() becomes an
+    //  inline (asm?) macro on GNU platforms, so this might not be a
+    //  speed gain at all over the USE_PORTABLE_C version.
+    // You Have Been Warned. --ryan.
+  __asm__ __volatile__ (
+    "cld    \n\t"
+    "rep    \n\t"
+    "movsd  \n\t"
+        : // no outputs.
+        : "S" (pulSrc), "D" (pulDst), "c" (ctLongs)
+        : "cc", "memory"
+  );
+
 #else
-  memcpy( pulDst, pulSrc, ctLongs*4);
+# error Please fill this in for your platform.
 #endif
 }
 
@@ -285,7 +333,11 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
 // fast memory set of ULONGs
 inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
 {
-#if (defined _MSC_VER)
+#if (defined USE_PORTABLE_C)
+  for( INDEX i=0; i<ctLongs; i++)
+    pulDst[i] = ulVal;
+
+#elif (defined __MSVC_INLINE__)
   __asm {
     cld
     mov   eax,dword ptr [ulVal]
@@ -293,10 +345,23 @@ inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
     mov   ecx,dword ptr [ctLongs]
     rep   stosd
   }
+
+#elif (defined __GNU_INLINE__)
+  __asm__ __volatile__ (
+    "cld    \n\t"
+    "rep    \n\t"
+    "stosd  \n\t"
+        : // no outputs.
+        : "a" (ulVal), "D" (pulDst), "c" (ctLongs)
+        : "cc", "memory"
+  );
+
 #else
-  for( INDEX i=0; i<ctLongs; i++) pulDst[i] = ulVal;
+# error Please fill this in for your platform.
 #endif
 }
 
-
 #endif  /* include-once check. */
+
+
+

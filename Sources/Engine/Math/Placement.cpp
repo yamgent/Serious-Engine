@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Math/Placement.h>
 
@@ -12,12 +12,14 @@
 
 CTStream &operator>>(CTStream &strm, CPlacement3D &p3d)
 {
-  strm.Read_t(&p3d, sizeof(p3d));
+  strm>>p3d.pl_PositionVector;
+  strm>>p3d.pl_OrientationAngle;
   return strm;
 }
 CTStream &operator<<(CTStream &strm, const CPlacement3D &p3d)
 {
-  strm.Write_t(&p3d, sizeof(p3d));
+  strm<<p3d.pl_PositionVector;
+  strm<<p3d.pl_OrientationAngle;
   return strm;
 }
 

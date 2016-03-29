@@ -6,7 +6,7 @@
 
 3
 %{
-#include "StdH.h"
+#include <Engine/StdH.h>
 #include <Engine/Entities/InternalClasses.h>
 %}
 

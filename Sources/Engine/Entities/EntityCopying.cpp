@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Entities/Entity.h>
 #include <Engine/Entities/LastPositions.h>
@@ -36,7 +36,7 @@ public:
 
 static CStaticArray<CPointerRemapping> _aprRemaps;
 static BOOL _bRemapPointersToNULLs = TRUE;
-extern BOOL _bReinitEntitiesWhileCopying = TRUE;
+BOOL _bReinitEntitiesWhileCopying = TRUE;
 static BOOL _bMirrorAndStretch = FALSE;
 static FLOAT _fStretch = 1.0f;
 static enum WorldMirrorType _wmtMirror = WMT_NONE;

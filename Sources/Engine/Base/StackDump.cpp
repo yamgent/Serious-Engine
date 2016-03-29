@@ -1,10 +1,14 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Console_Internal.h>
 
 #include <Engine/Build.h>
+
+#if (!defined PLATFORM_WIN32)
+#error You probably should not try to compile this.
+#endif
 
 extern ULONG _ulEngineBuildMajor;
 extern ULONG _ulEngineBuildMinor;

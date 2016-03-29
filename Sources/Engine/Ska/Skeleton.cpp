@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 #include "Skeleton.h"
 
 #include <Engine/Graphics/DrawPort.h>
@@ -13,7 +13,7 @@
 #define SKELETON_VERSION  6
 #define SKELETON_ID       "SKEL"
 
-CStaticArray<struct SkeletonBone> _aSortArray;
+static CStaticArray<struct SkeletonBone> _aSortArray;
 INDEX ctSortBones;
 
 CSkeleton::CSkeleton()
@@ -234,9 +234,10 @@ void CSkeleton::Read_t(CTStream *istrFile)
       sb.sb_iID = ska_GetIDFromStringTable(strNameID);
       sb.sb_iParentID = ska_GetIDFromStringTable(strParentID);
       // read AbsPlacement matrix
-      istrFile->Read_t(&sb.sb_mAbsPlacement,sizeof(FLOAT)*12);
+      for (int i = 0; i < 12; i++)
+        (*istrFile)>>sb.sb_mAbsPlacement[i];
       // read RelPlacement Qvect stuct
-      istrFile->Read_t(&sb.sb_qvRelPlacement,sizeof(QVect));
+      (*istrFile)>>sb.sb_qvRelPlacement;
       // read offset len
       (*istrFile)>>sb.sb_fOffSetLen;
       // read bone length

@@ -1,8 +1,8 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
-#include <Engine/Base/Statistics_internal.h>
+#include <Engine/Base/Statistics_Internal.h>
 #include <Engine/Math/Float.h>
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Models/ModelData.h>
@@ -322,7 +322,7 @@ BOOL CModelObject::CreateAttachment( CRenderModel &rmMain, CAttachmentModelObjec
          if( fPlaneDistance < -fR) iMirrorPlaneTest = -1;
     else if( fPlaneDistance > +fR) iMirrorPlaneTest = +1;
     else { // test box if sphere cut mirror plane
-      iMirrorPlaneTest = boxEntity.TestAgainstPlane(_aprProjection->pr_plMirrorView);
+      iMirrorPlaneTest = (INDEX) (boxEntity.TestAgainstPlane(_aprProjection->pr_plMirrorView));
     }
     // mark if attachment is fully inside mirror
          if( iMirrorPlaneTest>0) rmAttached.rm_ulFlags |= RMF_INMIRROR; 

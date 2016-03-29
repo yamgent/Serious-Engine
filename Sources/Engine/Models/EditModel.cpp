@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Models/ModelData.h>
@@ -178,7 +178,7 @@ void CEditModel::LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D 
     OB3D.LoadAny3DFormat_t( CTString(itFr->cfnn_FileName), mStretch);
     if( edm_md.md_VerticesCt != OB3D.ob_aoscSectors[0].osc_aovxVertices.Count()) {
 			ThrowF_t( "File %s, one of animation frame files has wrong number of points.", 
-        (CTString)fnnFileNameNode.cfnn_FileName);
+        (const char *) (CTString)fnnFileNameNode.cfnn_FileName);
 		}
     if(bOrigin)
     {
@@ -248,7 +248,7 @@ void CEditModel::LoadModelAnimationData_t( CTStream *pFile, const FLOATmatrix3D 
     // only triangles are supported!
     ASSERT( opo.opo_PolygonEdges.Count() == 3);  
     if( opo.opo_PolygonEdges.Count() != 3) {
-  		ThrowF_t( "Non-triangle polygon encountered in model file %s !", fnmFirstFrame);
+  		ThrowF_t( "Non-triangle polygon encountered in model file %s !", (const char *) fnmFirstFrame);
     }
     // get all 3 vetrices of current polygon and sorted them
     opo.opo_PolygonEdges.Lock();
@@ -437,7 +437,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   {
     if( edm_md.md_ColorNames[ i] != "")
     {
-      sprintf( line, "#define %s_PART_%s ((1L) << %d)\n", strDefinePrefix, edm_md.md_ColorNames[ i], i);
+      sprintf( line, "#define %s_PART_%s ((1L) << %d)\n", (const char *) strDefinePrefix, (const char *) edm_md.md_ColorNames[ i], i);
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -449,7 +449,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
     CTString strPatchName = edm_md.md_mpPatches[ iPatch].mp_strName;
     if( strPatchName != "")
     {
-      sprintf( line, "#define %s_PATCH_%s %d\n", strDefinePrefix, strPatchName, i);
+      sprintf( line, "#define %s_PATCH_%s %d\n", (const char *) strDefinePrefix, (const char *) strPatchName, i);
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -462,7 +462,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
   for( INDEX iCollisionBox=0; iCollisionBox<edm_md.md_acbCollisionBox.Count(); iCollisionBox++)
   {
     // prepare collision box name as define
-    sprintf( line, "#define %s_COLLISION_BOX_%s %d\n", strDefinePrefix, GetCollisionBoxName( iCollisionBox),
+    sprintf( line, "#define %s_COLLISION_BOX_%s %d\n", (const char *) strDefinePrefix, (const char *) GetCollisionBoxName( iCollisionBox),
       iCollisionBox);
     strmHFile.Write_t( line, strlen( line));
   }
@@ -477,7 +477,7 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
     char achrUpper[ 256];
     strcpy( achrUpper, itam->am_strName);
     strupr( achrUpper);
-    sprintf( line, "#define %s_ATTACHMENT_%s %d\n", strDefinePrefix, achrUpper, iAttachingPlcement);
+    sprintf( line, "#define %s_ATTACHMENT_%s %d\n", (const char *) strDefinePrefix, achrUpper, iAttachingPlcement);
     strmHFile.Write_t( line, strlen( line));
     iAttachingPlcement++;
   }
@@ -502,15 +502,15 @@ void CEditModel::SaveIncludeFile_t( CTFileName fnFileName, CTString strDefinePre
       edm_md.GetAnimInfo( iSound, aiInfo);
 
       CTString strWithQuotes;
-      strWithQuotes.PrintF( "\"%s\",", CTString(edm_aasAttachedSounds[iSound].as_fnAttachedSound));
+      strWithQuotes.PrintF( "\"%s\",", (const char *) CTString(edm_aasAttachedSounds[iSound].as_fnAttachedSound));
 
       sprintf( line, "//sound SOUND_%s_%-16s %-32s // %s, %s, %s\n",
-        strDefinePrefix,
+        (const char *) strDefinePrefix,
         aiInfo.ai_AnimName,
-        strWithQuotes,
-        strAnimationPrefix+aiInfo.ai_AnimName,
-        strLooping,
-        strDelay);
+        (const char *) strWithQuotes,
+        (const char *) (strAnimationPrefix+aiInfo.ai_AnimName),
+        (const char *) strLooping,
+        (const char *) strDelay);
       strmHFile.Write_t( line, strlen( line));
     }
   }
@@ -893,20 +893,20 @@ void CEditModel::CreateScriptFile_t(CTFileName &fnO3D) // throw char *
   File.PutLine_t( "STRETCH_DETAIL NO");
   File.PutLine_t( "");
   File.PutLine_t( ";******* Mip models");
-  sprintf( line, "DIRECTORY %s", (CTString&)fnO3D.FileDir());
+  sprintf( line, "DIRECTORY %s", (const char *) (const CTString&)fnO3D.FileDir());
   File.PutLine_t( line);
   File.PutLine_t( "MIP_MODELS 1");
-  sprintf( line, "    %s", (CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
+  sprintf( line, "    %s", (const char *) (const CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
   File.PutLine_t( line);
   File.PutLine_t( "");
   File.PutLine_t( "ANIM_START");
   File.PutLine_t( ";******* Start of animation block");
   File.PutLine_t( "");
-  sprintf( line, "DIRECTORY %s", (CTString&)fnO3D.FileDir());
+  sprintf( line, "DIRECTORY %s", (const char *) (const CTString&)fnO3D.FileDir());
   File.PutLine_t( line);
   File.PutLine_t( "ANIMATION Default");
   File.PutLine_t( "SPEED 0.1");
-  sprintf( line, "    %s", (CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
+  sprintf( line, "    %s", (const char *) (const CTString&)(fnO3D.FileName() + fnO3D.FileExt()));
   File.PutLine_t( line);
   File.PutLine_t( "");
   File.PutLine_t( ";******* End of animation block");
@@ -1750,8 +1750,8 @@ void CEditModel::CreateMipModels_t(CObject3D &objRestFrame, CObject3D &objMipSou
          INDEX iVertexRemoveRate, INDEX iSurfacePreservingFactor)
 {
   // free possible mip-models except main mip model
-  INDEX iMipModel=1;
-  for( ; iMipModel<edm_md.md_MipCt; iMipModel++)
+  INDEX iMipModel;
+  for( iMipModel=1; iMipModel<edm_md.md_MipCt; iMipModel++)
 	{
 		edm_md.md_MipInfos[ iMipModel].Clear();
 	}
@@ -1816,8 +1816,8 @@ void CEditModel::UpdateMipModels_t(CTFileName &fnScriptName) // throw char *
 
 	File.Open_t( fnScriptName); // open script file for reading
 
-  INDEX i=1;
-	for( ; i<edm_md.md_MipCt; i++)
+    INDEX i;
+	for( i=1; i<edm_md.md_MipCt; i++)
 	{
 		edm_md.md_MipInfos[ i].Clear();	// free possible mip-models except main mip model
 	}
@@ -2080,7 +2080,7 @@ void CEditModel::ExportSurfaceNumbersAndNames( CTFileName fnFile)
   {
     MappingSurface *pms= &pMMI->mmpi_MappingSurfaces[iSurf];
     CTString strExportLine;
-    strExportLine.PrintF( "%d) %s\n", iSurf, pms->ms_Name);
+    strExportLine.PrintF( "%d) %s\n", iSurf, (const char *) pms->ms_Name);
     strExport+=strExportLine;
   }
 
@@ -2784,7 +2784,7 @@ void CEditModel::CorrectCollisionBoxSize(void)
       {
         vCorrectedDiagonale(2) = vCorrectedDiagonale(1);
       }
-      // lenght = width
+      // length = width
       vCorrectedDiagonale(3) = vCorrectedDiagonale(1);
       break;
     }
@@ -2795,7 +2795,7 @@ void CEditModel::CorrectCollisionBoxSize(void)
       {
         vCorrectedDiagonale(1) = vCorrectedDiagonale(2);
       }
-      // lenght = height
+      // length = height
       vCorrectedDiagonale(3) = vCorrectedDiagonale(2);
       break;
     }
@@ -2835,7 +2835,7 @@ FLOAT3D &CEditModel::GetCollisionBoxMax(void)
   return vMax;
 };
 
-// returns HEIGHT_EQ_WIDTH, LENGHT_EQ_WIDTH or LENGHT_EQ_HEIGHT
+// returns HEIGHT_EQ_WIDTH, LENGTH_EQ_WIDTH or LENGTH_EQ_HEIGHT
 INDEX CEditModel::GetCollisionBoxDimensionEquality()
 {
   return edm_md.GetCollisionBoxDimensionEquality(edm_iActiveCollisionBox);

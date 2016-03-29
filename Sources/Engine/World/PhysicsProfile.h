@@ -5,6 +5,12 @@
  *  Copyright (c) 1997-1998, CroTeam. All rights reserved.
  */
 
+#ifndef SE_INCL_PHYSICSPROFILE_H
+#define SE_INCL_PHYSICSPROFILE_H
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
+
 #ifndef __ENGINE_BASE_PROFILING_H__
 #include <Engine/Base/Profiling.h>
 #endif
@@ -110,3 +116,7 @@ public:
   // constructor
   CPhysicsProfile(void);
 };
+
+#endif /* include-once wrapper. */
+
+

@@ -123,7 +123,7 @@ procedures:
       if (penCaused!=NULL) {
         // send the score
         EReceiveScore eScore;
-        eScore.iPoints = m_fScore;
+        eScore.iPoints = (INDEX) m_fScore;
         penCaused->SendEvent(eScore);
         penCaused->SendEvent(ESecretFound());
       }

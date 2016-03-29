@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Math/Functions.h>
 #include <Engine/Base/Memory.h>
@@ -85,6 +85,11 @@ void CBuffer::SetAllocationStep(SLONG slStep)
   ASSERT(slStep>0);
   bu_slAllocationStep = slStep;
 }
+
+
+#ifndef __min
+#define __min(x, y) ((x) < (y) ? (x) : (y))
+#endif
 
 // read bytes from buffer
 SLONG CBuffer::ReadBytes(void *pv, SLONG slSize)
@@ -327,11 +332,23 @@ void CBlockBuffer::Clear(void)
   CBuffer::Clear();
 }
 
+#ifdef NETSTRUCTS_PACKED
+  #pragma pack(1)
+#endif
 
 struct BlockHeader {
   SLONG bh_slSize;              // block size
+
+  #ifdef NETSTRUCTS_PACKED
+    UBYTE packing[4];
+  #endif
+
   CTimerValue bh_tvFinalTime;   // block may be read only after this moment in time
 };
+
+#ifdef NETSTRUCTS_PACKED
+  #pragma pack()
+#endif
 
 // read one block if possible
 BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize)
@@ -340,6 +357,14 @@ BOOL CBlockBuffer::ReadBlock(void *pv, SLONG &slSize)
   ASSERT(bb_slBlockSizeRead==0);
 
   // read header of next block in incoming buffer
+
+// rcg10272001 !!! FIXME: Taking sizeof (bh), with the intention of
+// rcg10272001 !!! FIXME:  sending that many bytes over the network,
+// rcg10272001 !!! FIXME:  is really, really risky. DON'T DO IT.
+// rcg10272001 !!! FIXME:  Instead, send pertinent information field by
+// rcg10272001 !!! FIXME:  field, and rebuild the structure on the other
+// rcg10272001 !!! FIXME:  side, swapping byte order as necessary.
+
   struct BlockHeader bh;
   SLONG slbhSize;
   slbhSize = ReadBytes(&bh, sizeof(bh));

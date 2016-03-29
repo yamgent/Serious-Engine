@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Shaders/StdH.h"
 
 static const INDEX ctTextures = 0;
 static const INDEX ctUvmaps   = 0;

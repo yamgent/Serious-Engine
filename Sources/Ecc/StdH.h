@@ -4,9 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #include <stdarg.h>
 #include <math.h>
+
+#if !PLATFORM_MACOSX
+#include <malloc.h>
+#endif
 
 #ifdef PLATFORM_UNIX
 #include <errno.h>

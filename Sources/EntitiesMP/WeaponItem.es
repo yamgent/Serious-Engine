@@ -14,8 +14,8 @@
 #include "ModelsMP/Weapons/Sniper/SniperItem.h"
 #include "ModelsMP/Weapons/Sniper/Body.h"
 #include "ModelsMP/Weapons/Flamer/FlamerItem.h"
-#include "ModelsMP/Weapons/Chainsaw/ChainsawItem.h"
-#include "ModelsMP/Weapons/Chainsaw/BladeForPlayer.h"
+#include "ModelsMP/Weapons/ChainSaw/ChainsawItem.h"
+#include "ModelsMP/Weapons/ChainSaw/BladeForPlayer.h"
 #include "Models/Weapons/Laser/LaserItem.h"
 #include "Models/Weapons/Cannon/Cannon.h"
 

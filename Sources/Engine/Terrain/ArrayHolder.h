@@ -50,7 +50,7 @@ public:
   // Returns index of new tile arrays
   INDEX GetNewArrays();
   // Mark tile arrays as unused
-  void FreeArrays(INT iOldArraysIndex);
+  void FreeArrays(SINT iOldArraysIndex);
   // Just do popall on all arrays
   void EmptyArrays(INDEX iArrayIndex);
   // Release array holder

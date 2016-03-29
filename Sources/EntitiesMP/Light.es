@@ -95,11 +95,11 @@ functions:
   /* Get anim data for given animation property - return NULL for none. */
   CAnimData *GetAnimData(SLONG slPropertyOffset) 
   {
-    if (slPropertyOffset==offsetof(CLight, m_iLightAnimation))
+    if (slPropertyOffset==_offsetof(CLight, m_iLightAnimation))
     {
       return m_aoLightAnimation.GetData();
     }
-    else if (slPropertyOffset==offsetof(CLight, m_iAmbientLightAnimation)) 
+    else if (slPropertyOffset==_offsetof(CLight, m_iAmbientLightAnimation)) 
     {
       return m_aoAmbientLightAnimation.GetData();
     }
@@ -423,7 +423,7 @@ procedures:
     try {
       m_aoLightAnimation.SetData_t(m_fnmLightAnimation);
     } catch (char *strError) {
-      WarningMessage(TRANS("Cannot load '%s': %s"), (CTString&)m_fnmLightAnimation, strError);
+      WarningMessage(TRANS("Cannot load '%s': %s"), (const char *) (CTString&)m_fnmLightAnimation, strError);
       m_fnmLightAnimation = "";
     }
     if (m_aoLightAnimation.GetData()!=NULL) {
@@ -435,7 +435,7 @@ procedures:
     try {
       m_aoAmbientLightAnimation.SetData_t(m_fnmAmbientLightAnimation);
     } catch (char *strError) {
-      WarningMessage(TRANS("Cannot load '%s': %s"), (CTString&)m_fnmAmbientLightAnimation, strError);
+      WarningMessage(TRANS("Cannot load '%s': %s"), (const char *) (CTString&)m_fnmAmbientLightAnimation, strError);
       m_fnmAmbientLightAnimation = "";
     }
     if (m_aoAmbientLightAnimation.GetData()!=NULL) {
@@ -464,7 +464,7 @@ procedures:
     }
 
     m_strDescription.PrintF("%s:%g-%g", 
-      strType,  m_rHotSpotRange, m_rFallOffRange);
+      (const char *) strType,  m_rHotSpotRange, m_rFallOffRange);
 
     return;
   };

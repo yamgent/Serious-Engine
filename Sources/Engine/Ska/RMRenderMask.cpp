@@ -1,8 +1,8 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include <Engine/StdH.h>
 
-#include <Engine\Math\Projection.h>
+#include <Engine/Math/Projection.h>
 #include <Engine/Graphics/Shader.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Graphics/RenderPoly.h>
@@ -84,8 +84,8 @@ extern void InternalShader_Mask(void)
 
   // copy view space vertices, project 'em to screen space and mark clipping
   CStaticStackArray<TransformedVertexData> atvd;
-  INDEX iVtx=0;
-  for(; iVtx<ctVtx; iVtx++)
+  INDEX iVtx;
+  for( iVtx=0; iVtx<ctVtx; iVtx++)
   {
     // copy viewspace and texture coords
     TransformedVertexData &tvd = atvd.Push();
@@ -108,8 +108,8 @@ extern void InternalShader_Mask(void)
 
     // adjust texture coords (if any!)
     if( ptex!=NULL) {
-      tvd.tvd_fU = ptex[iVtx].s;
-      tvd.tvd_fV = ptex[iVtx].t;
+      tvd.tvd_fU = ptex[iVtx].st.s;
+      tvd.tvd_fV = ptex[iVtx].st.t;
       tvd.tvd_pv2.pv2_fUoK = tvd.tvd_fU * tvd.tvd_pv2.pv2_f1oK *pixMipWidth;
       tvd.tvd_pv2.pv2_fVoK = tvd.tvd_fV * tvd.tvd_pv2.pv2_f1oK *pixMipHeight;
     } else tvd.tvd_fU = tvd.tvd_fV = 0;

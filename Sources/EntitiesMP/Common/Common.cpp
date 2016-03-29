@@ -1,7 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
-#include <Engine/Base/Shell.h>
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/Reminder.h"
 #include "EntitiesMP/Flame.h"
 #include "EntitiesMP/Debris.h"
@@ -56,7 +55,7 @@ void CCompMessageID::NewMessage(const CTFileName &fnm)
   } else if (strName.Matches("*messages\\statistics*")) {
     cmi_cmtType = CMT_STATISTICS;
   } else {
-    CPrintF("Unknown message type: %s\n", (const CTString&) fnm);
+    CPrintF("Unknown message type: %s\n", (const char *) fnm);
     cmi_cmtType = CMT_INFORMATION;
   }
   // mark as unread
@@ -373,8 +372,8 @@ void SpawnHitTypeEffect(CEntity *pen, enum BulletHitType bhtType, BOOL bSound, F
         {
           GetNormalComponent( vDistance/fDistance, vHitNormal, ese.vDirection);
           FLOAT fLength = ese.vDirection.Length();
-          fLength   = Clamp( fLength*3.0f, 1.0f, 3.0f);
-          fDistance = Clamp( (FLOAT)log10(fDistance), 0.5f, 2.0f);
+          fLength   = Clamp( fLength*3, 1.0f, 3.0f);
+          fDistance = Clamp( log10(fDistance), 0.5, 2.0);
           ese.vStretch = FLOAT3D( fDistance, fLength*fDistance, 1.0f);
           try
           {
@@ -985,8 +984,8 @@ COLOR _colDebris;
 // debris spawning
 void Debris_Begin(
   EntityInfoBodyType Eeibt, 
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType  betStain,
+  int /*enum DebrisParticlesType*/ _dptParticles,
+  int /*enum BasicEffectType*/  _betStain,
   FLOAT fEntitySize,                  // entity size in meters
   const FLOAT3D &vSpeed,
   const FLOAT3D &vSpawnerSpeed,       // how fast was the entity moving
@@ -995,6 +994,9 @@ void Debris_Begin(
   const COLOR colDebris /*=C_WHITE*/  // multiply color
 )
 {
+  enum DebrisParticlesType dptParticles = (enum DebrisParticlesType) _dptParticles;
+  enum BasicEffectType betStain = (enum BasicEffectType) _betStain;
+
   _Eeibt          = Eeibt       ;
   _dptParticles   = dptParticles;
   _betStain       = betStain    ;
@@ -1129,8 +1131,8 @@ CEntityPointer Debris_Spawn_Independent(
 
 CEntityPointer Debris_Spawn_Template(
   EntityInfoBodyType eibt,
-  enum DebrisParticlesType dptParticles,
-  enum BasicEffectType betStain,
+  int /*enum DebrisParticlesType*/ _dptParticles,
+  int /*enum BasicEffectType*/ _betStain,
   CModelHolder2 *penmhDestroyed,
   CEntity *penComponents,
   CModelHolder2 *penmhTemplate,
@@ -1143,6 +1145,9 @@ CEntityPointer Debris_Spawn_Template(
   FLOAT fDustStretch,
   COLOR colBurning)
 {
+  enum DebrisParticlesType dptParticles = (enum DebrisParticlesType) _dptParticles;
+  enum BasicEffectType betStain = (enum BasicEffectType) _betStain;
+
   if(penmhTemplate==NULL || penmhTemplate->GetModelObject()==NULL)
   {
     return NULL;
@@ -1371,7 +1376,7 @@ CPlacement3D LerpPlacementsPrecise(const CPlacement3D &pl0, const CPlacement3D &
   FLOAT3D v0 = pl0.pl_PositionVector;
   FLOAT3D v1 = pl1.pl_PositionVector;
 
-  FLOATquat3D q = Slerp<FLOAT>(fRatio, q0, q1);
+  FLOATquat3D q = Slerp(fRatio, q0, q1);
   FLOAT3D v = Lerp(v0, v1, fRatio);
 
   pl.pl_PositionVector = v;
@@ -1393,7 +1398,7 @@ FLOAT GetGameDamageMultiplier(void)
   FLOAT fExtraStrengthPerPlayer = GetSP()->sp_fExtraEnemyStrengthPerPlayer;
   if (fExtraStrengthPerPlayer>0) {
     INDEX ctPlayers = _pNetwork->ga_sesSessionState.GetPlayersCount();
-    fGameDamageMultiplier*=1.0f/(1+fExtraStrengthPerPlayer*ClampDn(ctPlayers-1.0f, 0.0f));
+    fGameDamageMultiplier*=1.0f/(1+fExtraStrengthPerPlayer*ClampDn(((FLOAT) ctPlayers)-1.0f, 0.0f));
   }
   if (GetSP()->sp_gdGameDifficulty==CSessionProperties::GD_TOURIST) {
     fGameDamageMultiplier *= 2.0f;

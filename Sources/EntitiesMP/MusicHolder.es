@@ -187,7 +187,7 @@ functions:
     INDEX iScore = 0;
     {FOREACHINDYNAMICCONTAINER(m_cenFussMakers, CEntity, itenFussMaker) {
       CEnemyBase &enFussMaker = (CEnemyBase&)*itenFussMaker;
-      iScore += enFussMaker.m_iScore;
+      iScore += (INDEX) enFussMaker.m_iScore;
     }}
     return iScore;
   }

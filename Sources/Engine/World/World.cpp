@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Base/Console.h>
 #include <Engine/Math/Float.h>
@@ -29,10 +29,10 @@
 
 #include <Engine/Templates/Stock_CEntityClass.h>
 
-template CDynamicContainer<CEntity>;
-template CBrushPolygonSelection;
-template CBrushSectorSelection;
-template CEntitySelection;
+template class CDynamicContainer<CEntity>;
+template class CSelection<CBrushPolygon, BPOF_SELECTED>;
+template class CSelection<CBrushSector, BSCF_SELECTED>;
+template class CSelection<CEntity, ENF_SELECTED>;
 
 extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
@@ -351,7 +351,7 @@ CPlayerEntity *CWorld::FindEntityWithCharacter(CPlayerCharacter &pcCharacter)
  */
 void CWorld::AddTimer(CRationalEntity *penThinker)
 {
-  ASSERT(penThinker->en_timeTimer>_pTimer->CurrentTick());
+  ASSERT(penThinker->en_timeTimer>=_pTimer->CurrentTick());
   ASSERT(GetFPUPrecision()==FPT_24BIT);
 
   // if the entity is already in the list

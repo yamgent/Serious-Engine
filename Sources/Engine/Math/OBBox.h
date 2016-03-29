@@ -10,7 +10,6 @@
 #include <Engine/Math/Matrix.h>
 #include <Engine/Math/Functions.h>
 #include <Engine/Math/Plane.h>
-#include <Engine/Math/obbox.h>
 
 /*
  * Template for oriented bounding box of arbitrary type in 3D
@@ -62,7 +61,7 @@ inline void OBBox<Type>::SetToNormalizedEmpty(void) {
  * Constructor for empty bounding box.
  */
 template<class Type>
-inline OBBox<Type>::OBBox<Type>() {
+inline OBBox<Type>::OBBox() {
   SetToNormalizedEmpty();
 }
 

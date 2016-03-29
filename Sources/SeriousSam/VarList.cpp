@@ -1,15 +1,15 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 
 #include "VarList.h"
 
 CListHead _lhVarSettings;
 
-CTString _strFile;
-INDEX _ctLines;
+static CTString _strFile;
+static INDEX _ctLines;
 
-CTString GetNonEmptyLine_t(CTStream &strm)
+static CTString GetNonEmptyLine_t(CTStream &strm)
 {
   FOREVER {
    if(strm.AtEOF()) {
@@ -39,7 +39,7 @@ void TranslateLine(CTString &str)
   str.TrimSpacesLeft();
 }
 
-void FixupFileName_t(CTString &strFnm)
+static void FixupFileName_t(CTString &strFnm)
 {
   strFnm.TrimSpacesLeft();
   strFnm.TrimSpacesRight();
@@ -207,7 +207,7 @@ void FlushVarSettings(BOOL bApply)
 
   for(INDEX i=0; i<astrScheduled.Count(); i++) {
     CTString strCmd;
-    strCmd.PrintF("include \"%s\"", astrScheduled[i]);
+    strCmd.PrintF("include \"%s\"", (const char *) astrScheduled[i]);
     _pShell->Execute(strCmd);
   }
 }

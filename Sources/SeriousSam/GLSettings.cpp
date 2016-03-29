@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "SeriousSam/StdH.h"
 
 // list of settings data
 static CListHead _lhSettings;
@@ -16,12 +16,10 @@ public:
   BOOL Matches( const CTString &strRenderer) const;
 };
 
-
 // last valid settings info
 static CTString _strLastRenderer;
-extern CTString _strPreferencesDescription = "";
-extern INDEX    _iLastPreferences = 1;
-
+CTString _strPreferencesDescription = "";
+INDEX    _iLastPreferences = 1;
 
 // check if this entry matches given info
 BOOL CSettingsEntry::Matches( const CTString &strRenderer) const
@@ -87,8 +85,8 @@ void InitGLSettings(void)
 
   _strLastRenderer= "none";
   _iLastPreferences = 1;
-  _pShell->DeclareSymbol("persistent CTString sam_strLastRenderer;", &_strLastRenderer);
-  _pShell->DeclareSymbol("persistent INDEX    sam_iLastSetup;",      &_iLastPreferences);
+  _pShell->DeclareSymbol("persistent CTString sam_strLastRenderer;", (void *) &_strLastRenderer);
+  _pShell->DeclareSymbol("persistent INDEX    sam_iLastSetup;",      (void *) &_iLastPreferences);
 }
 
 
@@ -109,7 +107,7 @@ extern void ApplyGLSettings(BOOL bForce)
 {
   CPrintF( TRANS("\nAutomatic 3D-board preferences adjustment...\n"));
   CDisplayAdapter &da = _pGfx->gl_gaAPI[_pGfx->gl_eCurrentAPI].ga_adaAdapter[_pGfx->gl_iCurrentAdapter];
-  CPrintF( TRANS("Detected: %s - %s - %s\n"), da.da_strVendor, da.da_strRenderer, da.da_strVersion);
+  CPrintF( TRANS("Detected: %s - %s - %s\n"), (const char *) da.da_strVendor, (const char *) da.da_strRenderer, (const char *) da.da_strVersion);
 
   // get new settings
   CSettingsEntry *pse = GetGLSettings( da.da_strRenderer);
@@ -122,7 +120,10 @@ extern void ApplyGLSettings(BOOL bForce)
   }
 
   // report
-  CPrintF(TRANS("Matching: %s (%s)\n"), pse->se_strRenderer, pse->se_strDescription);
+  CPrintF(TRANS("Matching: %s (%s)\n"),
+            (const char *) pse->se_strRenderer,
+            (const char *) pse->se_strDescription);
+
   _strPreferencesDescription = pse->se_strDescription;
 
   if (!bForce) {
@@ -139,12 +140,12 @@ extern void ApplyGLSettings(BOOL bForce)
 
   // clamp rendering preferences (just to be on the safe side)
   sam_iVideoSetup = Clamp( sam_iVideoSetup, 0L, 3L);
-  CPrintF(TRANS("Mode: %s\n"), RenderingPreferencesDescription(sam_iVideoSetup));
+  CPrintF(TRANS("Mode: %s\n"), (const char *) RenderingPreferencesDescription(sam_iVideoSetup));
   // if not in custom mode
   if (sam_iVideoSetup<3) {
     // execute the script
     CTString strCmd;
-    strCmd.PrintF("include \"Scripts\\GLSettings\\%s\"", CTString(pse->se_fnmScript));
+    strCmd.PrintF("include \"Scripts\\GLSettings\\%s\"", (const char *) (CTString(pse->se_fnmScript)));
     _pShell->Execute(strCmd);
     // refresh textures
     _pShell->Execute("RefreshTextures();");

@@ -1,7 +1,7 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "LCDDrawing.h"
 #include <locale.h>
 
@@ -65,7 +65,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
 #endif
 
   // measure time since last call
-  static CTimerValue tvLast(0I64);
+  static CTimerValue tvLast((__int64) 0);
   CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
 
   // if not first or final update, and not enough time passed
@@ -163,7 +163,8 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   dpHook.SetTextAspect( 1.0f);
   // print status text
   setlocale(LC_ALL, "");
-  CTString strDesc(0, "%s", pphi->phi_strDescription);  strupr((char*)(const char*)strDesc);
+  CTString strDesc(0, "%s", (const char *) pphi->phi_strDescription);
+  strupr((char*)(const char*)strDesc);
   setlocale(LC_ALL, "C");
   CTString strPerc(0, "%3.0f%%", pphi->phi_fCompleted*100);
   //dpHook.PutText(strDesc, pixCharSizeI/2, pixSizeJ-pixBarSizeJ-2-pixCharSizeJ, C_GREEN|255);
@@ -175,12 +176,12 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   }
 
 /*  
-  //LCDPrepare(1.0f);
-  //LCDSetDrawport(&dpHook);
+  //_pGame->LCDPrepare(1.0f);
+  //_pGame->LCDSetDrawport(&dpHook);
   
   // fill the box with background dirt and grid
-  //LCDRenderClouds1();
-  //LCDRenderGrid();
+  //_pGame->LCDRenderClouds1();
+  //_pGame->LCDRenderGrid();
 
   // draw progress bar
   PIX pixBarCentI = pixBoxSizeI*1/2;
@@ -198,15 +199,15 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
     (pixBarMaxI-pixBarMinI)*pphi->phi_fCompleted, pixBarMaxJ-pixBarMinJ, C_GREEN|255);
 
   // put more dirt
-  LCDRenderClouds2Light();
+  _pGame->LCDRenderClouds2Light();
 
   // draw borders
   COLOR colBorders = LerpColor(C_GREEN, C_BLACK, 200);
-  LCDDrawBox(0,-1, PIXaabbox2D(
+  _pGame->LCDDrawBox(0,-1, PIXaabbox2D(
     PIX2D(pixBarMinI, pixBarMinJ), 
     PIX2D(pixBarMaxI, pixBarMaxJ)), 
     colBorders|255);
-  LCDDrawBox(0,-1, PIXaabbox2D(
+  _pGame->LCDDrawBox(0,-1, PIXaabbox2D(
     PIX2D(0,0), PIX2D(dpBox.GetWidth(), dpBox.GetHeight())), 
     colBorders|255);
 
@@ -216,7 +217,7 @@ static void LoadingHook_t(CProgressHookInfo *pphi)
   dpBox.SetTextAspect( 1.0f);
   // print status text
   CTString strRes;
-  strRes.PrintF( "%s", pphi->phi_strDescription);
+  strRes.PrintF( "%s", (const char *) pphi->phi_strDescription);
   //strupr((char*)(const char*)strRes);
   dpBox.PutTextC( strRes, 160, 17, C_GREEN|255);
   strRes.PrintF( "%3.0f%%", pphi->phi_fCompleted*100);

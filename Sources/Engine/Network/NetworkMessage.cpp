@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Network/NetworkMessage.h>
 #include <Engine/Network/Compression.h>
@@ -36,7 +36,7 @@ static struct ErrorCode ErrorCodes[] = {
   ERRORCODE(MSG_GAMESTREAMBLOCKS, "MSG_GAMESTREAMBLOCKS"), 
   ERRORCODE(MSG_REQUESTGAMESTREAMRESEND, "MSG_REQUESTGAMESTREAMRESEND"),
 };
-extern struct ErrorTable MessageTypes = ERRORTABLE(ErrorCodes);
+struct ErrorTable MessageTypes = ERRORTABLE(ErrorCodes);
 
 /////////////////////////////////////////////////////////////////////
 // CNetworkMessage
@@ -847,6 +847,7 @@ void CPlayerAction::Normalize(void)
 // create a checksum value for sync-check
 void CPlayerAction::ChecksumForSync(ULONG &ulCRC)
 {
+  // !!! FIXME: Bad, bad, bad.  --ryan.
   CRC_AddBlock(ulCRC, (UBYTE*)this, sizeof(this));
 }
 
@@ -961,8 +962,8 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
   }
 
   // find number of zero bits for flags
-  INDEX iZeros=0;
-  for(; iZeros<6; iZeros++) {
+  INDEX iZeros;
+  for(iZeros=0; iZeros<6; iZeros++) {
     UBYTE ub=0;
     nm.ReadBits(&ub, 1);
     if (ub!=0) {
@@ -1005,12 +1006,22 @@ CNetworkMessage &operator>>(CNetworkMessage &nm, CPlayerAction &pa)
 /* Write an object into stream. */
 CTStream &operator<<(CTStream &strm, const CPlayerAction &pa)
 {
-  strm.Write_t(&pa,sizeof(pa));
+  strm<<pa.pa_vTranslation;
+  strm<<pa.pa_aRotation;
+  strm<<pa.pa_aViewRotation;
+  strm<<pa.pa_ulButtons;
+  strm<<pa.pa_llCreated;
   return strm;
 }
 /* Read an object from stream. */
 CTStream &operator>>(CTStream &strm, CPlayerAction &pa)
 {
-  strm.Read_t(&pa,sizeof(pa));
+  strm>>pa.pa_vTranslation;
+  strm>>pa.pa_aRotation;
+  strm>>pa.pa_aViewRotation;
+  strm>>pa.pa_ulButtons;
+  strm>>pa.pa_llCreated;
   return strm;
 }
+
+

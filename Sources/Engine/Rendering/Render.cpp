@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Brushes/Brush.h>
 #include <Engine/Brushes/BrushTransformed.h>
@@ -38,7 +38,7 @@
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Graphics/Fog_internal.h>
 
-#include <Engine/Base/Statistics_internal.h>
+#include <Engine/Base/Statistics_Internal.h>
 #include <Engine/Rendering/RenderProfile.h>
 
 #include <Engine/Templates/LinearAllocator.cpp>
@@ -77,12 +77,12 @@ extern INDEX gfx_iLensFlareQuality;
 extern BOOL _bMultiPlayer;
 
 // variables for selection on rendering
-extern CBrushVertexSelection *_pselbvxtSelectOnRender = NULL;
-extern CStaticStackArray<PIX2D> *_pavpixSelectLasso = NULL;
-extern CEntitySelection *_pselenSelectOnRender = NULL;
-extern PIX2D _vpixSelectNearPoint = PIX2D(0,0);
-extern BOOL _bSelectAlternative   = FALSE;
-extern PIX _pixDeltaAroundVertex  = 10;
+CBrushVertexSelection *_pselbvxtSelectOnRender = NULL;
+CStaticStackArray<PIX2D> *_pavpixSelectLasso = NULL;
+CEntitySelection *_pselenSelectOnRender = NULL;
+PIX2D _vpixSelectNearPoint = PIX2D(0,0);
+BOOL _bSelectAlternative   = FALSE;
+PIX _pixDeltaAroundVertex  = 10;
 
 // shading info for viewer of last rendered view
 FLOAT3D _vViewerLightDirection;
@@ -559,7 +559,7 @@ void CRenderer::DrawToScreen(void)
   
   if( re_bBackgroundEnabled) {
     ChangeStatsMode(CStatForm::STI_PARTICLERENDERING);
-    RenderParticles(TRUE); // render background particless
+    RenderParticles(TRUE); // render background particles
     ChangeStatsMode(CStatForm::STI_WORLDRENDERING);
   }
   
@@ -994,7 +994,7 @@ ULONG RenderShadows(CWorld &woWorld, CEntity &enViewer,
   // initialize clipping rectangle around the drawport
   const FLOATaabbox2D &box = prProjection->ScreenBBoxR();
   //re.InitClippingRectangle(box.Min()(1), box.Min()(2), box.Size()(1), box.Size()(2));
-  re.InitClippingRectangle(0, 0, box.Size()(1), box.Size()(2));
+  re.InitClippingRectangle(0, 0, (PIX) box.Size()(1), (PIX) box.Size()(2));
 
   re.re_bRenderingShadows = TRUE;
   re.re_bDirectionalShadows = prProjection.IsParallel();

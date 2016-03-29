@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Brushes/Brush.h>
 #include <Engine/Brushes/BrushTransformed.h>
@@ -182,9 +182,9 @@ BOOL IsVertexInLasso( CProjection3D &prProjection, const FLOAT3D &vtx, FLOATmatr
   prProjection.ProjectCoordinate( vAbsolute, vtxProjected);
 
   PIX2D vpix;
-  vpix(1) = vtxProjected(1);
+  vpix(1) = (PIX) vtxProjected(1);
   // convert coordinate into screen representation
-  vpix(2) = _pixSizeJ-vtxProjected(2);
+  vpix(2) = (PIX) (_pixSizeJ-vtxProjected(2));
 
   // if the vertex is out of screen
   if (vpix(1)<0 || vpix(1)>=_pixSizeI

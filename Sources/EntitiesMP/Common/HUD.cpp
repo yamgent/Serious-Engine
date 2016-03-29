@@ -1,7 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
- 
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "GameMP/SEColors.h"
 
 #include <Engine/Graphics/DrawPort.h>
@@ -77,7 +76,7 @@ static TIME  _tmLast = -1.0f;
 static CFontData _fdNumbersFont;
 
 // array for pointers of all players
-extern CPlayer *_apenPlayers[NET_MAXGAMEPLAYERS] = {0};
+CPlayer *_apenPlayers[NET_MAXGAMEPLAYERS] = {0};
 
 // status bar textures
 static CTextureObject _toHealth;
@@ -307,7 +306,7 @@ static COLOR AddShaker( PIX const pixAmmount, INDEX const iCurrentValue, INDEX &
   // shake, baby shake!
   const FLOAT fAmmount    = _fResolutionScaling * _fCustomScaling * pixAmmount;
   const FLOAT fMultiplier = (SHAKE_TIME-tmDelta)/SHAKE_TIME *fAmmount;
-  const INDEX iRandomizer = (INDEX)(tmNow*511.0f)*fAmmount*iCurrentValue;
+  const INDEX iRandomizer = (INDEX)((tmNow*511.0f)*fAmmount*iCurrentValue);
   const FLOAT fNormRnd1   = (FLOAT)((iRandomizer ^ (iRandomizer>>9)) & 1023) * 0.0009775f;  // 1/1023 - normalized
   const FLOAT fNormRnd2   = (FLOAT)((iRandomizer ^ (iRandomizer>>7)) & 1023) * 0.0009775f;  // 1/1023 - normalized
   fMoverX = (fNormRnd1 -0.5f) * fMultiplier;
@@ -505,18 +504,18 @@ static void HUD_DrawBar( FLOAT fCenterX, FLOAT fCenterY, PIX pixSizeX, PIX pixSi
   // determine bar position and inner size
   switch( eBarOrientation) {
   case BO_UP:
-    pixSizeJ *= fNormValue;
+    pixSizeJ *= (PIX) fNormValue;
     break;
   case BO_DOWN:
     pixUpper  = pixUpper + (PIX)ceil(pixSizeJ * (1.0f-fNormValue));
-    pixSizeJ *= fNormValue;
+    pixSizeJ *= (PIX) fNormValue;
     break;
   case BO_LEFT:
-    pixSizeI *= fNormValue;
+    pixSizeI *= (PIX) fNormValue;
     break;
   case BO_RIGHT:
     pixLeft   = pixLeft + (PIX)ceil(pixSizeI * (1.0f-fNormValue));
-    pixSizeI *= fNormValue;
+    pixSizeI *= (PIX) fNormValue;
     break;
   }
   // done
@@ -724,13 +723,13 @@ static void HUD_DrawEntityStack()
     if (DBG_prenStackOutputEntity!=NULL)
     {
       pixFontHeight = _pfdConsoleFont->fd_pixCharHeight;
-      pixTextBottom = _pixDPHeight*0.83;
+      pixTextBottom = (ULONG) (_pixDPHeight*0.83);
       _pDP->SetFont( _pfdConsoleFont);
       _pDP->SetTextScaling( 1.0f);
     
       INDEX ctStates = DBG_prenStackOutputEntity->en_stslStateStack.Count();
-      strTemp.PrintF("-- stack of '%s'(%s)@%gs\n", DBG_prenStackOutputEntity->GetName(),
-        DBG_prenStackOutputEntity->en_pecClass->ec_pdecDLLClass->dec_strName,
+      strTemp.PrintF("-- stack of '%s'(%s)@%gs\n", (const char *) DBG_prenStackOutputEntity->GetName(),
+        (const char *) DBG_prenStackOutputEntity->en_pecClass->ec_pdecDLLClass->dec_strName,
         _pTimer->CurrentTick());
       _pDP->PutText( strTemp, 1, pixTextBottom-pixFontHeight*(ctStates+1), _colHUD|_ulAlphaHUD);
       
@@ -812,7 +811,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
 
   const PIX pixTopBound    = 6;
   const PIX pixLeftBound   = 6;
-  const PIX pixBottomBound = (480 * _pDP->dp_fWideAdjustment) -pixTopBound;
+  const PIX pixBottomBound = (PIX) ((480 * _pDP->dp_fWideAdjustment) -pixTopBound);
   const PIX pixRightBound  = 640-pixLeftBound;
   FLOAT fOneUnit  = (32+0) * _fCustomScaling;  // unit size
   FLOAT fAdvUnit  = (32+4) * _fCustomScaling;  // unit advancer
@@ -828,7 +827,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
   PrepareColorTransitions( colMax, colTop, colMid, C_RED, 0.5f, 0.25f, FALSE);
   fRow = pixBottomBound-fHalfUnit;
   fCol = pixLeftBound+fHalfUnit;
-  colDefault = AddShaker( 5, fValue, penLast->m_iLastHealth, penLast->m_tmHealthChanged, fMoverX, fMoverY);
+  colDefault = AddShaker( 5, (INDEX) fValue, penLast->m_iLastHealth, penLast->m_tmHealthChanged, fMoverX, fMoverY);
   HUD_DrawBorder( fCol+fMoverX, fRow+fMoverY, fOneUnit, fOneUnit, colBorder);
   fCol += fAdvUnit+fChrUnit*3/2 -fHalfUnit;
   HUD_DrawBorder( fCol, fRow, fChrUnit*3, fOneUnit, colBorder);
@@ -844,7 +843,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
     PrepareColorTransitions( colMax, colTop, colMid, C_lGRAY, 0.5f, 0.25f, FALSE);
     fRow = pixBottomBound- (fNextUnit+fHalfUnit);//*_pDP->dp_fWideAdjustment;
     fCol = pixLeftBound+    fHalfUnit;
-    colDefault = AddShaker( 3, fValue, penLast->m_iLastArmor, penLast->m_tmArmorChanged, fMoverX, fMoverY);
+    colDefault = AddShaker( 3, (INDEX) fValue, penLast->m_iLastArmor, penLast->m_tmArmorChanged, fMoverX, fMoverY);
     HUD_DrawBorder( fCol+fMoverX, fRow+fMoverY, fOneUnit, fOneUnit, colBorder);
     fCol += fAdvUnit+fChrUnit*3/2 -fHalfUnit;
     HUD_DrawBorder( fCol, fRow, fChrUnit*3, fOneUnit, colBorder);
@@ -882,7 +881,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
     // draw ammo, value and weapon
     fRow = pixBottomBound-fHalfUnit;
     fCol = 175 + fHalfUnit;
-    colDefault = AddShaker( 4, fValue, penLast->m_iLastAmmo, penLast->m_tmAmmoChanged, fMoverX, fMoverY);
+    colDefault = AddShaker( 4, (INDEX) fValue, penLast->m_iLastAmmo, penLast->m_tmAmmoChanged, fMoverX, fMoverY);
     HUD_DrawBorder( fCol+fMoverX, fRow+fMoverY, fOneUnit, fOneUnit, colBorder);
     fCol += fAdvUnit+fChrUnit*3/2 -fHalfUnit;
     HUD_DrawBorder( fCol, fRow, fChrUnit*3, fOneUnit, colBorder);
@@ -944,7 +943,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
     }
     HUD_DrawBorder( fCol,         fRow, fOneUnitS, fOneUnitS, colBombBorder);
     HUD_DrawIcon(   fCol,         fRow, _toASeriousBomb, colBombIcon, fNormValue, FALSE);
-    HUD_DrawBar(    fCol+fBarPos, fRow, fOneUnitS/5, fOneUnitS-2, BO_DOWN, colBombBar, fNormValue);
+    HUD_DrawBar(    fCol+fBarPos, fRow, (INDEX) (fOneUnitS/5), (INDEX) (fOneUnitS-2), BO_DOWN, colBombBar, fNormValue);
     // make space for serious bomb
     fCol -= fAdvUnitS;
   }
@@ -965,7 +964,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       colBar = AddShaker( 4, ai.ai_iAmmoAmmount, ai.ai_iLastAmmoAmmount, ai.ai_tmAmmoChanged, fMoverX, fMoverY);
       HUD_DrawBorder( fCol,         fRow+fMoverY, fOneUnitS, fOneUnitS, colBorder);
       HUD_DrawIcon(   fCol,         fRow+fMoverY, *_aaiAmmo[i].ai_ptoAmmo, colIcon, fNormValue, FALSE);
-      HUD_DrawBar(    fCol+fBarPos, fRow+fMoverY, fOneUnitS/5, fOneUnitS-2, BO_DOWN, colBar, fNormValue);
+      HUD_DrawBar(    fCol+fBarPos, fRow+fMoverY, (INDEX) (fOneUnitS/5), (INDEX) (fOneUnitS-2), BO_DOWN, colBar, fNormValue);
       // advance to next position
       fCol -= fAdvUnitS;  
     }
@@ -986,7 +985,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
     // draw icon and a little bar
     HUD_DrawBorder( fCol,         fRow, fOneUnitS, fOneUnitS, colBorder);
     HUD_DrawIcon(   fCol,         fRow, _atoPowerups[i], C_WHITE /*_colHUD*/, fNormValue, TRUE);
-    HUD_DrawBar(    fCol+fBarPos, fRow, fOneUnitS/5, fOneUnitS-2, BO_DOWN, NONE, fNormValue);
+    HUD_DrawBar(    fCol+fBarPos, fRow, (INDEX) (fOneUnitS/5), (INDEX) (fOneUnitS-2), BO_DOWN, NONE, fNormValue);
     // play sound if icon is flashing
     if(fNormValue<=(_cttHUD.ctt_fLowMedium/2)) {
       // activate blinking only if value is <= half the low edge
@@ -1066,7 +1065,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
     fNormValue = ClampDn(fNormValue, 0.0f);
     HUD_DrawBorder( fCol,      fRow, fOneUnit,         fOneUnit, colBorder);
     HUD_DrawBorder( fCol+fAdv, fRow, fOneUnit*4,       fOneUnit, colBorder);
-    HUD_DrawBar(    fCol+fAdv, fRow, fOneUnit*4*0.975, fOneUnit*0.9375, BO_LEFT, NONE, fNormValue);
+    HUD_DrawBar(    fCol+fAdv, fRow, (INDEX) (fOneUnit*4*0.975), (INDEX) (fOneUnit*0.9375), BO_LEFT, NONE, fNormValue);
     HUD_DrawIcon(   fCol,      fRow, _toOxygen, C_WHITE /*_colHUD*/, fNormValue, TRUE);
     bOxygenOnScreen = TRUE;
   }
@@ -1100,7 +1099,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       if( bOxygenOnScreen) fRow += fNextUnit;
       HUD_DrawBorder( fCol,      fRow, fOneUnit,          fOneUnit, colBorder);
       HUD_DrawBorder( fCol+fAdv, fRow, fOneUnit*16,       fOneUnit, colBorder);
-      HUD_DrawBar(    fCol+fAdv, fRow, fOneUnit*16*0.995, fOneUnit*0.9375, BO_LEFT, NONE, fNormValue);
+      HUD_DrawBar(    fCol+fAdv, fRow, (INDEX) (fOneUnit*16*0.995), (INDEX) (fOneUnit*0.9375), BO_LEFT, NONE, fNormValue);
       HUD_DrawIcon(   fCol,      fRow, _toHealth, C_WHITE /*_colHUD*/, fNormValue, FALSE);
     }
   }
@@ -1194,7 +1193,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       CTString strLimitsInfo="";  
       if (GetSP()->sp_iTimeLimit>0) {
         FLOAT fTimeLeft = ClampDn(GetSP()->sp_iTimeLimit*60.0f - _pNetwork->GetGameTime(), 0.0f);
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, TRANS("TIME LEFT"), TimeToString(fTimeLeft));
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", (const char *) strLimitsInfo, TRANS("TIME LEFT"), (const char *) TimeToString(fTimeLeft));
       }
       extern INDEX SetAllPlayersStats( INDEX iSortKey);
       // fill players table
@@ -1209,11 +1208,11 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       }}
       if (GetSP()->sp_iFragLimit>0) {
         INDEX iFragsLeft = ClampDn(GetSP()->sp_iFragLimit-iMaxFrags, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("FRAGS LEFT"), iFragsLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", (const char *) strLimitsInfo, TRANS("FRAGS LEFT"), iFragsLeft);
       }
       if (GetSP()->sp_iScoreLimit>0) {
         INDEX iScoreLeft = ClampDn(GetSP()->sp_iScoreLimit-iMaxScore, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", (const char *) strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
       }
       _pfdDisplayFont->SetFixedWidth();
       _pDP->SetFont( _pfdDisplayFont);
@@ -1334,7 +1333,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
   // draw cheat modes
   if( GetSP()->sp_ctMaxPlayers==1) {
     INDEX iLine=1;
-    ULONG ulAlpha = sin(_tmNow*16)*96 +128;
+    ULONG ulAlpha = (ULONG) (sin(_tmNow*16)*96 +128);
     PIX pixFontHeight = _pfdConsoleFont->fd_pixCharHeight;
     const COLOR colCheat = _colHUDText;
     _pDP->SetFont( _pfdConsoleFont);

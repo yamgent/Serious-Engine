@@ -1,8 +1,10 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "Stdh.h"
+#include "SeriousSam/StdH.h"
 #include "LCDDrawing.h"
 
+// !!! FIXME : lose this, just use _pGame->LCD*() directly!
+#ifdef PLATFORM_WIN32
 extern void LCDInit(void)
 {
   _pGame->LCDInit();
@@ -76,3 +78,6 @@ extern void LCDDrawPointer(PIX pixI, PIX pixJ)
 {
   _pGame->LCDDrawPointer(pixI, pixJ);
 }
+#endif
+
+

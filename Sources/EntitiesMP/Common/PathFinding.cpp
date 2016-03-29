@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/Common/PathFinding.h"
 #include "EntitiesMP/NavigationMarker.h"
 

@@ -191,12 +191,12 @@ functions:
   
   BOOL IsTargetValid(SLONG slPropertyOffset, CEntity *penTarget)
   {
-    if( slPropertyOffset == offsetof(CExotechLarva, m_penMarkerNew))
+    if( slPropertyOffset == _offsetof(CExotechLarva, m_penMarkerNew))
     {
       if (IsOfClass(penTarget, "NavigationMarker")) { return TRUE; }
       else { return FALSE; }
     }   
-    if( slPropertyOffset == offsetof(CExotechLarva, m_penRecharger))
+    if( slPropertyOffset == _offsetof(CExotechLarva, m_penRecharger))
     {
       if (IsOfClass(penTarget, "ExotechLarvaCharger")) { return TRUE; }
       else { return FALSE; }
@@ -499,7 +499,7 @@ functions:
 
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath) {
     CTString str;
-    str.PrintF(TRANS("Exotech larva reduced %s to pulp."), strPlayerName);
+    str.PrintF(TRANS("Exotech larva reduced %s to pulp."), (const char *) strPlayerName);
     return str;
   }
 

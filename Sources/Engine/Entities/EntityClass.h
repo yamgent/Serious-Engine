@@ -8,7 +8,8 @@
 
 #include <Engine/Base/Serial.h>
 #include <Engine/Entities/Entity.h>
-#include <Engine/Entities/EntityProperties.h> /* rcg10042001 */
+#include <Engine/Entities/EntityProperties.h> // rcg10042001
+#include <Engine/Base/DynamicLoader.h> // rcg10112001
 
 /*
  *  General structure of an entity class.
@@ -21,7 +22,7 @@ public:
   void ReleaseComponents(void);
 public:
   CTFileName ec_fnmClassDLL;              // filename of the DLL with the class
-  HINSTANCE ec_hiClassDLL;                // handle to the DLL with the class
+  CDynamicLoader *ec_hiClassDLL;
   class CDLLEntityClass *ec_pdecDLLClass; // pointer to DLL class in the DLL
 
   /* Default constructor. */
@@ -50,9 +51,10 @@ public:
   /* Get event handler for given state and event code. */
   CEntity::pEventHandler HandlerForStateAndEvent(SLONG slState, SLONG slEvent);
   /* Get pointer to component from its type and identifier. */
-  class CEntityComponent *ComponentForTypeAndID(enum EntityComponentType ectType, SLONG slID);
+  class CEntityComponent *ComponentForTypeAndID(
+    enum EntityComponentType ectType, SLONG slID);
   /* Get pointer to component from the component. */
-  class CEntityComponent *ComponentForPointer(void *pv);
+  inline class CEntityComponent *ComponentForPointer(void *pv);
 
   // overrides from CSerial
   /* Read from stream. */

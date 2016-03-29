@@ -1,12 +1,12 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Graphics/ViewPort.h>
 
 #include <Engine/Graphics/GfxProfile.h>
 #include <Engine/Graphics/GfxLibrary.h>
-#include <Engine/Base/Statistics_internal.h>
+#include <Engine/Base/Statistics_Internal.h>
 
 extern INDEX ogl_bExclusive;
 
@@ -49,21 +49,6 @@ static void SetAsRenderTarget_D3D( CViewPort *pvp)
 }
 #endif // SE1_D3D
 
-// helper for OGL
-
-CTempDC::CTempDC(HWND hWnd)
-{
-  ASSERT(hWnd!=NULL);
-  hwnd = hWnd;
-  hdc = GetDC(hwnd);
-  ASSERT(hdc!=NULL);
-}
-
-CTempDC::~CTempDC(void)
-{
-  ReleaseDC(hwnd, hdc);
-}
-
 
 /*
  *   ViewPort functions
@@ -92,6 +77,22 @@ CViewPort::~CViewPort(void)
 }
 
 
+#ifdef PLATFORM_WIN32
+
+CTempDC::CTempDC(HWND hWnd)
+{
+  ASSERT(hWnd!=NULL);
+  hwnd = hWnd;
+  hdc = GetDC(hwnd);
+  ASSERT(hdc!=NULL);
+}
+
+CTempDC::~CTempDC(void)
+{
+  ReleaseDC(hwnd, hdc);
+}
+
+
 #define CViewPortCLASS "ViewPort Window"
 static BOOL _bClassRegistered = FALSE;
 
@@ -116,11 +117,12 @@ LRESULT CALLBACK CViewPortCLASS_WindowProc(
 
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
-
+#endif
 
 // open overlaid window for rendering context
 void CViewPort::OpenCanvas(void)
 {
+#ifdef PLATFORM_WIN32
   // do nothing if not feasable
   if( vp_hWnd!=NULL || vp_hWndParent==NULL) return;
 
@@ -184,6 +186,11 @@ void CViewPort::OpenCanvas(void)
   // set as rendering target
   if( _pGfx->gl_eCurrentAPI==GAT_D3D && vp_pSwapChain!=NULL) SetAsRenderTarget_D3D(this);
 #endif // SE1_D3D
+
+#else  // !PLATFORM_WIN32
+   STUBBED("Move this to another directory.");
+   vp_hWnd = vp_hWndParent = (void *) 0x0001;
+#endif
 }
 
 
@@ -214,6 +221,7 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
 // Change size of this viewport, it's raster and all it's drawports
 void CViewPort::Resize(void)
 {
+#ifdef PLATFORM_WIN32
 	PIX pixNewWidth, pixNewHeight;
 	RECT rectWindow;
 
@@ -240,7 +248,7 @@ void CViewPort::Resize(void)
     CreateSwapChain_D3D( this, pixNewWidth, pixNewHeight);
     SetAsRenderTarget_D3D(this);
   }
-#endif // SE1_D3D
+#endif
 }
 
 

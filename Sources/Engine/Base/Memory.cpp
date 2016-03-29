@@ -1,15 +1,22 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Memory.h>
 #include <Engine/Base/Translation.h>
 
 #include <Engine/Base/ErrorReporting.h>
+
+/* rcg10282005  "new.h" is deprecated in newer C++ standards... --ryan. */
+#ifdef _MSC_VER
 #include <new.h>
+#else
+#include <new>
+#endif
 
-extern FLOAT _bCheckAllAllocations = FALSE;
+FLOAT _bCheckAllAllocations = FALSE;
 
+#ifdef PLATFORM_WIN32
 /*
  * Declarations for setting up the 'new_handler'.
  */
@@ -31,14 +38,25 @@ _CRTIMP _PNH __cdecl _set_new_handler( _PNH );*/
 
 // include user32 library (because of message box)
 #pragma comment (lib, "user32.lib")
+#endif
+
 
 // if not enough memory
+#ifdef _MSC_VER
 int NewHandler(size_t size)
 {
   // terminate program
   FatalError(TRANS("Not enough memory (%d bytes needed)!"), size);
   return 0;
 }
+#else
+void NewHandler(void)
+{
+  // terminate program
+  FatalError(TRANS("Not enough memory!"));
+}
+#define _CrtCheckMemory()
+#endif
 
 /* Static class used for initializing memory handlers. */
 static class CMemHandlerInit {
@@ -52,7 +70,9 @@ CMemHandlerInit::CMemHandlerInit(void)
   // set our not-enough-memory handler
   _set_new_handler(NewHandler);
   // make malloc use that handler
+  #ifdef _MSC_VER
   _set_new_mode(1);
+  #endif
 }
 
 #undef AllocMemory
@@ -73,6 +93,7 @@ void *AllocMemory( SLONG memsize )
   return pmem;
 }
 
+#ifdef _MSC_VER
 #ifndef NDEBUG
 void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLine)
 {
@@ -90,6 +111,7 @@ void *_debug_AllocMemory( SLONG memsize, int iType, const char *strFile, int iLi
   }
   return pmem;
 }
+#endif
 #endif
 
 void *AllocMemoryAligned( SLONG memsize, SLONG slAlignPow2)

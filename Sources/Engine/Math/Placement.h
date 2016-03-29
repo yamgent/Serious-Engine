@@ -9,6 +9,11 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Geometry.h>
 
+
+#ifdef NETSTRUCTS_PACKED
+#pragma pack(1)
+#endif
+
 /*
  * Placement of an object in 3D space
  */
@@ -51,6 +56,11 @@ public:
   /* Make this placement be a linear interpolation between given two placements. */
   void Lerp(const CPlacement3D &pl0, const CPlacement3D &pl1, FLOAT fFactor);
 };
+
+#ifdef NETSTRUCTS_PACKED
+#pragma pack()
+#endif
+
 /* Stream operations */
 ENGINE_API CTStream &operator>>(CTStream &strm, CPlacement3D &p3d);
 ENGINE_API CTStream &operator<<(CTStream &strm, const CPlacement3D &p3d);

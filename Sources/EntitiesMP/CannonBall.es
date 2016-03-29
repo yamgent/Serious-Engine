@@ -3,7 +3,7 @@
 506
 %{
 #include "StdH.h"
-#include "Models/Weapons/Cannon/Projectile/Cannonball.h"
+#include "Models/Weapons/Cannon/Projectile/CannonBall.h"
 #include "EntitiesMP/MovingBrush.h"
 #include "EntitiesMP/DestroyableArchitecture.h"
 %}

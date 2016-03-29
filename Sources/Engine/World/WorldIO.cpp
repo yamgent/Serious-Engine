@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Math/Float.h>
@@ -21,11 +21,13 @@
 #define WORLDSTATEVERSION_MULTITEXTURING 8
 #define WORLDSTATEVERSION_SHADOWSPERMIP 7
 #define WORLDSTATEVERSION_CURRENT WORLDSTATEVERSION_NOCLASSCONTAINER
-extern CWorld *_pwoCurrentLoading = NULL;  // world that is currently loading
+
+CWorld *_pwoCurrentLoading = NULL;  // world that is currently loading
+BOOL _bReadEntitiesByID = FALSE;
+
 extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
 extern BOOL _bFileReplacingApplied;
-extern BOOL _bReadEntitiesByID = FALSE;
 
 /*
  * Save entire world (both brushes  current state).

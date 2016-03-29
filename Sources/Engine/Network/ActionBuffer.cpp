@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Console.h>
 #include <Engine/Network/PlayerTarget.h>
@@ -54,7 +54,7 @@ void CActionBuffer::AddAction(const CPlayerAction &pa)
   ab_lhActions.AddTail(pae->ae_ln);
 
   // sort the list
-  ab_lhActions.Sort(&qsort_CompareActions, offsetof(CActionEntry, ae_ln));
+  ab_lhActions.Sort(&qsort_CompareActions, _offsetof(CActionEntry, ae_ln));
 
   //CPrintF("Buffered: %d (after add)\n", ab_lhActions.Count());
 }

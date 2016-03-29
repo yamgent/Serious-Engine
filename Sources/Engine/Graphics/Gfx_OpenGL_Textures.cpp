@@ -1,12 +1,13 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Graphics/GfxLibrary.h>
 
-#include <Engine/Base/Statistics_internal.h>
+#include <Engine/Base/Statistics_Internal.h>
 #include <Engine/Math/Functions.h>
 #include <Engine/Graphics/Color.h>
+#include <Engine/Graphics/OpenGL.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Graphics/GfxProfile.h>
 
@@ -105,7 +106,7 @@ extern void MimicTexParams_OGL( CTexParams &tpLocal)
 
 // upload context for current texture to accelerator's memory
 // (returns format in which texture was really uploaded)
-extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
+void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
                                GLenum eInternalFormat, BOOL bUseSubImage)
 {
   // safeties
@@ -151,6 +152,22 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
       if( pixSizeU==0) pixSizeU=1;
       if( pixSizeV==0) pixSizeV=1;
       pixSize = pixSizeU*pixSizeV;
+
+      #if (defined USE_PORTABLE_C)
+      // Basically average every other pixel...
+      pixSize *= 4;
+
+      UWORD w = 0;
+      UBYTE *dptr = (UBYTE *) pulDst;
+      UBYTE *sptr = (UBYTE *) pulSrc;
+      for (PIX i = 0; i < pixSize; i++)
+      {
+        *dptr = (UBYTE) ( (((UWORD) sptr[0]) + ((UWORD) sptr[1])) >> 1 );
+        dptr++;
+        sptr += 2;
+      }
+
+      #elif (defined __MSVC_INLINE__)
       __asm {   
         pxor    mm0,mm0
         mov     esi,D [pulSrc]
@@ -171,6 +188,33 @@ extern void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
         jnz     pixLoop
         emms
       }
+
+      #elif (defined __GNU_INLINE__)
+      __asm__ __volatile__ (
+        "pxor      %%mm0,%%mm0                \n\t"
+        "0:                                   \n\t" // pixLoop
+        "movd      0(%%esi), %%mm1            \n\t"
+        "movd      4(%%esi), %%mm2            \n\t"
+        "punpcklbw %%mm0,%%mm1                \n\t"
+        "punpcklbw %%mm0,%%mm2                \n\t"
+        "paddw     %%mm2,%%mm1                \n\t"
+        "psrlw     $1,%%mm1                   \n\t"
+        "packuswb  %%mm0,%%mm1                \n\t"
+        "movd      %%mm1, (%%edi)             \n\t"
+        "addl      $8,%%esi                   \n\t"
+        "addl      $4,%%edi                   \n\t"
+        "decl      %%ecx                      \n\t"
+        "jnz       0b                         \n\t" // pixLoop
+        "emms                                 \n\t"
+            :
+            : "S" (pulSrc), "D" (pulDst), "c" (pixSize)
+            : "memory", "cc"
+      );
+
+      #else
+      #error Please write inline ASM for your platform.
+      #endif
+
       // upload mipmap
       if( bUseSubImage) {
         pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,

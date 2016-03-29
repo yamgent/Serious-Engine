@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Math/Projection.h>
 
@@ -314,7 +314,7 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   INDEX iTest;
 
   // check to near
-  iTest = box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
+  iTest = (INDEX) box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0,0,-1), pr_NearClipDistance));
   if( iTest<0) {
     return -1;
   } else if( iTest==0) {
@@ -322,7 +322,7 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
   }
   // check to far
   if( pr_FarClipDistance>0) {
-    iTest = box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0,0,1), -pr_FarClipDistance));
+    iTest = (INDEX) box.TestAgainstPlane( FLOATplane3D(FLOAT3D(0,0,1), -pr_FarClipDistance));
     if( iTest<0) {
       return -1;
     } else if( iTest==0) {
@@ -330,28 +330,28 @@ INDEX CPerspectiveProjection3D::TestBoxToFrustum(const FLOATobbox3D &box) const
     }
   }
   // check to left
-  iTest = box.TestAgainstPlane(pr_plClipL);
+  iTest = (INDEX) box.TestAgainstPlane(pr_plClipL);
   if( iTest<0) {
     return -1;
   } else if( iTest==0) {
     iPass = 0;
   }
   // check to right
-  iTest = box.TestAgainstPlane(pr_plClipR);
+  iTest = (INDEX) box.TestAgainstPlane(pr_plClipR);
   if( iTest<0) {
     return -1;
   } else if( iTest==0) {
     iPass = 0;
   }
   // check to up
-  iTest = box.TestAgainstPlane(pr_plClipU);
+  iTest = (INDEX) box.TestAgainstPlane(pr_plClipU);
   if( iTest<0) {
     return -1;
   } else if( iTest==0) {
     iPass = 0;
   }
   // check to down
-  iTest = box.TestAgainstPlane(pr_plClipD);
+  iTest = (INDEX) box.TestAgainstPlane(pr_plClipD);
   if( iTest<0) {
     return -1;
   } else if( iTest==0) {

@@ -46,6 +46,7 @@ BOOL CDS_SetMode( PIX pixSizeI, PIX pixSizeJ, enum DisplayDepth dd);
 // reset windows to mode chosen by user within windows diplay properties
 void CDS_ResetMode(void);
 
+ULONG DetermineDesktopWidth(void);
 
 #endif  /* include-once check. */
 

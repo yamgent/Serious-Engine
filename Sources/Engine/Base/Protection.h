@@ -5,6 +5,7 @@
 #ifdef PRAGMA_ONCE
   #pragma once
 #endif
+#define COPY_PROTECTION 1
 
 typedef struct {
   unsigned long P[16 + 2];

@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Templates/BSP.h>
 #include <Engine/Templates/BSP_internal.h>
@@ -242,16 +242,6 @@ void BSPVertexContainer<Type, iDimensions>::CreateEdges(CDynamicArray<BSPEdge<Ty
 
 /////////////////////////////////////////////////////////////////////
 // BSP edge
-
-/*
- * Constructor with two vectors.
- */
-template<class Type, int iDimensions>
-BSPEdge<Type, iDimensions>::BSPEdge(const Vector<Type, iDimensions> &vVertex0, const Vector<Type, iDimensions> &vVertex1, ULONG ulTag)
-  : bed_vVertex0(vVertex0)
-  , bed_vVertex1(vVertex1)
-  , bed_ulEdgeTag(ulTag)
-{}
 
 // remove all edges marked for removal
 template<class Type, int iDimensions>
@@ -1205,7 +1195,9 @@ void BSPTree<Type, iDimensions>::Read_t(CTStream &strm) // throw char *
   for(INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // read it from disk
-    strm.Read_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    //strm.Read_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    strm >> ((Plane<Type, iDimensions>&)bn);
+
     strm>>(INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
@@ -1254,7 +1246,8 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
   for(INDEX iNode=0; iNode<ctNodes; iNode++) {
     BSPNode<Type, iDimensions> &bn = bt_abnNodes[iNode];
     // write it to disk
-    strm.Write_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    //strm.Write_t(&(Plane<Type, iDimensions>&)bn, sizeof(Plane<Type, iDimensions>));
+    strm << ((Plane<Type, iDimensions>&)bn);
     strm<<(INDEX&)bn.bn_bnlLocation;
 
     INDEX iFront;
@@ -1283,20 +1276,21 @@ void BSPTree<Type, iDimensions>::Write_t(CTStream &strm) // throw char *
 #pragma warning (disable: 4660) // if already instantiated by some class
 
 // remove templates
-template DOUBLEbspvertex3D;
-template DOUBLEbspvertexcontainer3D;
-template DOUBLEbspedge3D;
-template DOUBLEbspnode3D;
-template DOUBLEbsppolygon3D;
-template DOUBLEbsptree3D;
-template DOUBLEbspcutter3D;
+template class BSPVertex<DOUBLE, 3>; //DOUBLEbspvertex3D;
+template class BSPVertexContainer<DOUBLE, 3>;
+template class BSPEdge<DOUBLE, 3>;
+template class BSPNode<DOUBLE, 3>;
+template class BSPPolygon<DOUBLE, 3>;
+template class BSPTree<DOUBLE, 3>;
+template class BSPCutter<DOUBLE, 3>;
 
-template FLOATbspvertex3D;
-template FLOATbspvertexcontainer3D;
-template FLOATbspedge3D;
-template FLOATbspnode3D;
-template FLOATbsppolygon3D;
-template FLOATbsptree3D;
-template FLOATbspcutter3D;
+template class BSPVertex<FLOAT, 3>;
+template class BSPVertexContainer<FLOAT, 3>;
+template class BSPEdge<FLOAT, 3>;
+template class BSPNode<FLOAT, 3>;
+template class BSPPolygon<FLOAT, 3>;
+template class BSPTree<FLOAT, 3>;
+template class BSPCutter<FLOAT, 3>;
 
 #pragma warning (default: 4660)
+

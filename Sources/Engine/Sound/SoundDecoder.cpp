@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Sound/SoundDecoder.h>
 #include <Engine/Base/Stream.h>
@@ -10,6 +10,7 @@
 #include <Engine/Base/Unzip.h>
 #include <Engine/Base/Translation.h>
 #include <Engine/Math/Functions.h>
+#include <Engine/Base/DynamicLoader.h>
 
 // generic function called if a dll function is not found
 static void FailFunction_t(const char *strName) {
@@ -20,8 +21,9 @@ static void FailFunction_t(const char *strName) {
 // ------------------------------------ AMP11
 
 // amp11lib vars
-extern BOOL _bAMP11Enabled = FALSE;
-static HINSTANCE _hAmp11lib = NULL;
+BOOL _bAMP11Enabled = FALSE;
+
+static CDynamicLoader *_hAmp11lib = NULL;
 
 // amp11lib types
 typedef signed char ALsint8;
@@ -44,12 +46,21 @@ typedef ALsint32 ALhandle;
 #undef DLLFUNCTION
 
 static void AMP11_SetFunctionPointers_t(void) {
-  const char *strName;
   // get amp11lib function pointers
-  #define DLLFUNCTION(dll, output, name, inputs, params, required) \
-    strName = "_" #name "@" #params;  \
-    p##name = (output (__stdcall*) inputs) GetProcAddress( _hAmp11lib, strName); \
-    if(p##name == NULL) FailFunction_t(strName);
+  const char *strName;
+
+  #ifdef PLATFORM_WIN32
+    #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+      strName = "_" #name "@" #params;  \
+      p##name = (output (__stdcall*) inputs) _hAmp11lib->FindSymbol(strName); \
+      if(p##name == NULL) FailFunction_t(strName);
+  #else
+    #define DLLFUNCTION(dll, output, name, inputs, params, required) \
+      strName = #name;  \
+      p##name = (output (__stdcall*) inputs) _hAmp11lib->FindSymbol(strName); \
+      if(p##name == NULL) FailFunction_t(strName);
+  #endif
+
   #include "al_functions.h"
   #undef DLLFUNCTION
 }
@@ -73,11 +84,11 @@ public:
 
 // ------------------------------------ Ogg Vorbis
 
-//#include <vorbis\vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
+//#include <vorbis/vorbisfile.h>  // we define needed stuff ourselves, and ignore the rest
 
 // vorbis vars
-extern BOOL _bOVEnabled = FALSE;
-static HINSTANCE _hOV = NULL;
+BOOL _bOVEnabled = FALSE;
+static CDynamicLoader *_hOV = NULL;
 
 #define OV_FALSE      -1  
 #define OV_EOF        -2
@@ -130,9 +141,10 @@ struct vorbis_info {
 static void OV_SetFunctionPointers_t(void) {
   const char *strName;
   // get vo function pointers
+
   #define DLLFUNCTION(dll, output, name, inputs, params, required) \
     strName = #name ;  \
-    p##name = (output (__cdecl *) inputs) GetProcAddress( _hOV, strName); \
+    p##name = (output (__cdecl *) inputs) _hOV->FindSymbol(strName); \
     if(p##name == NULL) FailFunction_t(strName);
   #include "ov_functions.h"
   #undef DLLFUNCTION
@@ -223,35 +235,37 @@ void CSoundDecoder::InitPlugins(void)
   try {
     // load vorbis
     if (_hOV==NULL) {
-#ifndef NDEBUG
-  #define VORBISLIB "vorbisfile_d.dll"
-#else
-  #define VORBISLIB "vorbisfile.dll"
-#endif
-      _hOV = ::LoadLibraryA(VORBISLIB);
+       #if ((defined PLATFORM_WIN32) && (defined NDEBUG))
+         #define VORBISLIB "vorbisfile_d"
+       #else
+         #define VORBISLIB "vorbisfile"
+       #endif
+       _hOV = CDynamicLoader::GetInstance(VORBISLIB);
+       if( _hOV->GetError() != NULL) {
+         ThrowF_t(TRANS("Cannot load " VORBISLIB " shared library: %s."), _hOV->GetError());
+       }
     }
-    if( _hOV == NULL) {
-      ThrowF_t(TRANS("Cannot load vorbisfile.dll."));
-    }
+
     // prepare function pointers
     OV_SetFunctionPointers_t();
 
     // if all successful, enable mpx playing
     _bOVEnabled = TRUE;
-    CPrintF(TRANS("  vorbisfile.dll loaded, ogg playing enabled\n"));
+    CPrintF(TRANS("  " VORBISLIB " shared library loaded, ogg playing enabled\n"));
 
-  } catch (char *strError) {
+  } catch (char *strError) {  // !!! FIXME: should be const char* ?
     CPrintF(TRANS("OGG playing disabled: %s\n"), strError);
   }
 
   try {
     // load amp11lib
     if (_hAmp11lib==NULL) {
-      _hAmp11lib = ::LoadLibraryA( "amp11lib.dll");
+      _hAmp11lib = CDynamicLoader::GetInstance("amp11lib");
+      if( _hAmp11lib->GetError() != NULL) {
+        ThrowF_t(TRANS("Cannot load amp11lib shared library: %s"), _hAmp11lib->GetError());
+      }
     }
-    if( _hAmp11lib == NULL) {
-      ThrowF_t(TRANS("Cannot load amp11lib.dll."));
-    }
+
     // prepare function pointers
     AMP11_SetFunctionPointers_t();
 
@@ -260,9 +274,9 @@ void CSoundDecoder::InitPlugins(void)
 
     // if all successful, enable mpx playing
     _bAMP11Enabled = TRUE;
-    CPrintF(TRANS("  amp11lib.dll loaded, mpx playing enabled\n"));
+    CPrintF(TRANS("  amp11lib shared library loaded, mpx playing enabled\n"));
 
-  } catch (char *strError) {
+  } catch (char *strError) {  // !!! FIXME: should be const char* ?
     CPrintF(TRANS("MPX playing disabled: %s\n"), strError);
   }
 }
@@ -273,7 +287,7 @@ void CSoundDecoder::EndPlugins(void)
   if (_bAMP11Enabled) {
     palEndLibrary();
     AMP11_ClearFunctionPointers();
-    FreeLibrary(_hAmp11lib);
+    delete _hAmp11lib;
     _hAmp11lib = NULL;
     _bAMP11Enabled = FALSE;
   }
@@ -281,7 +295,7 @@ void CSoundDecoder::EndPlugins(void)
   // cleanup vorbis when not needed anymore
   if (_bOVEnabled) {
     OV_ClearFunctionPointers();
-    FreeLibrary(_hOV);
+    delete _hOV;
     _hOV = NULL;
     _bOVEnabled = FALSE;
   }

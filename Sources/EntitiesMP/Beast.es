@@ -19,7 +19,7 @@ enum BeastType {
 };
 
 %{
-static FLOAT _tmLastStandingAnim =0.0f;  
+static int _tmLastStandingAnim = 0;
 #define BEAST_STRETCH 2.0f
 #define BIG_BEAST_STRETCH 12.0f
 #define HUGE_BEAST_STRETCH 30.0f
@@ -76,7 +76,7 @@ functions:
   virtual CTString GetPlayerKillDescription(const CTString &strPlayerName, const EDeath &eDeath)
   {
     CTString str;
-    str.PrintF(TRANS("A Reptiloid killed %s"), strPlayerName);
+    str.PrintF(TRANS("A Reptiloid killed %s"), (const char *) strPlayerName);
     return str;
   }
   virtual const CTFileName &GetComputerMessageName(void) const {
@@ -221,7 +221,7 @@ functions:
 
   // virtual anim functions
   void StandingAnim(void) {
-    _tmLastStandingAnim = _pTimer->CurrentTick();
+    _tmLastStandingAnim = (int) _pTimer->CurrentTick();
     StartModelAnim(BEAST_ANIM_IDLE, AOF_LOOPING|AOF_NORESTART);
   };
 

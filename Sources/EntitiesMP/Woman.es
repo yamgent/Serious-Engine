@@ -4,7 +4,7 @@
 %{
 #include "StdH.h"
 #include "ModelsMP/Enemies/Woman/Woman.h"
-#include "Models/Enemies/Headman/Headman.h"
+#include "Models/Enemies/Headman/headman.h"
 #include "EntitiesMP/Headman.h"
 %}
 
@@ -64,9 +64,9 @@ functions:
   {
     CTString str;
     if (eDeath.eLastDamage.dmtType==DMT_CLOSERANGE) {
-      str.PrintF(TRANS("%s was beaten by a Scythian Harpy"), strPlayerName);
+      str.PrintF(TRANS("%s was beaten by a Scythian Harpy"), (const char *) strPlayerName);
     } else {
-      str.PrintF(TRANS("A Scythian Harpy got %s spellbound"), strPlayerName);
+      str.PrintF(TRANS("A Scythian Harpy got %s spellbound"), (const char *) strPlayerName);
     }
     return str;
   }

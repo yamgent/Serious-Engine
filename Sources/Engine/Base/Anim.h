@@ -12,7 +12,11 @@
 
 #define NAME_SIZE 32
 typedef char NAME[NAME_SIZE];
-#define PATH_MAX 260
+
+#if (!defined PATH_MAX)
+  #define PATH_MAX 260
+#endif
+
 typedef char FILE_NAME[PATH_MAX];
 
 /*

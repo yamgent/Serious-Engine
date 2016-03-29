@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/Console.h>
@@ -51,7 +51,7 @@ static CTString GetPred(CEntity*pen)
     str1 = "???";
   }
   CTString str;
-  str.PrintF("%08x-%s", pen, str1);
+  str.PrintF("%08x-%s", pen, (const char *) str1);
   return str;
 }
 /* ====================================================
@@ -67,7 +67,7 @@ CSoundObject::CSoundObject()
   so_pCsdLink = NULL;
   so_psdcDecoder = NULL;
   so_penEntity = NULL;
-  so_slFlags = 0;
+  so_slFlags = SOF_NONE;
 
   // clear sound settings
   so_spNew.sp_fLeftVolume   = 1.0f;
@@ -94,7 +94,7 @@ CSoundObject::CSoundObject()
   so_sp3.sp3_fHotSpot = 0.0f;
   so_sp3.sp3_fMaxVolume   = 0.0f;
   so_sp3.sp3_fPitch       = 1.0f;
-};
+}
 
 /*
  *  Destructor
@@ -102,7 +102,7 @@ CSoundObject::CSoundObject()
 CSoundObject::~CSoundObject()
 {
   Stop_internal();
-};
+}
 
 // copy from another object of same class
 void CSoundObject::Copy(CSoundObject &soOther)
@@ -143,7 +143,7 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
   pso->so_sp3.sp3_fHotSpot = fHotSpot;
   pso->so_sp3.sp3_fMaxVolume   = fMaxVolume;
   pso->so_sp3.sp3_fPitch       = fPitch;
-};
+}
 
 
 /* ====================================================
@@ -308,7 +308,7 @@ void CSoundObject::SetOffset( FLOAT fOffset)
   // safety check
   ASSERT( fOffset>=0);
   if( fOffset<0) {
-    CPrintF( "BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, (CTString&)psoTail->so_pCsdLink->GetName());
+    CPrintF( "BUG: Trying to set negative offset (%.2g) in sound '%s' !\n", fOffset, (const char *) (CTString&)psoTail->so_pCsdLink->GetName());
     fOffset = 0.0f;
   }
 
@@ -347,7 +347,7 @@ void CSoundObject::Stop(void)
 }
 void CSoundObject::Stop_internal(void)
 {
-  // sound is stoped
+  // sound is stopped
   so_slFlags &= ~(SOF_PLAY|SOF_PREPARE|SOF_PAUSED);
 
   // destroy decoder if exists
@@ -365,7 +365,7 @@ void CSoundObject::Stop_internal(void)
     // clear SoundData link
     so_pCsdLink = NULL;
   }
-};
+}
 
 
 // Update all 3d effects
@@ -446,7 +446,7 @@ void CSoundObject::Update3DEffects(void)
     ASSERT(fDistanceFactor>=0 && fDistanceFactor<=+1);
 
     // calculate volumetric influence
-    // NOTE: decoded sounds must be threated as volumetric
+    // NOTE: decoded sounds must be treated as volumetric
     FLOAT fNonVolumetric = 1.0f;
     FLOAT fNonVolumetricAdvanced = 1.0f;
     if( (so_slFlags & SOF_VOLUMETRIC) || so_psdcDecoder!=NULL) {
@@ -592,7 +592,7 @@ void CSoundObject::PrepareSound(void)
     so_fLastLeftVolume  *= snd_fSoundVolume;
     so_fLastRightVolume *= snd_fSoundVolume;
   }
-};
+}
 
 
 // Obtain sound and play it for this object
@@ -605,7 +605,7 @@ void CSoundObject::Play_t(const CTFileName &fnmSound, SLONG slFlags) // throw ch
   // release it (removes one reference)
   _pSoundStock->Release(ptd);
   // total reference count +1+1-1 = +1 for new data -1 for old data
-};
+}
 
 
 
@@ -653,7 +653,7 @@ void CSoundObject::Read_t(CTStream *pistr)  // throw char *
   if ( fnmSound != "" && (so_slFlags&SOF_PLAY)) {
     Play_t( fnmSound, so_slFlags|SOF_LOADED);
   }
-};
+}
 
 void CSoundObject::Write_t(CTStream *pistr) // throw char *
 {
@@ -692,4 +692,5 @@ void CSoundObject::Write_t(CTStream *pistr) // throw char *
   *pistr << so_sp3.sp3_fHotSpot;
   *pistr << so_sp3.sp3_fMaxVolume;
   *pistr << so_sp3.sp3_fPitch;
-};
+}
+

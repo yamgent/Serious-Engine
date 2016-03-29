@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Synchronization.h>
 
@@ -303,3 +303,4 @@ void CTSingleLock::Unlock(void)
   }
   sl_bLocked = FALSE;
 }
+

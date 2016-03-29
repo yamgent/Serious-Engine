@@ -1,11 +1,11 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Models/Normals.h>
 #include <Engine/Math/Vector.h>
 
-extern FLOAT3D avGouraudNormals[MAX_GOURAUDNORMALS] = {
+FLOAT3D avGouraudNormals[MAX_GOURAUDNORMALS] = {
   FLOAT3D(  1.000000f,  0.000000f,  0.000000f),
   FLOAT3D(  0.980785f,  0.000000f,  0.195090f),
   FLOAT3D(  0.980785f,  0.195090f,  0.000000f),

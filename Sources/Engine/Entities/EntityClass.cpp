@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/Stream.h>
 #include <Engine/Entities/EntityClass.h>
@@ -209,52 +209,6 @@ void CEntityClass::ReleaseComponents(void)
 // overrides from CSerial /////////////////////////////////////////////////////
 
 /*
- * Load a Dynamic Link Library.
- */
-HINSTANCE LoadDLL_t(const char *strFileName) // throw char *
-{
-  HINSTANCE hiDLL = ::LoadLibraryA(strFileName);
-
-  // if the DLL can not be loaded
-  if (hiDLL==NULL) {
-    // get the error code
-    DWORD dwMessageId = GetLastError();
-    // format the windows error message
-    LPVOID lpMsgBuf;
-    DWORD dwSuccess = FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
-        dwMessageId,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // default language
-        (LPTSTR) &lpMsgBuf,
-        0,
-        NULL
-    );
-    CTString strWinError;
-    // if formatting succeeds
-    if (dwSuccess!=0) {
-      // copy the result
-      strWinError = ((char *)lpMsgBuf);
-      // free the windows message buffer
-      LocalFree( lpMsgBuf );
-    } else {
-      // set our message about the failure
-      CTString strError;
-      strError.PrintF(
-        TRANS("Cannot format error message!\n"
-        "Original error code: %d,\n"
-        "Formatting error code: %d.\n"),
-        dwMessageId, GetLastError());
-      strWinError = strError;
-    }
-
-    // report error
-    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"), strFileName, strWinError);
-  }
-  return hiDLL;
-}
-
-/*
  * Read from stream.
  */
 void CEntityClass::Read_t( CTStream *istr) // throw char *
@@ -265,31 +219,53 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
   CTString strClassName;
   strClassName.ReadFromText_t(*istr, "Class: ");
 
-  // create name of dll
-  #ifndef NDEBUG
-    fnmDLL = _fnmApplicationExe.FileDir()+fnmDLL.FileName()+_strModExt+"D"+fnmDLL.FileExt();
+  const char *dllName = NULL;
+
+    // load the DLL
+  #ifdef STATICALLY_LINKED
+    ec_hiClassDLL = CDynamicLoader::GetInstance(NULL);
+    dllName = "(statically linked)";
   #else
-    fnmDLL = _fnmApplicationExe.FileDir()+fnmDLL.FileName()+_strModExt+fnmDLL.FileExt();
+    // create name of dll
+    #ifndef NDEBUG
+    fnmDLL = fnmDLL.FileDir()+"Debug\\"+fnmDLL.FileName()+_strModExt+"D"+fnmDLL.FileExt();
+    #else
+    fnmDLL = fnmDLL.FileDir()+fnmDLL.FileName()+_strModExt+fnmDLL.FileExt();
+    #endif
+    fnmDLL = CDynamicLoader::ConvertLibNameToPlatform(fnmDLL);
+    CTFileName fnmExpanded;
+    ExpandFilePath(EFP_READ, fnmDLL, fnmExpanded);
+    dllName = fnmExpanded;
+    ec_hiClassDLL = CDynamicLoader::GetInstance(fnmExpanded);
   #endif
+
+  if (ec_hiClassDLL->GetError() != NULL)
+  {
+    CTString err(ec_hiClassDLL->GetError());
+    delete ec_hiClassDLL;
+    ec_hiClassDLL = NULL;
+    ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"),
+              (const char *) dllName, (const char *) err);
+  }
+  
 
   // load the DLL
   CTFileName fnmExpanded;
   ExpandFilePath(EFP_READ, fnmDLL, fnmExpanded);
 
-  ec_hiClassDLL = LoadDLL_t(fnmExpanded);
   ec_fnmClassDLL = fnmDLL;
 
   // get the pointer to the DLL class structure
-  ec_pdecDLLClass = (CDLLEntityClass *) GetProcAddress(ec_hiClassDLL, strClassName+"_DLLClass");
+  ec_pdecDLLClass = (CDLLEntityClass *) ec_hiClassDLL->FindSymbol(strClassName+"_DLLClass");
+
   // if class structure is not found
   if (ec_pdecDLLClass == NULL) {
     // free the library
-    BOOL bSuccess = FreeLibrary(ec_hiClassDLL);
-    ASSERT(bSuccess);
+    delete ec_hiClassDLL;
     ec_hiClassDLL = NULL;
     ec_fnmClassDLL.Clear();
     // report error
-    ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), strClassName, fnmDLL);
+    ThrowF_t(TRANS("Class '%s' not found in entity class package file '%s'"), (const char *) strClassName, dllName);
   }
 
   // obtain all components needed by the DLL
@@ -356,7 +332,7 @@ CEntity::pEventHandler CEntityClass::HandlerForStateAndEvent(SLONG slState, SLON
 
 /* Get pointer to component from its identifier. */
 class CEntityComponent *CEntityClass::ComponentForTypeAndID(
-  EntityComponentType ectType, SLONG slID) {
+  enum EntityComponentType ectType, SLONG slID) {
   return ec_pdecDLLClass->ComponentForTypeAndID(ectType, slID);
 }
 /* Get pointer to component from the component. */

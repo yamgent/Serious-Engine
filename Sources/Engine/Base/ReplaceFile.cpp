@@ -1,12 +1,11 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Base/ReplaceFile.h>
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/ErrorReporting.h>
 #include <Engine/Base/Anim.h>
-#include <Engine/Base/Shell.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Sound/SoundObject.h>
@@ -41,6 +40,7 @@ extern INDEX wed_bUseBaseForReplacement;
 
 static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
 {
+#ifdef PLATFORM_WIN32
   typedef CTFileName FileRequester_t(
     char *pchrTitle, 
     char *pchrFilters,
@@ -62,6 +62,13 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
   }
 
   return pFileRequester( achrTitle, pFilter, "Replace file directory", achrSelectedFile);
+
+#else
+
+    STUBBED("wtf?!");
+
+#endif
+
 }
 
 BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
@@ -105,7 +112,7 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
     (void) strError;
   }
   CTString strTitle;
-  strTitle.PrintF(TRANS("For:\"%s\""), (CTString&)fnSourceFile);
+  strTitle.PrintF(TRANS("For:\"%s\""), (const char *) (CTString&)fnSourceFile);
   // call file requester for substituting file
   CTString strDefaultFile;
   strDefaultFile = fnSourceFile.FileName() + fnSourceFile.FileExt();
@@ -122,7 +129,7 @@ BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
       strBase.Load_t( fnBaseName);
     }
     CTString strNewRemap;
-    strNewRemap.PrintF( "\"%s\" \"%s\"\n", (CTString&)fnSourceFile, (CTString&)fnReplacingFile);
+    strNewRemap.PrintF( "\"%s\" \"%s\"\n", (const char *) (CTString&)fnSourceFile, (const char *) (CTString&)fnReplacingFile);
     strBase += strNewRemap;
     strBase.Save_t( fnBaseName);
   }
@@ -162,7 +169,7 @@ void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTextur
           to.SetData_t(fnmTexture);
         } else {
           ThrowF_t( TRANS("Unable to load world because texture \"%s\" can't be found."),
-            (CTString&)fnmTexture);
+            (const char *) ((CTString&)fnmTexture));
         }
       }
     }
@@ -189,7 +196,7 @@ void ReadTextureObject_t(CTStream &strm, CTextureObject &to)
         // replacing texture was provided
         fnTexture = fnReplacingTexture;
       } else {
-        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (CTString&)fnTexture);
+        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (const char *) (CTString&)fnTexture);
       }
     }
   }
@@ -238,7 +245,7 @@ void ReadModelObject_t(CTStream &strm, CModelObject &mo)
         // replacing model was provided
         fnModel = fnReplacingModel;
       } else {
-        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (CTString&)fnModel);
+        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (const char *) (CTString&)fnModel);
       }
     }
   }
@@ -482,7 +489,7 @@ void WriteOffsetAndChildren(CTStream &strm, CModelInstance &mi)
 {
   strm.WriteID_t("MIOF");  // model instance offset
   // write model instance offset and parent bone
-  strm.Write_t(&mi.mi_qvOffset,sizeof(QVect));
+  strm<<mi.mi_qvOffset;
   CTString strParenBoneID = ska_GetStringFromTable(mi.mi_iParentBoneID);
   strm<<strParenBoneID;
 
@@ -635,7 +642,7 @@ void ReadModelInstanceOld_t(CTStream &strm, CModelInstance &mi)
   }
 
   // read model instance offset and parent bone
-  strm.Read_t(&mi.mi_qvOffset,sizeof(QVect));
+  strm>>mi.mi_qvOffset;
   CTString strParenBoneID;
   strm>>strParenBoneID;
   mi.mi_iParentBoneID = ska_GetIDFromStringTable(strParenBoneID);
@@ -789,7 +796,7 @@ void ReadOffsetAndChildren_t(CTStream &strm, CModelInstance &mi)
   INDEX ctcmi = 0;
   strm.ExpectID_t("MIOF");  // model instance offset
   // read model instance offset and parent bone
-  strm.Read_t(&mi.mi_qvOffset,sizeof(QVect));
+  strm>>mi.mi_qvOffset;
   CTString strParenBoneID;
   strm>>strParenBoneID;
   mi.mi_iParentBoneID = ska_GetIDFromStringTable(strParenBoneID);
@@ -873,7 +880,7 @@ void ReadAnimObject_t(CTStream &strm, CAnimObject &ao)
         // replacing anim was provided
         fnAnim = fnReplacingAnim;
       } else {
-        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (CTString&)fnAnim);
+        ThrowF_t( TRANS("Cannot find substitution for \"%s\""), (const char *) (CTString&)fnAnim);
       }
     }
   }

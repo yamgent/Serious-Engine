@@ -6,7 +6,7 @@
   #pragma once
 #endif
 
-
+#include <Engine/Network/Socket.h>
 
 #define SERVER_CLIENTS 16
 

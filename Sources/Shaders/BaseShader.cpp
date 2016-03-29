@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include "Shaders/StdH.h"
 
 #define TEXTURE_COUNT 1
 #define UVMAPS_COUNT  1

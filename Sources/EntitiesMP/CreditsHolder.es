@@ -57,7 +57,7 @@ components:
 
 functions:
   const CTString &GetDescription(void) const {
-    ((CTString&)m_strDescription).PrintF("%s", m_fnmMessage.FileName());
+    ((CTString&)m_strDescription).PrintF("%s", (const char *) m_fnmMessage.FileName());
     return m_strDescription;
   }
   
@@ -349,7 +349,7 @@ procedures:
 
     if( !Credits_On(m_fnmMessage))
     {
-      CPrintF("Error loading credits file '%s'!\n", m_fnmMessage);
+      CPrintF("Error loading credits file '%s'!\n", (const char *) m_fnmMessage);
       Credits_Off();
       return;
     }

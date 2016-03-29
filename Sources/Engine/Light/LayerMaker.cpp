@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Rendering/Render_internal.h>
 
@@ -21,8 +21,8 @@
 //#include <Engine/Graphics/ImageInfo.h>
 //#include <Engine/Base/ErrorReporting.h>
 
-extern INDEX _ctShadowLayers=0;
-extern INDEX _ctShadowClusters=0;
+INDEX _ctShadowLayers=0;
+INDEX _ctShadowClusters=0;
 
 
 // class used for making shadow layers (used only locally)

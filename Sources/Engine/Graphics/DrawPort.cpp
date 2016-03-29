@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Graphics/DrawPort.h>
 
@@ -425,11 +425,7 @@ void CDrawPort::DrawPoint( PIX pixI, PIX pixJ, COLOR col, PIX pixRadius/*=1*/) c
 {
   // check API and radius
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_D3D || eAPI==GAT_NONE);
-#else // SE1_D3D
-  ASSERT( eAPI==GAT_OGL || eAPI==GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
   ASSERT( pixRadius>=0);
   if( pixRadius==0) return; // do nothing if radius is 0
 
@@ -479,11 +475,7 @@ void CDrawPort::DrawPoint3D( FLOAT3D v, COLOR col, FLOAT fRadius/*=1.0f*/) const
 {
   // check API and radius
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
   ASSERT( fRadius>=0);
   if( fRadius==0) return; // do nothing if radius is 0
 
@@ -528,11 +520,7 @@ void CDrawPort::DrawLine( PIX pixI0, PIX pixJ0, PIX pixI1, PIX pixJ1, COLOR col,
 {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // setup rendering mode
   gfxDisableDepthTest();
@@ -597,11 +585,7 @@ void CDrawPort::DrawLine3D( FLOAT3D v0, FLOAT3D v1, COLOR col) const
 {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // setup rendering mode
   gfxDisableTexture(); 
@@ -643,11 +627,7 @@ void CDrawPort::DrawBorder( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COL
 {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // setup rendering mode
   gfxDisableDepthTest();
@@ -733,11 +713,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, COLOR col
 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // OpenGL
   if( eAPI==GAT_OGL)
@@ -784,11 +760,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // setup rendering mode
   gfxDisableDepthTest();
@@ -854,11 +826,7 @@ void CDrawPort::Fill( COLOR col) const
 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // OpenGL
   if( eAPI==GAT_OGL)
@@ -869,28 +837,25 @@ void CDrawPort::Fill( COLOR col) const
     pglClearColor( ubR/255.0f, ubG/255.0f, ubB/255.0f, 1.0f);
     pglClear( GL_COLOR_BUFFER_BIT);
   }
-  // Direct3D
-#ifdef SE1_D3D
+
+#ifdef PLATFORM_WIN32 // Direct3D
   else if( eAPI==GAT_D3D)
   {
     const ULONG d3dColor = rgba2argb(col);
     HRESULT hr = _pGfx->gl_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET, d3dColor,0,0);
     D3D_CHECKERROR(hr);
   }
-#endif SE1_D3D
+#endif
+
 }
 
 
-// fill a part of Z-Buffer with a given value
+// fill an part of Z-Buffer with a given value
 void CDrawPort::FillZBuffer( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight, FLOAT zval) const
 { 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // clip and eventually reject
   const BOOL bInside = ClipToDrawPort( this, pixI, pixJ, pixWidth, pixHeight);
@@ -927,11 +892,7 @@ void CDrawPort::FillZBuffer( FLOAT zval) const
 { 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
   gfxEnableDepthWrite();
 
   // OpenGL
@@ -958,11 +919,7 @@ void CDrawPort::GrabScreen( class CImageInfo &iiGrabbedImage, INDEX iGrabZBuffer
 {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
   extern INDEX ogl_bGrabDepthBuffer;
   const BOOL bGrabDepth = eAPI==GAT_OGL && ((iGrabZBuffer==1 && ogl_bGrabDepthBuffer) || iGrabZBuffer==2);
 
@@ -1060,11 +1017,7 @@ BOOL CDrawPort::IsPointVisible( PIX pixI, PIX pixJ, FLOAT fOoK, INDEX iID, INDEX
 
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // use delayed mechanism for checking
   extern BOOL CheckDepthPoint( const CDrawPort *pdp, PIX pixI, PIX pixJ, FLOAT fOoK, INDEX iID, INDEX iMirrorLevel=0);
@@ -1077,11 +1030,7 @@ void CDrawPort::RenderLensFlare( CTextureObject *pto, FLOAT fI, FLOAT fJ,
 {
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // setup rendering mode
   gfxEnableDepthTest();
@@ -1116,10 +1065,10 @@ void CDrawPort::RenderLensFlare( CTextureObject *pto, FLOAT fI, FLOAT fJ,
   pvtx[1].x = fI- fRICosA-fRJSinA;  pvtx[1].y = fJ- fRISinA-fRJCosA;  pvtx[1].z = 0.01f;
   pvtx[2].x = fI+ fRICosA-fRJSinA;  pvtx[2].y = fJ+ fRISinA-fRJCosA;  pvtx[2].z = 0.01f;
   pvtx[3].x = fI+ fRICosA+fRJSinA;  pvtx[3].y = fJ+ fRISinA+fRJCosA;  pvtx[3].z = 0.01f;
-  ptex[0].s = 0;  ptex[0].t = 0;
-  ptex[1].s = 0;  ptex[1].t = 1;
-  ptex[2].s = 1;  ptex[2].t = 1;
-  ptex[3].s = 1;  ptex[3].t = 0;
+  ptex[0].st.s = 0;  ptex[0].st.t = 0;
+  ptex[1].st.s = 0;  ptex[1].st.t = 1;
+  ptex[2].st.s = 1;  ptex[2].st.t = 1;
+  ptex[3].st.s = 1;  ptex[3].st.t = 0;
   pcol[0] = glcol;
   pcol[1] = glcol;
   pcol[2] = glcol;
@@ -1208,11 +1157,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
 {
   // check API and adjust position for D3D by half pixel
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
 
   // skip drawing if text falls above or below draw port
   if( pixY0>dp_Height || pixX0>dp_Width) return;
@@ -1298,7 +1243,7 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
         acTmp[6] = '\0'; // terminate string
         col = strtoul( acTmp, &pcDummy, 16) <<8;
         col = AdjustColor( col, _slTexHueShift, _slTexSaturation);
-        glcol.Set( col|glcol.a); // do color change but keep original alpha
+        glcol.Set( col|glcol.ub.a); // do color change but keep original alpha
         continue;
       // alpha change?
       case 'a':
@@ -1364,8 +1309,8 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
     }
 
     // adjust alpha for flashing
-    if( iFlash>0) glcol.a = ulAlpha*(sin(iFlash*tmFrame)*0.5f+0.5f);
-    else glcol.a = ulAlpha; 
+    if( iFlash>0) glcol.ub.a = (UBYTE) (ulAlpha*(sin(iFlash*tmFrame)*0.5f+0.5f));
+    else glcol.ub.a = ulAlpha; 
 
     // prepare coordinates for screen and texture
     const FLOAT fX0 = pixXA;  const FLOAT fX1 = fX0 +pixScaledWidth;
@@ -1376,10 +1321,10 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
     pvtx[1].x = fX0;  pvtx[1].y = fY1;  pvtx[1].z = 0;
     pvtx[2].x = fX1;  pvtx[2].y = fY1;  pvtx[2].z = 0;
     pvtx[3].x = fX1;  pvtx[3].y = fY0;  pvtx[3].z = 0;
-    ptex[0].s = fU0;  ptex[0].t = fV0;
-    ptex[1].s = fU0;  ptex[1].t = fV1;
-    ptex[2].s = fU1;  ptex[2].t = fV1;
-    ptex[3].s = fU1;  ptex[3].t = fV0;
+    ptex[0].st.s = fU0;  ptex[0].st.t = fV0;
+    ptex[1].st.s = fU0;  ptex[1].st.t = fV1;
+    ptex[2].st.s = fU1;  ptex[2].st.t = fV1;
+    ptex[3].st.s = fU1;  ptex[3].st.t = fV0;
     pcol[0] = glcol;
     pcol[1] = glcol;
     pcol[2] = glcol;
@@ -1402,10 +1347,10 @@ void CDrawPort::PutText( const CTString &strText, PIX pixX0, PIX pixY0, const CO
       pvtx[1].x = pvtx[1-4].x +fAdjustX;  pvtx[1].y = fY1;  pvtx[1].z = 0;
       pvtx[2].x = pvtx[2-4].x +fAdjustX;  pvtx[2].y = fY1;  pvtx[2].z = 0;
       pvtx[3].x = pvtx[3-4].x +fAdjustX;  pvtx[3].y = fY0;  pvtx[3].z = 0;
-      ptex[0].s = fU0;    ptex[0].t = fV0;
-      ptex[1].s = fU0;    ptex[1].t = fV1;
-      ptex[2].s = fU1;    ptex[2].t = fV1;
-      ptex[3].s = fU1;    ptex[3].t = fV0;
+      ptex[0].st.s = fU0;    ptex[0].st.t = fV0;
+      ptex[1].st.s = fU0;    ptex[1].st.t = fV1;
+      ptex[2].st.s = fU1;    ptex[2].st.t = fV1;
+      ptex[3].st.s = fU1;    ptex[3].st.t = fV0;
       pcol[0] = glcol;
       pcol[1] = glcol;
       pcol[2] = glcol;
@@ -1445,7 +1390,7 @@ void CDrawPort::PutTextCXY( const CTString &strText, PIX pixX0, PIX pixY0,
                             const COLOR colBlend/*=0xFFFFFFFF*/) const
 {
   PIX pixTextWidth  = GetTextWidth(strText);
-  PIX pixTextHeight = dp_FontData->fd_pixCharHeight * dp_fTextScaling;
+  PIX pixTextHeight = (PIX) (dp_FontData->fd_pixCharHeight * dp_fTextScaling);
   PutText( strText, pixX0-pixTextWidth/2, pixY0-pixTextHeight/2, colBlend);
 }
 
@@ -1500,11 +1445,7 @@ void CDrawPort::PutTexture( class CTextureObject *pTO,
 
   // check API and adjust position for D3D by half pixel
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
-#ifdef SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_D3D || eAPI == GAT_NONE);
-#else // SE1_D3D
-  ASSERT(eAPI == GAT_OGL || eAPI == GAT_NONE);
-#endif // SE1_D3D
+  ASSERT( GfxValidApi(eAPI) );
   FLOAT fI0 = pixI0;  FLOAT fI1 = pixI1;
   FLOAT fJ0 = pixJ0;  FLOAT fJ1 = pixJ1;
 
@@ -1555,10 +1496,10 @@ void CDrawPort::PutTexture( class CTextureObject *pTO,
   pvtx[1].x = fI0;  pvtx[1].y = fJ1;  pvtx[1].z = 0;
   pvtx[2].x = fI1;  pvtx[2].y = fJ1;  pvtx[2].z = 0;
   pvtx[3].x = fI1;  pvtx[3].y = fJ0;  pvtx[3].z = 0;
-  ptex[0].s = fU0;  ptex[0].t = fV0;
-  ptex[1].s = fU0;  ptex[1].t = fV1;
-  ptex[2].s = fU1;  ptex[2].t = fV1;
-  ptex[3].s = fU1;  ptex[3].t = fV0;
+  ptex[0].st.s = fU0;  ptex[0].st.t = fV0;
+  ptex[1].st.s = fU0;  ptex[1].st.t = fV1;
+  ptex[2].st.s = fU1;  ptex[2].st.t = fV1;
+  ptex[3].st.s = fU1;  ptex[3].st.t = fV0;
   pcol[0] = glcolUL;
   pcol[1] = glcolDL;
   pcol[2] = glcolDR;
@@ -1609,10 +1550,10 @@ void CDrawPort::AddTexture( const FLOAT fI0, const FLOAT fJ0, const FLOAT fI1, c
   pvtx[1].x = fI0;  pvtx[1].y = fJ1;  pvtx[1].z = 0;
   pvtx[2].x = fI1;  pvtx[2].y = fJ1;  pvtx[2].z = 0;
   pvtx[3].x = fI1;  pvtx[3].y = fJ0;  pvtx[3].z = 0;
-  ptex[0].s = 0;    ptex[0].t = 0;
-  ptex[1].s = 0;    ptex[1].t = 1;
-  ptex[2].s = 1;    ptex[2].t = 1;
-  ptex[3].s = 1;    ptex[3].t = 0;
+  ptex[0].st.s = 0;    ptex[0].st.t = 0;
+  ptex[1].st.s = 0;    ptex[1].st.t = 1;
+  ptex[2].st.s = 1;    ptex[2].st.t = 1;
+  ptex[3].st.s = 1;    ptex[3].st.t = 0;
   pcol[0] = glCol;  pcol[1] = glCol;  pcol[2] = glCol;  pcol[3] = glCol;
   pelm[0] = iStart+0;  pelm[1] = iStart+1;  pelm[2] = iStart+2;
   pelm[3] = iStart+2;  pelm[4] = iStart+3;  pelm[5] = iStart+0;
@@ -1633,10 +1574,10 @@ void CDrawPort::AddTexture( const FLOAT fI0, const FLOAT fJ0, const FLOAT fI1, c
   pvtx[1].x = fI0;  pvtx[1].y = fJ1;  pvtx[1].z = 0;
   pvtx[2].x = fI1;  pvtx[2].y = fJ1;  pvtx[2].z = 0;
   pvtx[3].x = fI1;  pvtx[3].y = fJ0;  pvtx[3].z = 0;
-  ptex[0].s = fU0;  ptex[0].t = fV0;
-  ptex[1].s = fU0;  ptex[1].t = fV1;
-  ptex[2].s = fU1;  ptex[2].t = fV1;
-  ptex[3].s = fU1;  ptex[3].t = fV0;
+  ptex[0].st.s = fU0;  ptex[0].st.t = fV0;
+  ptex[1].st.s = fU0;  ptex[1].st.t = fV1;
+  ptex[2].st.s = fU1;  ptex[2].st.t = fV1;
+  ptex[3].st.s = fU1;  ptex[3].st.t = fV0;
   pcol[0] = glCol;
   pcol[1] = glCol;
   pcol[2] = glCol;
@@ -1688,10 +1629,10 @@ void CDrawPort::AddTexture( const FLOAT fI0, const FLOAT fJ0, const FLOAT fU0, c
   pvtx[1].x = fI1;  pvtx[1].y = fJ1;  pvtx[1].z = 0;
   pvtx[2].x = fI2;  pvtx[2].y = fJ2;  pvtx[2].z = 0;
   pvtx[3].x = fI3;  pvtx[3].y = fJ3;  pvtx[3].z = 0;
-  ptex[0].s = fU0;  ptex[0].t = fV0;
-  ptex[1].s = fU1;  ptex[1].t = fV1;
-  ptex[2].s = fU2;  ptex[2].t = fV2;
-  ptex[3].s = fU3;  ptex[3].t = fV3;
+  ptex[0].st.s = fU0;  ptex[0].st.t = fV0;
+  ptex[1].st.s = fU1;  ptex[1].st.t = fV1;
+  ptex[2].st.s = fU2;  ptex[2].st.t = fV2;
+  ptex[3].st.s = fU3;  ptex[3].st.t = fV3;
   pcol[0] = glCol0;
   pcol[1] = glCol1;
   pcol[2] = glCol2;

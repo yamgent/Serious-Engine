@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Brushes/Brush.h>
 #include <Engine/Brushes/BrushArchive.h>
@@ -17,10 +17,15 @@
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/StaticArray.cpp>
 
+// !!! FIXME: This confuses GCC, since CDynamicArray is a #included
+// !!! FIXME:  source file, and it ends up compiling the template more than
+// !!! FIXME:  once.  :(   --ryan.
+#ifdef _MSC_VER
 template CDynamicArray<CBrush3D>;
+#endif
 
-extern BOOL _bPortalSectorLinksPreLoaded = FALSE;
-extern BOOL _bEntitySectorLinksPreLoaded = FALSE;
+BOOL _bPortalSectorLinksPreLoaded = FALSE;
+BOOL _bEntitySectorLinksPreLoaded = FALSE;
 
 /*
  * Calculate bounding boxes in all brushes.

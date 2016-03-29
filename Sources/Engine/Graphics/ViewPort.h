@@ -15,7 +15,6 @@
  *  ViewPort
  */
 
-/* rcg !!! FIXME: This will need to go away. */
 #ifdef PLATFORM_WIN32
 class CTempDC {
 public:

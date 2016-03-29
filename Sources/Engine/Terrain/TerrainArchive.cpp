@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 
 #include <Engine/Terrain/Terrain.h>
 #include <Engine/Terrain/TerrainArchive.h>
@@ -15,7 +15,7 @@
 #include <Engine/Templates/DynamicArray.cpp>
 #include <Engine/Templates/StaticArray.cpp>
 
-template CDynamicArray<CBrush3D>;
+template class CDynamicArray<CBrush3D>;
 
 /*
  * Read from stream.

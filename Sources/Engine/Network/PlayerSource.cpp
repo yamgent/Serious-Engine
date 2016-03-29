@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Base/Console.h>
 #include <Engine/Network/Network.h>
@@ -55,7 +55,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
 
   for(TIME tmWait=0; 
       tmWait<net_tmConnectionTimeout*1000; 
-      Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
+      _pTimer->Sleep(NET_WAITMESSAGE_DELAY), tmWait+=NET_WAITMESSAGE_DELAY) {
     if (_pNetwork->ga_IsServer) {
       _pNetwork->TimerLoop();
     }
@@ -86,7 +86,7 @@ void CPlayerSource::Start_t(CPlayerCharacter &pcCharacter) // throw char *
       CTString strReason;
       nmReceived>>strReason;
       _pNetwork->ga_sesSessionState.ses_strDisconnected = strReason;
-      ThrowF_t(TRANS("Cannot add player because: %s\n"), strReason);
+      ThrowF_t(TRANS("Cannot add player because: %s\n"), (const char *) strReason);
 
     // otherwise
     } else {

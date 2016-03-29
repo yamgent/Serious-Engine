@@ -77,7 +77,7 @@ void SubMain( int argc, char *argv[])
   }
   
   // initialize engine
-  SE_InitEngine("");
+  SE_InitEngine(argv[0], "");
   _fnmApplicationPath = CTString("");
 
 
@@ -103,7 +103,7 @@ void SubMain( int argc, char *argv[])
       strmSrc.GetLine_t(strLine);
 
       // try to find address marker in it
-      const char *strAdr = strstr(strLine, "$adr:");
+      char *strAdr = strstr(strLine, "$adr:");
       // if there is no marker
       if (strAdr==NULL) {
         // just copy the line

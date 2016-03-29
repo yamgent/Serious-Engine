@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
 #include "Credits.h"
 
@@ -134,14 +134,14 @@ FLOAT Credits_Render(CDrawPort *pdp)
   pixH = dpWide.GetHeight();
   fResolutionScaling = (FLOAT)pixW / 640.0f;
   dpWide.SetFont( _pfdDisplayFont);
-  pixLineHeight = floor(20*fResolutionScaling);
+  pixLineHeight = (PIX) (floor(20*fResolutionScaling));
 
   const FLOAT fLinesPerSecond = _fSpeed;
   FLOAT fOffset = fTime*fLinesPerSecond;
   INDEX ctLinesOnScreen = pixH/pixLineHeight;
-  INDEX iLine1 = fOffset;
+  INDEX iLine1 = (INDEX) fOffset;
 
-  pixJ = iLine1*pixLineHeight-fOffset*pixLineHeight;
+  pixJ = (PIX) (iLine1*pixLineHeight-fOffset*pixLineHeight);
   iLine1-=ctLinesOnScreen;
 
   INDEX ctLines = _astrCredits.Count();

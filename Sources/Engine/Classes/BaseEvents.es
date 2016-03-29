@@ -2,7 +2,7 @@
 
 5
 %{
-#include "StdH.h"
+#include <Engine/StdH.h>
 #define DECL_DLL ENGINE_API
 #include <Engine/Entities/EntityEvent.h>
 #include <Engine/Entities/EntityPointer.h>

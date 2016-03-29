@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include <Engine\Engine.h>
+#include <Engine/Engine.h>
 #include <GameMP/SessionProperties.h>
 #include <GameMP/PlayerSettings.h>
 
@@ -13,9 +13,10 @@
 #define DECL_DLL 
 #endif
 
-#include "..\Global.h"
-#include "..\Common\Flags.h"
-#include "..\Common\Common.h"
-#include "..\Common\Particles.h"
-#include "..\Common\EmanatingParticles.h"
-#include "..\Common\GameInterface.h"
+#include "../Global.h"
+#include "../Common/Flags.h"
+#include "../Common/Common.h"
+#include "../Common/Particles.h"
+#include "../Common/EmanatingParticles.h"
+#include "../Common/GameInterface.h"
+

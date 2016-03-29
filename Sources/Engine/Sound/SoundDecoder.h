@@ -1,6 +1,10 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#pragma once
+#ifndef SE_INCL_SOUNDDECODER_H
+#define SE_INCL_SOUNDDECODER_H
+#ifdef PRAGMA_ONCE
+  #pragma once
+#endif
 
 class CSoundDecoder {
 public:
@@ -26,3 +30,6 @@ public:
   // reset decoder to start of sample
   void Reset(void);
 };
+
+#endif  /* include-once check. */
+

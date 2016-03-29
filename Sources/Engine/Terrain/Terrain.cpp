@@ -1,11 +1,11 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "Engine/StdH.h"
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Math/Projection.h>
 #include <Engine/Math/FixInt.h>
-#include <Engine/Graphics/Drawport.h>
+#include <Engine/Graphics/DrawPort.h>
 #include <Engine/Graphics/ImageInfo.h>
 #include <Engine/Graphics/GfxLibrary.h>
 #include <Engine/Terrain/Terrain.h>
@@ -496,8 +496,8 @@ void CTerrain::ReAllocateHeightMap(PIX pixWidth, PIX pixHeight)
   tr_pixHeightMapWidth  = pixWidth;
   tr_pixHeightMapHeight = pixHeight;
 
-
   ASSERT(_CrtCheckMemory());
+
   // Update shadow map size cos it depends on size of height map
   SetShadowMapsSize(tr_iShadowMapSizeAspect,tr_iShadingMapSizeAspect);
   /*
@@ -612,7 +612,7 @@ void CTerrain::SetLodDistanceFactor(FLOAT fLodDistance)
 }
 
 // Get shadow map size
-inline PIX CTerrain::GetShadowMapWidth(void)
+PIX CTerrain::GetShadowMapWidth(void)
 {
   if(tr_iShadowMapSizeAspect<0) {
     return (tr_pixHeightMapWidth-1)>>-tr_iShadowMapSizeAspect;
@@ -620,7 +620,7 @@ inline PIX CTerrain::GetShadowMapWidth(void)
     return (tr_pixHeightMapWidth-1)<<tr_iShadowMapSizeAspect;
   }
 }
-inline PIX CTerrain::GetShadowMapHeight(void)
+PIX CTerrain::GetShadowMapHeight(void)
 {
   if(tr_iShadowMapSizeAspect<0) {
     return (tr_pixHeightMapHeight-1)>>-tr_iShadowMapSizeAspect;
@@ -630,12 +630,12 @@ inline PIX CTerrain::GetShadowMapHeight(void)
 }
 
 // Get shading map size
-inline PIX CTerrain::GetShadingMapWidth(void)
+PIX CTerrain::GetShadingMapWidth(void)
 {
   ASSERT(tr_iShadingMapSizeAspect>=0);
   return GetShadowMapWidth()>>tr_iShadingMapSizeAspect;
 }
-inline PIX CTerrain::GetShadingMapHeight(void)
+PIX CTerrain::GetShadingMapHeight(void)
 {
   ASSERT(tr_iShadingMapSizeAspect>=0);
   return GetShadowMapHeight()>>tr_iShadingMapSizeAspect;
@@ -823,10 +823,10 @@ __forceinline void CopyPixel(COLOR *pubSrc,COLOR *pubDst,FLOAT fMaskStrength)
 {
   GFXColor *pcolSrc = (GFXColor*)pubSrc;
   GFXColor *pcolDst = (GFXColor*)pubDst;
-  pcolSrc->r = Lerp(pcolSrc->r,pcolDst->r,fMaskStrength);
-  pcolSrc->g = Lerp(pcolSrc->g,pcolDst->g,fMaskStrength);
-  pcolSrc->b = Lerp(pcolSrc->b,pcolDst->b,fMaskStrength);
-  pcolSrc->a = 255;
+  pcolSrc->ub.r = Lerp(pcolSrc->ub.r,pcolDst->ub.r,fMaskStrength);
+  pcolSrc->ub.g = Lerp(pcolSrc->ub.g,pcolDst->ub.g,fMaskStrength);
+  pcolSrc->ub.b = Lerp(pcolSrc->ub.b,pcolDst->ub.b,fMaskStrength);
+  pcolSrc->ub.a = 255;
 }
 
 static INDEX _ctSavedTopMaps=0;
@@ -1108,10 +1108,10 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
         
         GFXColor *pcolSrc = (GFXColor*)pulTexDst;
         GFXColor *pcolDst = (GFXColor*)ulSrc;
-        pcolSrc->r = (BYTE)( (ULONG)pcolSrc->r + ((((ULONG)pcolDst->r - (ULONG)pcolSrc->r) * xStrength)>>16));
-        pcolSrc->g = (BYTE)( (ULONG)pcolSrc->g + ((((ULONG)pcolDst->g - (ULONG)pcolSrc->g) * xStrength)>>16));
-        pcolSrc->b = (BYTE)( (ULONG)pcolSrc->b + ((((ULONG)pcolDst->b - (ULONG)pcolSrc->b) * xStrength)>>16));
-        pcolSrc->a = pubEdgeMaskRow[iMask];
+        pcolSrc->ub.r = (BYTE)( (ULONG)pcolSrc->ub.r + ((((ULONG)pcolDst->ub.r - (ULONG)pcolSrc->ub.r) * xStrength)>>16));
+        pcolSrc->ub.g = (BYTE)( (ULONG)pcolSrc->ub.g + ((((ULONG)pcolDst->ub.g - (ULONG)pcolSrc->ub.g) * xStrength)>>16));
+        pcolSrc->ub.b = (BYTE)( (ULONG)pcolSrc->ub.b + ((((ULONG)pcolDst->ub.b - (ULONG)pcolSrc->ub.b) * xStrength)>>16));
+        pcolSrc->ub.a = pubEdgeMaskRow[iMask];
         
         pulTexDst++;
         xMaskHPos += xHMaskStep;
@@ -1194,8 +1194,8 @@ FLOATplane3D CTerrain::GetPlaneFromPoint(FLOAT3D &vAbsPoint)
   FLOAT3D vRelPoint = (vAbsPoint-tr_penEntity->en_plPlacement.pl_PositionVector) * !tr_penEntity->en_mRotation;
   vRelPoint(1) /= tr_vStretch(1);
   vRelPoint(3) /= tr_vStretch(3);
-  PIX pixX = floor(vRelPoint(1));
-  PIX pixZ = floor(vRelPoint(3));
+  PIX pixX = (PIX) floor(vRelPoint(1));
+  PIX pixZ = (PIX) floor(vRelPoint(3));
   PIX pixWidth = tr_pixHeightMapWidth;
   FLOAT fXRatio = vRelPoint(1) - pixX;
   FLOAT fZRatio = vRelPoint(3) - pixZ;
@@ -1667,8 +1667,8 @@ void CTerrain::ReGenerate(void)
 
   // for each tile that is waiting in regen queue
   INDEX ctrt = tr_auiRegenList.Count();
-  INDEX irt=0;
-  for(;irt<ctrt;irt++) {
+  INDEX irt;
+  for(irt=0;irt<ctrt;irt++) {
     // mark tile as ready for regeneration
     INDEX iTileIndex = tr_auiRegenList[irt];
     CTerrainTile &tt = tr_attTiles[iTileIndex];
@@ -1851,14 +1851,16 @@ void CTerrain::ReadVersion_t( CTStream *istrFile, INDEX iSavedVersion)
       (*istrFile)>>iShadowMapAspect;
       (*istrFile)>>iShadingMapAspect;
       SetShadowMapsSize(iShadowMapAspect,iShadingMapAspect);
-      INDEX iShadowMapSize = GetShadowMapWidth() * GetShadowMapHeight() * sizeof(ULONG);
-      INDEX iShadingMapSize = GetShadingMapWidth() * GetShadingMapHeight() * sizeof(UWORD);
+      INDEX iShadowMapSize = GetShadowMapWidth() * GetShadowMapHeight();
+      INDEX iShadingMapSize = GetShadingMapWidth() * GetShadingMapHeight();
       // Read shadow map
       ASSERT(tr_tdShadowMap.td_pulFrames!=NULL);
-      istrFile->Read_t(&tr_tdShadowMap.td_pulFrames[0],iShadowMapSize);
+      for (INDEX i = 0; i < iShadowMapSize; i++)
+        (*istrFile)>>tr_tdShadowMap.td_pulFrames[i];
       // Read shading map
       ASSERT(tr_auwShadingMap!=NULL);
-      istrFile->Read_t(&tr_auwShadingMap[0],iShadingMapSize);
+      for (INDEX i = 0; i < iShadingMapSize; i++)
+        (*istrFile)>>tr_auwShadingMap[i];
     }
 
     // Create shadow map mipmaps
@@ -1883,7 +1885,8 @@ void CTerrain::ReadVersion_t( CTStream *istrFile, INDEX iSavedVersion)
   (*istrFile).ExpectID_t("TRHM");  // 'Terrain heightmap'
 
   // read height map
-  (*istrFile).Read_t(&tr_auwHeightMap[0],sizeof(UWORD)*tr_pixHeightMapWidth*tr_pixHeightMapHeight);
+  for (ULONG i = 0; i < tr_pixHeightMapWidth*tr_pixHeightMapHeight; i++)
+    (*istrFile)>>tr_auwHeightMap[i];
   (*istrFile).ExpectID_t("THEN");  // 'Terrain heightmap end'
 
   // Terrain will be rebuild in entity.cpp
