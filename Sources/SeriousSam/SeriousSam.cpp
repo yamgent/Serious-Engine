@@ -207,7 +207,7 @@ static void DirectoryLockOff(void)
   // if lock is open
   if (_hLock!=NULL) {
     fclose(_hLock);
-    _hLock == NULL;
+    _hLock = NULL;
   }
   unlink(_fnmLock);
 }
