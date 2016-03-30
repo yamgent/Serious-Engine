@@ -105,9 +105,7 @@
 #include <Engine/Brushes/BrushTransformed.h>
 #include <Engine/Brushes/BrushArchive.h>
 
-
-#pragma message(">> Uncomment include to terrain.h")
-//#include <Engine/Terrain/Terrain.h>
+#include <Engine/Terrain/Terrain.h>
 
 #include <Engine/World/World.h>
 #include <Engine/World/WorldEditingProfile.h>
