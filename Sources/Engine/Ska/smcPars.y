@@ -4,6 +4,7 @@
 #include <Engine/Ska/AnimSet.h>
 #include <Engine/Ska/StringTable.h>
 #include <Engine/Base/ErrorReporting.h>
+#include <Engine/Base/Shell.h>
 #include <Engine/Templates/DynamicContainer.cpp>
 
 // for static linking mojo...

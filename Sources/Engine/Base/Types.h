@@ -191,6 +191,7 @@ typedef unsigned int        UINT;
       typedef long long  __int64;
     #endif
 
+    typedef char CHAR;
     typedef UBYTE BYTE;
     typedef unsigned short WORD;
     typedef unsigned long  int  DWORD;

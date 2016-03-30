@@ -155,27 +155,29 @@ public:
   inline CTString &GetDescription(void) { return strm_strStreamDescription; };
 
   /* Read an object from stream. */
-  inline CTStream &operator>>(float  &f) { Read_t( &f, sizeof( f)); return *this; } // throw char *
-  inline CTStream &operator>>(double &d) { Read_t( &d, sizeof( d)); return *this; } // throw char *
-  inline CTStream &operator>>(ULONG &ul) { Read_t(&ul, sizeof(ul)); return *this; } // throw char *
-  inline CTStream &operator>>(UWORD &uw) { Read_t(&uw, sizeof(uw)); return *this; } // throw char *
-  inline CTStream &operator>>(UBYTE &ub) { Read_t(&ub, sizeof(ub)); return *this; } // throw char *
-  inline CTStream &operator>>(SLONG &sl) { Read_t(&sl, sizeof(sl)); return *this; } // throw char *
-  inline CTStream &operator>>(SWORD &sw) { Read_t(&sw, sizeof(sw)); return *this; } // throw char *
-  inline CTStream &operator>>(SBYTE &sb) { Read_t(&sb, sizeof(sb)); return *this; } // throw char *
-  inline CTStream &operator>>(BOOL   &b) { Read_t( &b, sizeof( b)); return *this; } // throw char *
-  inline CTStream &operator>>(__int64 &i64) { Read_t( &i64, sizeof(i64)); return *this; } // throw char *
+  inline CTStream &operator>>(UBYTE &ub)  { Read_t(&ub, sizeof(ub)); return *this; } // throw char *
+  inline CTStream &operator>>(SBYTE &sb)  { Read_t(&sb, sizeof(sb)); return *this; } // throw char *
+  inline CTStream &operator>>(float  &f)  { Read_t( &f, sizeof( f)); BYTESWAP( f); return *this; } // throw char *
+  inline CTStream &operator>>(double &d)  { Read_t( &d, sizeof( d)); BYTESWAP( d); return *this; } // throw char *
+  inline CTStream &operator>>(ULONG &ul)  { Read_t(&ul, sizeof(ul)); BYTESWAP(ul); return *this; } // throw char *
+  inline CTStream &operator>>(SLONG &sl)  { Read_t(&sl, sizeof(sl)); BYTESWAP(sl); return *this; } // throw char *
+  inline CTStream &operator>>(UWORD &uw)  { Read_t(&uw, sizeof(uw)); BYTESWAP(uw); return *this; } // throw char *
+  inline CTStream &operator>>(SWORD &sw)  { Read_t(&sw, sizeof(sw)); BYTESWAP(sw); return *this; } // throw char *
+  inline CTStream &operator>>(BOOL   &b)  { Read_t( &b, sizeof( b)); BYTESWAP( b); return *this; } // throw char *
+  inline CTStream &operator>>(__int64 i)  { Read_t( &i, sizeof( i)); BYTESWAP( i); return *this; } // throw char *
+  inline CTStream &operator>>(__uint64 i) { Read_t( &i, sizeof( i)); BYTESWAP( i); return *this; } // throw char *
   /* Write an object into stream. */
-  inline CTStream &operator<<(const float  &f) { Write_t( &f, sizeof( f)); return *this; } // throw char *
-  inline CTStream &operator<<(const double &d) { Write_t( &d, sizeof( d)); return *this; } // throw char *
-  inline CTStream &operator<<(const ULONG &ul) { Write_t(&ul, sizeof(ul)); return *this; } // throw char *
-  inline CTStream &operator<<(const UWORD &uw) { Write_t(&uw, sizeof(uw)); return *this; } // throw char *
-  inline CTStream &operator<<(const UBYTE &ub) { Write_t(&ub, sizeof(ub)); return *this; } // throw char *
-  inline CTStream &operator<<(const SLONG &sl) { Write_t(&sl, sizeof(sl)); return *this; } // throw char *
-  inline CTStream &operator<<(const SWORD &sw) { Write_t(&sw, sizeof(sw)); return *this; } // throw char *
-  inline CTStream &operator<<(const SBYTE &sb) { Write_t(&sb, sizeof(sb)); return *this; } // throw char *
-  inline CTStream &operator<<(const BOOL   &b) { Write_t( &b, sizeof( b)); return *this; } // throw char *
-  inline CTStream &operator<<(const __int64   &i64) { Write_t( &i64, sizeof(i64)); return *this; } // throw char *
+  inline CTStream &operator<<(UBYTE ub)  { Write_t(&ub, sizeof(ub)); return *this; } // throw char *
+  inline CTStream &operator<<(SBYTE sb)  { Write_t(&sb, sizeof(sb)); return *this; } // throw char *
+  inline CTStream &operator<<(float  f)  { BYTESWAP( f); Write_t( &f, sizeof( f)); return *this; } // throw char *
+  inline CTStream &operator<<(double d)  { BYTESWAP( d); Write_t( &d, sizeof( d)); return *this; } // throw char *
+  inline CTStream &operator<<(ULONG ul)  { BYTESWAP(ul); Write_t(&ul, sizeof(ul)); return *this; } // throw char *
+  inline CTStream &operator<<(SLONG sl)  { BYTESWAP(sl); Write_t(&sl, sizeof(sl)); return *this; } // throw char *
+  inline CTStream &operator<<(UWORD uw)  { BYTESWAP(uw); Write_t(&uw, sizeof(uw)); return *this; } // throw char *
+  inline CTStream &operator<<(SWORD sw)  { BYTESWAP(sw); Write_t(&sw, sizeof(sw)); return *this; } // throw char *
+  inline CTStream &operator<<(BOOL   b)  { BYTESWAP( b); Write_t( &b, sizeof( b)); return *this; } // throw char *
+  inline CTStream &operator<<(__int64 i) { BYTESWAP( i); Write_t( &i, sizeof( i)); return *this; } // throw char *
+  inline CTStream &operator<<(__uint64 i) { BYTESWAP( i); Write_t( &i, sizeof( i)); return *this; } // throw char *
 
   // CTFileName reading/writing
   ENGINE_API friend CTStream &operator>>(CTStream &strmStream, CTFileName &fnmFileName);

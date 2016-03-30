@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "StdH.h"
+#include <Engine/StdH.h>
 
 #include <Engine/Engine.h>
 #include <Engine/CurrentVersion.h>
@@ -39,9 +39,10 @@ typedef struct sockaddr    SOCKADDR;
 #ifdef PLATFORM_WIN32
 #pragma comment(lib, "wsock32.lib")
 WSADATA* _wsaData = NULL;
+typedef int socklen_t;
 #endif
 
-SOCKET _socket = NULL;
+SOCKET _socket = INVALID_SOCKET;
 
 sockaddr_in* _sin = NULL;
 sockaddr_in* _sinLocal = NULL;
@@ -56,18 +57,18 @@ TIME _tmLastHeartbeat = 0;
 
 CDynamicStackArray<CServerRequest> ga_asrRequests;
 
-extern CTString ga_strServer = "master1.croteam.org";
+CTString ga_strServer = "master1.croteam.org";
 
 void _uninitWinsock();
 void _initializeWinsock(void)
 {
 #ifdef PLATFORM_WIN32
-  if(_wsaData != NULL && _socket != NULL) {
+  if(_wsaData != NULL && _socket != INVALID_SOCKET) {
     return;
   }
 
   _wsaData = new WSADATA;
-  _socket = NULL;
+  _socket = INVALID_SOCKET;
 
   // make the buffer that we'll use for packet reading
   if(_szBuffer != NULL) {
@@ -89,7 +90,7 @@ void _initializeWinsock(void)
   // if we couldn't resolve the hostname
   if(phe == NULL) {
     // report and stop
-    CPrintF("Couldn't resolve GameAgent server %s.\n", ga_strServer);
+    CPrintF("Couldn't resolve GameAgent server %s.\n", (const char *) ga_strServer);
     _uninitWinsock();
     return;
   }
@@ -102,6 +103,11 @@ void _initializeWinsock(void)
 
   // create the socket
   _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if (_socket == INVALID_SOCKET) {
+    CPrintF("Error creating GameAgent socket!\n");
+    _uninitWinsock();
+    return;
+  }
 
   // if we're a server
   if(_bServer) {
@@ -141,14 +147,16 @@ void _initializeWinsock(void)
 
 void _uninitWinsock()
 {
-  if(_wsaData != NULL) {
+  if (_socket != INVALID_SOCKET) {
     closesocket(_socket);
-    #ifdef PLATFORM_WIN32
+    _socket = INVALID_SOCKET;
+  }
+  #ifdef PLATFORM_WIN32
+  if(_wsaData != NULL) {
     delete _wsaData;
     _wsaData = NULL;
-    #endif
   }
-  _socket = NULL;
+  #endif
 }
 
 void _sendPacketTo(const char* pubBuffer, INDEX iLen, sockaddr_in* sin)
@@ -173,7 +181,7 @@ void _sendPacket(const char* szBuffer)
 
 int _recvPacket()
 {
-  int fromLength = sizeof(_sinFrom);
+  socklen_t fromLength = sizeof(_sinFrom);
   return recvfrom(_socket, _szBuffer, 1024, 0, (sockaddr*)&_sinFrom, &fromLength);
 }
 
@@ -202,10 +210,10 @@ void _sendHeartbeat(INDEX iChallenge)
     iChallenge,
     _pNetwork->ga_srvServer.GetPlayersCount(),
     _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
-    _pNetwork->ga_World.wo_strName,
-    _getGameModeName(_getSP()->sp_gmGameMode),
+    (const char *) _pNetwork->ga_World.wo_strName,
+    (const char *) _getGameModeName(_getSP()->sp_gmGameMode),
     _SE_VER_STRING,
-    _pShell->GetString("sam_strGameName"));
+    (const char *) _pShell->GetString("sam_strGameName"));
   _sendPacket(strPacket);
   _tmLastHeartbeat = _pTimer->GetRealTimeTick();
 }
@@ -250,7 +258,7 @@ extern void GameAgent_ServerEnd(void)
 /// GameAgent server update call which responds to enumeration pings and sends pings to masterserver.
 extern void GameAgent_ServerUpdate(void)
 {
-  if((_socket == NULL) || (!_bInitialized)) {
+  if((_socket == INVALID_SOCKET) || (!_bInitialized)) {
     return;
   }
 
@@ -273,11 +281,11 @@ extern void GameAgent_ServerUpdate(void)
         strPacket.PrintF("0;players;%d;maxplayers;%d;level;%s;gametype;%s;version;%s;gamename;%s;sessionname;%s",
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          (const char *) _pNetwork->ga_World.wo_strName,
+          (const char *) _getGameModeName(_getSP()->sp_gmGameMode),
           _SE_VER_STRING,
-          _pShell->GetString("sam_strGameName"),
-          _pShell->GetString("gam_strSessionName"));
+          (const char *) _pShell->GetString("sam_strGameName"),
+          (const char *) _pShell->GetString("gam_strSessionName"));
         _sendPacketTo(strPacket, &_sinFrom);
         break;
       }
@@ -355,7 +363,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 /// GameAgent client update for enumerations.
 extern void GameAgent_EnumUpdate(void)
 {
-  if((_socket == NULL) || (!_bInitialized)) {
+  if((_socket == INVALID_SOCKET) || (!_bInitialized)) {
     return;
   }
 
@@ -439,7 +447,7 @@ extern void GameAgent_EnumUpdate(void)
                 } else if(strKey == "gamename") {
                   strGameName = strValue;
                 } else {
-                  CPrintF("Unknown GameAgent parameter key '%s'!", strKey);
+                  CPrintF("Unknown GameAgent parameter key '%s'!", (const char *) strKey);
                 }
 
                 // reset temporary holders

@@ -7,6 +7,7 @@
 #endif
 
 #include <Engine/Base/Assert.h>
+#include <Engine/Math/Functions.h>
 
 /*
  * Template class for quaternion of arbitrary precision.

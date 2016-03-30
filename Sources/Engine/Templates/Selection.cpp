@@ -39,7 +39,7 @@ void CSelection<cType, ulFlag>::Deselect(cType &tToSelect)
     // deselect it
     tToSelect.Deselect(ulFlag);
     // remove it from this container
-    Remove(&tToSelect);
+    this->Remove(&tToSelect);
 
   // if the object is not selected
   } else {

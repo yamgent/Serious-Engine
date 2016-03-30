@@ -664,7 +664,7 @@ endif
 #DYNAMIC_SDL_LDFLAGS := $(shell sdl-config --libs)
 DYNAMIC_SDL_LDFLAGS :=
 ifeq ($(strip $(macosx)),true)
-  DYNAMIC_SDL_LDFLAGS := lib/macosx_x86/libSDL-1.2.0.dylib bin/libSDLmain.a
+  DYNAMIC_SDL_LDFLAGS := lib/macosx/libSDL-1.2.0.dylib lib/macosx/libSDLmain.a
 else
   DYNAMIC_SDL_LDFLAGS := lib/linux_x86/libSDL-1.2.so.0
 endif
@@ -743,7 +743,7 @@ endif
 
 ifeq ($(strip $(macosx)),true)
 SDLMAINLIB := bin/libSDLmain.a
-$(SDLMAINLIB) : lib/macosx_x86/libSDLmain.a $(BINDIR)
+$(SDLMAINLIB) : lib/macosx/libSDLmain.a $(BINDIR)
 	cp $< $@
 	ranlib $@
 endif
