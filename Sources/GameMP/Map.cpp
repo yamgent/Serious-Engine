@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "LCDDrawing.h"
 
 extern BOOL map_bIsFirstEncounter;
