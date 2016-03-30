@@ -600,6 +600,9 @@ else
   #CXXFLAGS += -Wno-non-template-friend -fexceptions -frtti
   CXXFLAGS += -fexceptions -frtti
   CFLAGS += -D_MT -fno-omit-frame-pointer
+
+  # !!! FIXME: remove this.
+  CXXFLAGS += -Wno-c++11-compat-deprecated-writable-strings
 endif
 
 ifeq ($(strip $(soft_float)),true)
@@ -708,8 +711,9 @@ CXXFLAGS += $(CFLAGS)
 #$(BINDIR)/Entities/%.o: $(SRCDIR)/Entities/%.cpp
 #	$(CXX) -c -o $@ $< -I$(dir $<)StdH $(CXXFLAGS)
 
+# !!! FIXME: remove -Wno-unused-value -Wno-switch
 $(BINDIR)/EntitiesMP/%.o: $(SRCDIR)/EntitiesMP/%.cpp
-	$(CXX) -c -o $@ $< -I$(dir $<)StdH $(CXXFLAGS)
+	$(CXX) -c -o $@ $< -I$(dir $<)StdH $(CXXFLAGS) -Wno-unused-value -Wno-switch
 
 $(BINDIR)/Engine/Classes/%.o: $(SRCDIR)/Engine/Classes/%.cpp
 	$(CXX) -c -o $@ $< -I$(dir $<)StdH $(CXXFLAGS)
