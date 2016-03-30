@@ -45,9 +45,9 @@
 #endif
 
 // control for partial usage of compiled vertex arrays
-extern BOOL CVA_b2D     = FALSE;
-extern BOOL CVA_bWorld  = FALSE;
-extern BOOL CVA_bModels = FALSE;    
+BOOL CVA_b2D     = FALSE;
+BOOL CVA_bWorld  = FALSE;
+BOOL CVA_bModels = FALSE;
 
 // common element arrays
 CStaticStackArray<GFXVertex>   _avtxCommon;      
@@ -299,14 +299,18 @@ static INDEX sys_bHasHardwareTnL = 1;
 static INDEX sys_bHasTruform = 0;
 static INDEX sys_bHasCVAs = 0;
 static INDEX sys_bUsingOpenGL = 0;
-extern INDEX sys_bUsingDirect3D = 0;
+INDEX sys_bUsingDirect3D = 0;
 
 /*
  * Low level hook flags
  */
 #define WH_KEYBOARD_LL 13
 
+#ifdef PLATFORM_WIN32
+void EnableWindowsKeys(void);
+
 #pragma message(">> doublecheck me!!!")
+
 // these are commented because they are already defined in winuser.h
 //#define LLKHF_EXTENDED 0x00000001
 //#define LLKHF_INJECTED 0x00000010
@@ -315,7 +319,6 @@ extern INDEX sys_bUsingDirect3D = 0;
 
 //#define LLMHF_INJECTED 0x00000001
 
-#ifdef PLATFORM_WIN32
 /*
  * Structure used by WH_KEYBOARD_LL
  */
@@ -1061,7 +1064,6 @@ CGfxLibrary::CGfxLibrary(void)
  */
 CGfxLibrary::~CGfxLibrary()
 {
-  extern void EnableWindowsKeys(void);
   EnableWindowsKeys();
   // free common arrays
   _avtxCommon.Clear();

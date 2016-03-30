@@ -247,11 +247,6 @@ void CEntityClass::Read_t( CTStream *istr) // throw char *
     ThrowF_t(TRANS("Cannot load DLL file '%s':\n%s"),
               (const char *) dllName, (const char *) err);
   }
-  
-
-  // load the DLL
-  CTFileName fnmExpanded;
-  ExpandFilePath(EFP_READ, fnmDLL, fnmExpanded);
 
   ec_fnmClassDLL = fnmDLL;
 

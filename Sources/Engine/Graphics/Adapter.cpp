@@ -60,7 +60,7 @@ static CResolution _areResolutions[] =
 // THIS NUMBER MUST NOT BE OVER 25! (otherwise change it in adapter.h)
 static const INDEX MAX_RESOLUTIONS = sizeof(_areResolutions)/sizeof(_areResolutions[0]);
 
-// !!! FIXME : rcg11052001 abstract this...
+
 #ifdef PLATFORM_WIN32
 
 // initialize CDS support (enumerate modes at startup)
@@ -210,6 +210,8 @@ void CGfxLibrary::InitAPIs(void)
   }
   // shutdown DX8 (we'll start it again if needed)
   D3DRELEASE( gl_pD3D, TRUE);
+#endif
+
   if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
   gl_hiDriver = NONE;
 }

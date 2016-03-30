@@ -20,7 +20,7 @@ void CSelection<cType, ulFlag>::Select(cType &tToSelect)
     // select it
     tToSelect.Select(ulFlag);
     // add it to this container
-    Add(&tToSelect);
+    this->Add(&tToSelect);
 
   // if the object is already selected
   } else {
