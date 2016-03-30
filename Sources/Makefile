@@ -274,12 +274,9 @@ ENGINEGRAPHICSSRCS := Engine/Graphics/Adapter.cpp \
 ENGINENETWORKSRCS := Engine/Network/ActionBuffer.cpp \
                      Engine/Network/NetworkMessage.cpp \
                      Engine/Network/Server.cpp \
-                     Engine/Network/GameSpy.cpp \
                      Engine/Network/Buffer.cpp \
                      Engine/Network/NetworkProfile.cpp \
-                     Engine/Network/GameSpyEnum.cpp \
                      Engine/Network/SessionState.cpp \
-                     Engine/Network/GameSpyKeys.cpp \
                      Engine/Network/PlayerBuffer.cpp \
                      Engine/Network/MessageDispatcher.cpp \
                      Engine/Network/PlayerSource.cpp \
@@ -291,13 +288,7 @@ ENGINENETWORKSRCS := Engine/Network/ActionBuffer.cpp \
                      Engine/Network/CommunicationInterface.cpp \
                      Engine/Network/Diff.cpp
 
-
-ENGINEGAMESPYSRCS := Engine/gamespy/darray.c \
-                     Engine/gamespy/gqueryreporting.c \
-                     Engine/gamespy/gserver.c \
-                     Engine/gamespy/gserverlist.c \
-                     Engine/gamespy/hashtable.c \
-                     Engine/gamespy/nonport.c
+ENGINEGAMEAGENTSRCS := Engine/GameAgent/GameAgent.cpp
 
 ENGINETERRAINSRCS := Engine/Terrain/ArrayHolder.cpp \
                      Engine/Terrain/Terrain.cpp \
@@ -308,10 +299,6 @@ ENGINETERRAINSRCS := Engine/Terrain/ArrayHolder.cpp \
                      Engine/Terrain/TerrainRayCasting.cpp \
                      Engine/Terrain/TerrainRender.cpp \
                      Engine/Terrain/TerrainTile.cpp
-
-
-# this code is included in Engine/gamespy/gqueryreporting, too...
-#ENGINEGAMESPYSRCS += Engine/gamespy/gutil.c
 
 ENGINERENDERINGSRCS := Engine/Rendering/Render.cpp \
                        Engine/Rendering/RenderProfile.cpp \
@@ -390,7 +377,7 @@ ENGINESRCS := Engine/Engine.cpp \
               $(ENGINESOUNDSRCS) \
               $(ENGINETEMPLATESSRCS) \
               $(ENGINEWORLDSRCS) \
-              $(ENGINEGAMESPYSRCS) \
+              $(ENGINEGAMEAGENTSRCS) \
               $(ENGINEZLIBSRCS)
 
 OBJS1 := $(ENGINESRCS:.c=.o)
@@ -844,7 +831,7 @@ $(BINDIR) :
 	mkdir -p $(BINDIR)/Engine/Templates
 	mkdir -p $(BINDIR)/Engine/World
 	mkdir -p $(BINDIR)/Engine/Terrain
-	mkdir -p $(BINDIR)/Engine/gamespy
+	mkdir -p $(BINDIR)/Engine/GameAgent
 	mkdir -p $(BINDIR)/Engine/zlib
 	mkdir -p $(BINDIR)/DedicatedServer
 	mkdir -p $(BINDIR)/Entities

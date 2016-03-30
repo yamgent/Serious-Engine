@@ -19,9 +19,28 @@
 
 #include <Engine/GameAgent/GameAgent.h>
 
-#pragma comment(lib, "wsock32.lib")
+#ifdef PLATFORM_UNIX
+#include <fcntl.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR   -1
+#define closesocket close
+typedef int SOCKET;
+typedef struct hostent HOSTENT;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr    SOCKADDR;
+#define WSAGetLastError() (INDEX) errno
+#endif
 
+#ifdef PLATFORM_WIN32
+#pragma comment(lib, "wsock32.lib")
 WSADATA* _wsaData = NULL;
+#endif
+
 SOCKET _socket = NULL;
 
 sockaddr_in* _sin = NULL;
@@ -42,6 +61,7 @@ extern CTString ga_strServer = "master1.croteam.org";
 void _uninitWinsock();
 void _initializeWinsock(void)
 {
+#ifdef PLATFORM_WIN32
   if(_wsaData != NULL && _socket != NULL) {
     return;
   }
@@ -61,6 +81,7 @@ void _initializeWinsock(void)
     _uninitWinsock();
     return;
   }
+#endif
 
   // get the host IP
   hostent* phe = gethostbyname(ga_strServer);
@@ -95,20 +116,37 @@ void _initializeWinsock(void)
   }
 
   // set the socket to be nonblocking
+#ifdef PLATFORM_WIN32
   DWORD dwNonBlocking = 1;
   if(ioctlsocket(_socket, FIONBIO, &dwNonBlocking) != 0) {
     CPrintF("Error setting socket to nonblocking!\n");
     _uninitWinsock();
     return;
   }
+#else
+  int flags = fcntl(_socket, F_GETFL);
+  int failed = flags;
+  if (failed != -1) {
+      flags |= O_NONBLOCK;
+      failed = fcntl(_socket, F_SETFL, flags);
+  }
+
+  if (failed == -1) {
+    CPrintF("Error setting socket to nonblocking!\n");
+    _uninitWinsock();
+    return;
+  }
+#endif
 }
 
 void _uninitWinsock()
 {
   if(_wsaData != NULL) {
     closesocket(_socket);
+    #ifdef PLATFORM_WIN32
     delete _wsaData;
     _wsaData = NULL;
+    #endif
   }
   _socket = NULL;
 }
@@ -329,6 +367,8 @@ extern void GameAgent_EnumUpdate(void)
     switch(_szBuffer[0]) {
     case 's':
       {
+        // !!! FIXME: serialize this and byteswap it.  --ryan.
+        #pragma pack(1)
         struct sIPPort {
           UBYTE bFirst;
           UBYTE bSecond;
@@ -336,6 +376,8 @@ extern void GameAgent_EnumUpdate(void)
           UBYTE bFourth;
           USHORT iPort;
         };
+        #pragma pack()
+
         sIPPort* pServers = (sIPPort*)(_szBuffer + 1);
         while(iLen - ((CHAR*)pServers - _szBuffer) >= sizeof(sIPPort)) {
           sIPPort ip = *pServers;
