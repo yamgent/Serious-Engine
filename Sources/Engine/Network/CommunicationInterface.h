@@ -6,7 +6,21 @@
   #pragma once
 #endif
 
-#include <Engine/Network/Socket.h>
+#ifdef PLATFORM_UNIX
+#include <fcntl.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR   -1
+#define closesocket close
+typedef int SOCKET;
+typedef struct hostent HOSTENT;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr    SOCKADDR;
+#define WSAGetLastError() (INDEX) errno
+#endif
 
 #define SERVER_CLIENTS 16
 

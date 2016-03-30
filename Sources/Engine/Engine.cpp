@@ -32,10 +32,6 @@
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Base/IFeel.h>
 
-#if (defined PLATFORM_MACOSX)
-#include <Carbon/Carbon.h>
-#endif
-
 // this version string can be referenced from outside the engine
 ENGINE_API CTString _strEngineBuild  = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
@@ -108,6 +104,7 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
   }
   return TRUE;
 }
+#endif
 
 static void DetectCPU(void)
 {
@@ -411,6 +408,8 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   }
 
 #elif (defined PLATFORM_MACOSX)
+    STUBBED("Use some Gestalt replacement, or whatever");
+    #if 0
     long osver = 0x0000;
     OSErr err = Gestalt(gestaltSystemVersion, &osver);
     if (err != noErr)
@@ -419,6 +418,12 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
     sys_iOSMajor = ((osver & 0x0F00) >> 8) + (((osver & 0xF000) >> 12) * 10);
     sys_iOSMinor = ((osver & 0x00F0) >> 4);
     sys_iOSBuild = ((osver & 0x000F) >> 0);
+    #else
+    sys_iOSMajor = 10;  // !!! FIXME: just flatly false.
+    sys_iOSMinor = 6;
+    sys_iOSBuild = 0;
+    #endif
+
     sys_strOS = "Mac OS X";
     sys_strOSMisc = "Mac OS";
     CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);

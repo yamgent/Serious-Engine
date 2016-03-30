@@ -6,6 +6,7 @@
 #include <Engine/Base/Stream.h>
 #include <Engine/Base/ErrorReporting.h>
 #include <Engine/Base/Anim.h>
+#include <Engine/Base/Shell.h>
 #include <Engine/Graphics/Texture.h>
 #include <Engine/Models/ModelObject.h>
 #include <Engine/Sound/SoundObject.h>
