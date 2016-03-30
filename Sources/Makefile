@@ -700,6 +700,7 @@ ifeq ($(strip $(use_mmx_intrinsics)),true)
   CFLAGS += -mmmx -DUSE_MMX_INTRINSICS=1
 endif
 
+CFLAGS += $(PICFLAG)
 CXXFLAGS += $(CFLAGS)
 
 
