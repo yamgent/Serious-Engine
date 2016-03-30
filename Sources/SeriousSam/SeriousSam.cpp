@@ -110,8 +110,8 @@ CTextureObject *_ptoLogoCT  = NULL;
 CTextureObject *_ptoLogoODI = NULL;
 CTextureObject *_ptoLogoEAX = NULL;
 
-extern CTString sam_strVersion = "1.10";
-extern CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
+CTString sam_strVersion = "1.10";
+CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
 #if _SE_DEMO
   CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
 #else
