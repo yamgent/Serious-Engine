@@ -205,10 +205,16 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
   }
 #endif // SE1_D3D
   // destroy window
-  if( vp_hWnd!=NULL && IsWindow(vp_hWnd)) { 
+
+#ifdef PLATFORM_WINDOWS
+  if( vp_hWnd!=NULL && IsWindow(vp_hWnd)) {
     BOOL bRes = DestroyWindow(vp_hWnd);
     ASSERT(bRes);
   }
+#else
+  STUBBED("do something here when ported to SDL2");
+#endif
+
   // mark
   vp_hWnd = NULL;
 #ifdef SE1_D3D
@@ -248,6 +254,7 @@ void CViewPort::Resize(void)
     CreateSwapChain_D3D( this, pixNewWidth, pixNewHeight);
     SetAsRenderTarget_D3D(this);
   }
+#endif
 #endif
 }
 

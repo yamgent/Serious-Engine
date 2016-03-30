@@ -230,6 +230,8 @@ extern INDEX inp_bForceJoystickPolling;
 extern INDEX inp_bAutoDisableJoysticks;
 
 INDEX wed_bUseGenericTextureReplacement = FALSE;
+
+
 extern void RendererInfo(void);
 extern void ClearRenderer(void);
 

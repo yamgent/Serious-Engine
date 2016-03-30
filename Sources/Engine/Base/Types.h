@@ -200,6 +200,7 @@ typedef unsigned int        UINT;
     typedef signed long int WPARAM;
     typedef signed long int LPARAM;
     typedef signed short int SHORT;
+    typedef unsigned short int USHORT;
 
     typedef void *HWND;  /* !!! FIXME this sucks. */
     typedef void *HINSTANCE;  /* !!! FIXME this sucks. */
