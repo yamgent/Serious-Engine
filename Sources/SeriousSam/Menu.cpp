@@ -2700,19 +2700,6 @@ BOOL DoMenu( CDrawPort *pdp)
           PIX2D( pixCenterI, pixHeightJ),PIX2D( pixCenterI+pixSizeI, pixHeightJ+pixSizeJ)));
       }
 
-    } else if (pgmCurrentMenu==&gmServersMenu) {
-      if( _ptoLogoGSpy!=NULL) {
-        CTextureData &td = (CTextureData&)*_ptoLogoGSpy->GetData();
-        #define LOGOSIZE 120
-        const PIX pixLogoWidth  = (PIX) (LOGOSIZE * dpMenu.dp_fWideAdjustment);
-        const PIX pixLogoHeight = (PIX) (LOGOSIZE* td.GetHeight() / td.GetWidth());
-        pixI0 = (PIX) ((640-pixLogoWidth -50)*fScaleW);
-        pixJ0 = (PIX) ((480-pixLogoHeight-40)*fScaleH);
-        pixI1 = (PIX) (pixI0+ pixLogoWidth *fScaleW);
-        pixJ1 = (PIX) (pixJ0+ pixLogoHeight*fScaleH);
-        dpMenu.PutTexture( _ptoLogoGSpy, PIXaabbox2D( PIX2D( pixI0, pixJ0),PIX2D( pixI1, pixJ1)));
-        #undef LOGOSIZE
-      }  
     } else if (pgmCurrentMenu==&gmAudioOptionsMenu) {
       if( _ptoLogoEAX!=NULL) {
         CTextureData &td = (CTextureData&)*_ptoLogoEAX->GetData();
