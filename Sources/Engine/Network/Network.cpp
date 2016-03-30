@@ -58,18 +58,18 @@
 #include <Engine/Templates/Stock_CShader.h>
 #include <Engine/Templates/Stock_CSkeleton.h>
 
+#include <Engine/GameAgent/GameAgent.h>
+
 
 // pointer to global instance of the only game object in the application
 CNetworkLibrary *_pNetwork= NULL;
 
 extern BOOL _bNeedPretouch;
-
 BOOL _bMultiPlayer = FALSE;
 INDEX _ctEntities = 0;
 INDEX _ctPredictorEntities = 0;
 LevelChangePhase _lphCurrent = LCP_NOCHANGE;
 BOOL _bTempNetwork = FALSE;  // set while using temporary second network object
-
 extern BOOL con_bCapture;
 extern CTString con_strCapture;
 
@@ -93,7 +93,7 @@ INDEX ser_bClientsMayPause = TRUE;
 FLOAT ser_tmSyncCheckFrequency = 1.0f;
 INDEX ser_iSyncCheckBuffer = 60;
 INDEX ser_bEnumeration  = TRUE;
-INDEX ser_bHeartbeatGameSpy = TRUE;
+INDEX ser_bPingGameAgent = TRUE;
 FLOAT ser_tmKeepAlive = 0.1f;
 FLOAT ser_tmPingUpdate = 3.0f;
 INDEX ser_bWaitFirstPlayer = 0;
