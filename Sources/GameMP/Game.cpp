@@ -122,7 +122,7 @@ INDEX gam_iObserverOffset = 0;
 
 INDEX gam_iStartDifficulty = 1;
 INDEX gam_iStartMode = 0;
-CTString gam_strGameSpyExtras = "";
+CTString gam_strGameAgentExtras = "";
 
 INDEX gam_iBlood = 2;     // 0=none, 1=green, 2=red, 3=hippie
 INDEX gam_bGibs  = TRUE;   
