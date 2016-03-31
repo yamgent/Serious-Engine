@@ -636,7 +636,7 @@ __int64 mmW3 = 0x0003000300030003;
 __int64 mmW5 = 0x0005000500050005;
 __int64 mmW7 = 0x0007000700070007;
 #endif
-__int64 mmShift = 0;
+__int64 mmShifter = 0;
 __int64 mmMask  = 0;
 ULONG *pulDitherTable;
 
@@ -665,7 +665,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   { // low dithers
   case 1:
     pulDitherTable = &ulDither2[0][0];
-    mmShift = 2;
+    mmShifter = 2;
 #ifdef __GNUC__
     mmMask  = 0x3F3F3F3F3F3F3F3Fll;
 #else
@@ -674,7 +674,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
     goto ditherOrder;
   case 2:
     pulDitherTable = &ulDither2[0][0];
-    mmShift = 1;
+    mmShifter = 1;
 #ifdef __GNUC__
     mmMask  = 0x7F7F7F7F7F7F7F7Fll;
 #else
@@ -691,7 +691,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   // medium dithers
   case 4:
     pulDitherTable = &ulDither2[0][0];
-    mmShift = 0;
+    mmShifter = 0;
 #ifdef __GNUC__
     mmMask  = 0xFFFFFFFFFFFFFFFFll;
 #else
@@ -700,7 +700,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
     goto ditherOrder;
   case 5:
     pulDitherTable = &ulDither3[0][0];
-    mmShift = 1;
+    mmShifter = 1;
 #ifdef __GNUC__
     mmMask  = 0x7F7F7F7F7F7F7F7Fll;
 #else
@@ -709,7 +709,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
     goto ditherOrder;
   case 6:
     pulDitherTable = &ulDither4[0][0];
-    mmShift = 1;
+    mmShifter = 1;
 #ifdef __GNUC__
     mmMask  = 0x7F7F7F7F7F7F7F7Fll;
 #else
@@ -726,7 +726,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   // high dithers
   case 8:
     pulDitherTable = &ulDither3[0][0];
-    mmShift = 0;
+    mmShifter = 0;
 #ifdef __GNUC__
     mmMask  = 0xFFFFFFFFFFFFFFFFll;
 #else
@@ -735,7 +735,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
     goto ditherOrder;
   case 9:
     pulDitherTable = &ulDither4[0][0];
-    mmShift = 0;
+    mmShifter = 0;
 #ifdef __GNUC__
     mmMask  = 0xFFFFFFFFFFFFFFFFll;
 #else
@@ -775,8 +775,8 @@ rowLoopO:
     // get horizontal dither patterns
     movq    mm4,Q [ebx+ eax*4 +0]
     movq    mm5,Q [ebx+ eax*4 +8]
-    psrlw   mm4,Q [mmShift]
-    psrlw   mm5,Q [mmShift]
+    psrlw   mm4,Q [mmShifter]
+    psrlw   mm5,Q [mmShifter]
     pand    mm4,Q [mmMask]
     pand    mm5,Q [mmMask]
     // process row
@@ -822,8 +822,8 @@ nextRowO:
     // get horizontal dither patterns
     "movq    0(%%ebx, %%eax, 4), %%mm4   \n\t"
     "movq    8(%%ebx, %%eax, 4), %%mm5   \n\t"
-    "psrlw   (" ASMSYM(mmShift) "), %%mm4            \n\t"
-    "psrlw   (" ASMSYM(mmShift) "), %%mm5            \n\t"
+    "psrlw   (" ASMSYM(mmShifter) "), %%mm4            \n\t"
+    "psrlw   (" ASMSYM(mmShifter) "), %%mm5            \n\t"
     "pand    (" ASMSYM(mmMask) "), %%mm4             \n\t"
     "pand    (" ASMSYM(mmMask) "), %%mm5             \n\t"
 
