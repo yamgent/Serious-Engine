@@ -171,7 +171,7 @@ void ControlsMenuOn()
 {
   _pGame->SavePlayersAndControls();
   try {
-    _pGame->gm_ctrlControlsExtra.Load_t(_fnmControlsToCustomize);
+    _pGame->gm_ctrlControlsExtra->Load_t(_fnmControlsToCustomize);
   } catch( char *strError) {
     WarningMessage(strError);
   }
@@ -180,13 +180,13 @@ void ControlsMenuOn()
 void ControlsMenuOff()
 {
   try {
-    if (_pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions.Count()>0) {
-      _pGame->gm_ctrlControlsExtra.Save_t(_fnmControlsToCustomize);
+    if (_pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions.Count()>0) {
+      _pGame->gm_ctrlControlsExtra->Save_t(_fnmControlsToCustomize);
     }
   } catch( char *strError) {
     FatalError(strError);
   }
-  FORDELETELIST( CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions, itAct) {
+  FORDELETELIST( CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itAct) {
     delete &itAct.Current();
   }
   _pGame->LoadPlayersAndControls();
@@ -1477,7 +1477,7 @@ BOOL LSLoadControls(const CTFileName &fnm)
 {
   try {
     ControlsMenuOn();
-    _pGame->gm_ctrlControlsExtra.Load_t(fnm);
+    _pGame->gm_ctrlControlsExtra->Load_t(fnm);
     ControlsMenuOff();
   } catch (char *strError) {
     CPrintF("%s", strError);
@@ -4280,7 +4280,7 @@ void CControlsMenu::EndMenu(void)
 
 void CControlsMenu::ObtainActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
 
   mgControlsSensitivity.mg_iMinPos = 0;
   mgControlsSensitivity.mg_iMaxPos = 50;
@@ -4301,7 +4301,7 @@ void CControlsMenu::ObtainActionSettings(void)
 
 void CControlsMenu::ApplyActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
 
   FLOAT fSensitivity = 
     FLOAT(mgControlsSensitivity.mg_iCurPos-mgControlsSensitivity.mg_iMinPos) /
@@ -4587,8 +4587,8 @@ void CCustomizeKeyboardMenu::FillListItems(void)
   BOOL bHasLast = FALSE;
   // set diks to key buttons
   INDEX iLabel=0;
-  INDEX ctLabels = _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions.Count();
-  FOREACHINLIST( CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions, itAct)
+  INDEX ctLabels = _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions.Count();
+  FOREACHINLIST( CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itAct)
   {
     INDEX iInMenu = iLabel-gm_iListOffset;
     if( (iLabel>=gm_iListOffset) && 
@@ -4654,7 +4654,7 @@ void CCustomizeKeyboardMenu::StartMenu(void)
 {
   ControlsMenuOn();
   gm_iListOffset = 0;
-  gm_ctListTotal = _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions.Count();
+  gm_ctListTotal = _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions.Count();
   gm_iListWantedItem = 0;
   CGameMenu::StartMenu();
 }
@@ -4736,7 +4736,7 @@ void CCustomizeAxisMenu::Initialize_t(void)
 void CCustomizeAxisMenu::ObtainActionSettings(void)
 {
   ControlsMenuOn();
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
   INDEX iSelectedAction = mgAxisActionTrigger.mg_iSelected;
   INDEX iMountedAxis = ctrls.ctrl_aaAxisActions[ iSelectedAction].aa_iAxisAction;
   
@@ -4765,7 +4765,7 @@ void CCustomizeAxisMenu::ObtainActionSettings(void)
 
 void CCustomizeAxisMenu::ApplyActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
   INDEX iSelectedAction = mgAxisActionTrigger.mg_iSelected;
   INDEX iMountedAxis = mgAxisMountedTrigger.mg_iSelected;
   FLOAT fSensitivity = 

@@ -125,7 +125,7 @@ BOOL CDlgPlayerSettings::OnInitDialog()
 
 void CDlgPlayerSettings::OnEditControls() 
 {
-  CControls &ctrlControls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrlControls = *_pGame->gm_ctrlControlsExtra;
   // try to
   try
   {

@@ -74,6 +74,13 @@ EXPORTABLE CGame *GAME_Create(void)
 
 }  // extern "C"
 
+// Just working around a symbol reference in a shared library that isn't
+//  available in SeriousSam by turning gm_ctrlControlsExtra into a pointer
+//  instead of a full object. Messy; sorry!   --ryan.
+CGame::CGame() : gm_ctrlControlsExtra(new CControls) {}
+CGame::~CGame() { delete gm_ctrlControlsExtra; }
+
+
 // recorded profiling stats
 static CTimerValue _tvDemoStarted;
 static CTimerValue _tvLastFrame;

@@ -150,6 +150,8 @@ public:
  */
 class CGame {
 public:
+  CGame();
+  virtual ~CGame();
   enum ConsoleState gm_csConsoleState;
   enum ConsoleState gm_csComputerState;
 
@@ -167,7 +169,7 @@ public:
 
   CPlayerCharacter gm_apcPlayers[8];
   CControls gm_actrlControls[8];
-  CControls gm_ctrlControlsExtra;
+  CControls *gm_ctrlControlsExtra;
   INDEX gm_iSinglePlayer;
   INDEX gm_iWEDSinglePlayer;
 
