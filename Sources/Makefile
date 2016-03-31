@@ -637,10 +637,6 @@ else
     OPTFLAG := -O3 -ffast-math -falign-loops=16 -fno-math-errno
     ifneq ($(strip $(macosx)),true)
       OPTFLAG += -march=pentium -mcpu=pentiumpro
-    else
-      ifeq ($(strip $(static_link)),true)
-      	OPTFLAG += -mdynamic-no-pic
-      endif
     endif
   endif
   CFLAGS += -DNDEBUG -D_NDEBUG $(OPTFLAG)
