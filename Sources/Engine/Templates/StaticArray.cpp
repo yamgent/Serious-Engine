@@ -84,8 +84,6 @@ inline const Type &CStaticArray<Type>::operator[](INDEX i) const {
   ASSERT(i>=0 && i<sa_Count);     // check bounds
   return sa_Array[i];
 }
-#endif
-
 /*
  * Get number of elements in array.
  */
@@ -94,6 +92,7 @@ INDEX CStaticArray<Type>::Count(void) const {
   ASSERT(this!=NULL);
   return sa_Count;
 }
+#endif
 
 /*
  * Get index of a member from it's pointer

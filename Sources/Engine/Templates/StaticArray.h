@@ -66,7 +66,8 @@ public:
   }
 
   /* Get number of objects in array. */
-  INDEX Count(void) const;
+  inline INDEX Count(void) const { return sa_Count; }
+
   /* Get index of a object from it's pointer. */
   INDEX Index(Type *ptObject);
 
