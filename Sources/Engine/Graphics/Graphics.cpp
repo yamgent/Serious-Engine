@@ -626,19 +626,19 @@ static ULONG ulDither2[4][4] = {
 };
 
 
-static __int64 mmErrDiffMask=0;
+__int64 mmErrDiffMask=0;
 #if (defined __GNUC__)
-static __int64 mmW3 = 0x0003000300030003ll;
-static __int64 mmW5 = 0x0005000500050005ll;
-static __int64 mmW7 = 0x0007000700070007ll;
+__int64 mmW3 = 0x0003000300030003ll;
+__int64 mmW5 = 0x0005000500050005ll;
+__int64 mmW7 = 0x0007000700070007ll;
 #else
-static __int64 mmW3 = 0x0003000300030003;
-static __int64 mmW5 = 0x0005000500050005;
-static __int64 mmW7 = 0x0007000700070007;
+__int64 mmW3 = 0x0003000300030003;
+__int64 mmW5 = 0x0005000500050005;
+__int64 mmW7 = 0x0007000700070007;
 #endif
-static __int64 mmShift = 0;
-static __int64 mmMask  = 0;
-static ULONG *pulDitherTable;
+__int64 mmShift = 0;
+__int64 mmMask  = 0;
+ULONG *pulDitherTable;
 
 // performs dithering of a 32-bit bipmap (can be in-place)
 void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
@@ -1132,35 +1132,23 @@ static INDEX aiFilters[6][3] = {
   {  1,  1,  1 }}; // 
 
 // temp for middle pixels, vertical/horizontal edges, and corners
-static __int64 mmMc,  mmMe,  mmMm;  // corner, edge, middle
-static __int64 mmEch, mmEm;  // corner-high, middle
+__int64 mmMc,  mmMe,  mmMm;  // corner, edge, middle
+__int64 mmEch, mmEm;  // corner-high, middle
 #define mmEcl mmMc  // corner-low
 #define mmEe  mmMe  // edge
-static __int64 mmCm;  // middle
+__int64 mmCm;  // middle
 #define mmCc mmMc  // corner
 #define mmCe mmEch // edge
-static __int64 mmInvDiv;
+__int64 mmInvDiv;
 
 #if (defined __GNUC__)
-static __int64 mmAdd = 0x0007000700070007ll;
+__int64 mmAdd = 0x0007000700070007ll;
 #else
-static __int64 mmAdd = 0x0007000700070007;
+__int64 mmAdd = 0x0007000700070007;
 #endif
 
 // temp rows for in-place filtering support
-extern "C" { static ULONG aulRows[2048]; }
-
-static void *force_syms_to_exist = NULL;
-void asm_force_mmAdd() { force_syms_to_exist = &mmAdd; }
-void asm_force_aulRows() { force_syms_to_exist = &aulRows; }
-void asm_force_mmMc() { force_syms_to_exist = &mmMc; }
-void asm_force_mmMe() { force_syms_to_exist = &mmMe; }
-void asm_force_mmMm() { force_syms_to_exist = &mmMm; }
-void asm_force_mmEch() { force_syms_to_exist = &mmEch; }
-void asm_force_mmEm() { force_syms_to_exist = &mmEm; }
-void asm_force_mmW3() { force_syms_to_exist = &mmW3; }
-void asm_force_mmW5() { force_syms_to_exist = &mmW5; }
-void asm_force_mmW7() { force_syms_to_exist = &mmW7; }
+extern "C" { ULONG aulRows[2048]; }
 
 // FilterBitmap() INTERNAL: generates convolution filter matrix if needed
 static INDEX iLastFilter;
@@ -1199,13 +1187,13 @@ static void GenerateConvolutionMatrix( INDEX iFilter)
 
 
 extern "C" {
-    static ULONG *FB_pulSrc = NULL;
-    static ULONG *FB_pulDst = NULL;
-    static PIX FB_pixWidth = 0;
-    static PIX FB_pixHeight = 0;
-    static PIX FB_pixCanvasWidth = 0;
-    static SLONG FB_slModulo1 = 0;
-    static SLONG FB_slCanvasWidth = 0;
+    ULONG *FB_pulSrc = NULL;
+    ULONG *FB_pulDst = NULL;
+    PIX FB_pixWidth = 0;
+    PIX FB_pixHeight = 0;
+    PIX FB_pixCanvasWidth = 0;
+    SLONG FB_slModulo1 = 0;
+    SLONG FB_slCanvasWidth = 0;
 }
 
 

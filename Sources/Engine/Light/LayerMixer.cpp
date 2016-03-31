@@ -241,25 +241,25 @@ void CLayerMixer::FindLayerMipmap( CBrushShadowLayer *pbsl, UBYTE *&pub, UBYTE &
 #define FTOX   0x10000000
 #define SHIFTX (28-SQRTTABLESIZELOG2)
 
-// static variables for easier transfers
-static const FLOAT3D *_vLight;
-static FLOAT _fMinLightDistance;
-static FLOAT _f1oFallOff;
-static INDEX _iPixCt;
-static INDEX _iRowCt;
-static SLONG _slModulo;
-static ULONG _ulLightFlags;
-static ULONG _ulPolyFlags;
-static SLONG _slL2Row;
-static SLONG _slDDL2oDU;
-static SLONG _slDDL2oDV;
-static SLONG _slDDL2oDUoDV;
-static SLONG _slDL2oDURow;
-static SLONG _slDL2oDV;
-static SLONG _slLightMax;
-static SLONG _slHotSpot;
-static SLONG _slLightStep;
-static ULONG *_pulLayer;
+// variables for easier transfers
+const FLOAT3D *_vLight;
+FLOAT _fMinLightDistance;
+FLOAT _f1oFallOff;
+INDEX _iPixCt;
+INDEX _iRowCt;
+SLONG _slModulo;
+ULONG _ulLightFlags;
+ULONG _ulPolyFlags;
+SLONG _slL2Row;
+SLONG _slDDL2oDU;
+SLONG _slDDL2oDV;
+SLONG _slDDL2oDUoDV;
+SLONG _slDL2oDURow;
+SLONG _slDL2oDV;
+SLONG _slLightMax;
+SLONG _slHotSpot;
+SLONG _slLightStep;
+ULONG *_pulLayer;
 
 
 // !!! FIXME : rcg01072001 These statics are a pain in the ass.
@@ -472,8 +472,8 @@ skipPixel:
 
 
 extern "C" {
-  static __int64 mmDDL2oDU_addAmbientMaskPoint;
-  static __int64 mmDDL2oDV_addAmbientMaskPoint;
+  __int64 mmDDL2oDU_addAmbientMaskPoint;
+  __int64 mmDDL2oDV_addAmbientMaskPoint;
 }
 
 // add one layer point light without diffusion and with mask
@@ -694,8 +694,8 @@ skipPixel:
 }
 
 extern "C" {
-  static __int64 mmDDL2oDU_AddDiffusionPoint;
-  static __int64 mmDDL2oDV_AddDiffusionPoint;
+  __int64 mmDDL2oDU_AddDiffusionPoint;
+  __int64 mmDDL2oDV_AddDiffusionPoint;
 }
 
 // add one layer point light with diffusion and without mask
@@ -878,8 +878,8 @@ skipPixel:
 }
 
 extern "C" {
-  static __int64 mmDDL2oDU_AddDiffusionMaskPoint;
-  static __int64 mmDDL2oDV_AddDiffusionMaskPoint;
+  __int64 mmDDL2oDU_AddDiffusionMaskPoint;
+  __int64 mmDDL2oDV_AddDiffusionMaskPoint;
 }
 
 // add one layer point light with diffusion and mask

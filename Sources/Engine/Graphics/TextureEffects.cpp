@@ -29,12 +29,12 @@
 #define ASMOPT 0
 #endif
 
-static __int64 mmBaseWidthShift=0;
-static __int64 mmBaseWidth=0;
-static __int64 mmBaseWidthMask=0;
-static __int64 mmBaseHeightMask=0;
-static __int64 mmBaseMasks=0;
-static __int64 mmShift=0;
+__int64 mmBaseWidthShift=0;
+__int64 mmBaseWidth=0;
+__int64 mmBaseWidthMask=0;
+__int64 mmBaseHeightMask=0;
+__int64 mmBaseMasks=0;
+__int64 mmShift=0;
 
 #if (defined __GNUC__)
 /*
@@ -42,12 +42,12 @@ static __int64 mmShift=0;
  *  builds with optimization, which means the linker can't resolve the
  *  references to them in the inline ASM. That's obnoxious.
  */
-static __int64 mm1LO   = 0x0000000000000001ll;
-static __int64 mm1HI   = 0x0000000100000000ll;
-static __int64 mm1HILO = 0x0000000100000001ll;
-static __int64 mm0001  = 0x0000000000000001ll;
-static __int64 mm0010  = 0x0000000000010000ll;
-static __int64 mm00M0  = 0x00000000FFFF0000ll;
+__int64 mm1LO   = 0x0000000000000001ll;
+__int64 mm1HI   = 0x0000000100000000ll;
+__int64 mm1HILO = 0x0000000100000001ll;
+__int64 mm0001  = 0x0000000000000001ll;
+__int64 mm0010  = 0x0000000000010000ll;
+__int64 mm00M0  = 0x00000000FFFF0000ll;
 
 static void *force_syms_to_exist = NULL;
 void asm_force_mm1LO() { force_syms_to_exist = &mm1LO; }
@@ -64,30 +64,31 @@ void asm_force_mmBaseMasks() { force_syms_to_exist = &mmBaseMasks; }
 void asm_force_mmShift() { force_syms_to_exist = &mmShift; }
 
 #else
-static const __int64 mm1LO   = 0x0000000000000001;
-static const __int64 mm1HI   = 0x0000000100000000;
-static const __int64 mm1HILO = 0x0000000100000001;
-static const __int64 mm0001  = 0x0000000000000001;
-static const __int64 mm0010  = 0x0000000000010000;
-static const __int64 mm00M0  = 0x00000000FFFF0000;
+const __int64 mm1LO   = 0x0000000000000001;
+const __int64 mm1HI   = 0x0000000100000000;
+const __int64 mm1HILO = 0x0000000100000001;
+const __int64 mm0001  = 0x0000000000000001;
+const __int64 mm0010  = 0x0000000000010000;
+const __int64 mm00M0  = 0x00000000FFFF0000;
 #endif
 
 
 // speed table
-static SBYTE asbMod3Sub1Table[256];
+SBYTE asbMod3Sub1Table[256];
 static BOOL  bTableSet = FALSE;
 
 static CTextureData *_ptdEffect, *_ptdBase;
-static PIX _pixTexWidth,    _pixTexHeight;
-static PIX _pixBufferWidth, _pixBufferHeight;
 static ULONG _ulBufferMask;
 static INDEX _iWantedMipLevel;
 static UBYTE *_pubDrawBuffer;
 static SWORD *_pswDrawBuffer;
 
+PIX _pixTexWidth,    _pixTexHeight;
+PIX _pixBufferWidth, _pixBufferHeight;
+
 
 // randomizer
-static ULONG ulRNDSeed;
+ULONG ulRNDSeed;
 
 inline void Randomize( ULONG ulSeed)
 {
@@ -1240,8 +1241,8 @@ static void AnimateWater( SLONG slDensity)
 
 #define PIXEL(u,v) pulTextureBase[ ((u)&(SLONG&)mmBaseWidthMask) + ((v)&(SLONG&)mmBaseHeightMask) *pixBaseWidth]
 
-static ULONG _slHeightMapStep_renderWater = 0;
-static PIX _pixBaseWidth_renderWater = 0;
+ULONG _slHeightMapStep_renderWater = 0;
+PIX _pixBaseWidth_renderWater = 0;
 
 #pragma warning(disable: 4731)
 static void RenderWater(void)
@@ -3039,7 +3040,7 @@ pixDone:
 
 //////////////////////////// displace texture
 
-static UBYTE *_pubHeat_RenderPlasmaFire = NULL;
+UBYTE *_pubHeat_RenderPlasmaFire = NULL;
 
 static void RenderPlasmaFire(void)
 {
