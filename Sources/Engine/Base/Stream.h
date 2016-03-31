@@ -17,19 +17,8 @@
 // maximum length of file that can be saved (default: 8Mb)
 ENGINE_API extern ULONG _ulMaxLengthOfSavingFile;
 
-#ifdef _MSC_VER  // no __try/__except elsewhere.
-#define CTSTREAM_BEGIN CTStream::EnableStreamHandling(); __try
-#define CTSTREAM_END __except( CTStream::ExceptionFilter( GetExceptionCode(),\
-                                                          GetExceptionInformation()) )\
-  {\
-     CTStream::ExceptionFatalError();\
-  }; CTStream::DisableStreamHandling();
-#else
-
 #define CTSTREAM_BEGIN CTStream::EnableStreamHandling();
 #define CTSTREAM_END CTStream::DisableStreamHandling();
-
-#endif
 
 /*
  * Chunk ID class
@@ -112,14 +101,6 @@ public:
   static void EnableStreamHandling(void);
   /* Static function disable stream handling. */
   static void DisableStreamHandling(void);
-
-#ifdef PLATFORM_WIN32 /* rcg10042001 !!! FIXME */
-  /* Static function to filter exceptions and intercept access violation */
-  static int ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs);
-#endif
-
-  /* Static function to report fatal exception error. */
-  static void ExceptionFatalError(void);
 
   /* Default constructor. */
   CTStream(void);

@@ -276,53 +276,6 @@ void CTStream::DisableStreamHandling(void)
   _plhOpenedStreams = NULL;
 }
 
-#ifdef PLATFORM_WIN32
-int CTStream::ExceptionFilter(DWORD dwCode, _EXCEPTION_POINTERS *pExceptionInfoPtrs)
-{
-  // If the exception is not a page fault, exit.
-  if( dwCode != EXCEPTION_ACCESS_VIOLATION)
-  {
-    return EXCEPTION_CONTINUE_SEARCH;
-  }
-
-  // obtain access violation virtual address
-  UBYTE *pIllegalAdress = (UBYTE *)pExceptionInfoPtrs->ExceptionRecord->ExceptionInformation[1];
-
-  CTStream *pstrmAccessed = NULL;
-
-  // search for stream that was accessed
-  FOREACHINLIST( CTStream, strm_lnListNode, (*_plhOpenedStreams), itStream)
-  {
-    // if access violation happened inside curently testing stream
-    if(itStream.Current().PointerInStream(pIllegalAdress))
-    {
-      // remember accesed stream ptr
-      pstrmAccessed = &itStream.Current();
-      // stream found, stop searching
-      break;
-    }
-  }
-
-  // if none of our streams was accessed, real access violation occured
-  if( pstrmAccessed == NULL)
-  {
-    // so continue default exception handling
-    return EXCEPTION_CONTINUE_SEARCH;
-  }
-
-  // Continue execution where the page fault occurred
-  return EXCEPTION_CONTINUE_EXECUTION;
-}
-
-/*
- * Static function to report fatal exception error.
- */
-void CTStream::ExceptionFatalError(void)
-{
-  FatalError( GetWindowsError( GetLastError()) );
-}
-#endif
-
 /*
  * Throw an exception of formatted string.
  */
@@ -925,8 +878,8 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
       fstrm_iZipHandle = UNZIPOpen_t(fnmFullFileName);
       fstrm_slZipSize = UNZIPGetSize(fstrm_iZipHandle);
       // load the file from the zip in the buffer
-      fstrm_pubZipBuffer = (UBYTE*)VirtualAlloc(NULL, fstrm_slZipSize, MEM_COMMIT, PAGE_READWRITE);
-      UNZIPReadBlock_t(fstrm_iZipHandle, (UBYTE*)fstrm_pubZipBuffer, 0, fstrm_slZipSize);
+      fstrm_pubZipBuffer = new UBYTE[fstrm_slZipSize];
+      UNZIPReadBlock_t(fstrm_iZipHandle, fstrm_pubZipBuffer, 0, fstrm_slZipSize);
     // if it is a physical file
     } else if (iFile==EFP_FILE) {
       // open file in read only mode
@@ -1029,9 +982,7 @@ void CTFileStream::Close(void)
     // close zip entry
     UNZIPClose(fstrm_iZipHandle);
     fstrm_iZipHandle = -1;
-
-    VirtualFree(fstrm_pubZipBuffer, 0, MEM_RELEASE);
-
+    delete[] fstrm_pubZipBuffer;
     _ulVirtuallyAllocatedSpace -= fstrm_slZipSize;
     //CPrintF("Freed virtual memory with size ^c00ff00%d KB^C (now %d KB)\n", (fstrm_slZipSize / 1000), (_ulVirtuallyAllocatedSpace / 1000));
   }
@@ -1166,7 +1117,7 @@ CTMemoryStream::CTMemoryStream(void)
   // add this newly created memory stream into opened stream list
   _plhOpenedStreams->AddTail( strm_lnListNode);
   // allocate amount of memory needed to hold maximum allowed file length (when saving)
-  mstrm_pubBuffer = (UBYTE*)VirtualAlloc(NULL, _ulMaxLenghtOfSavingFile, MEM_COMMIT, PAGE_READWRITE);
+  mstrm_pubBuffer = new UBYTE[_ulMaxLenghtOfSavingFile];
   mstrm_pubBufferEnd = mstrm_pubBuffer + _ulMaxLenghtOfSavingFile;
   mstrm_pubBufferMax = mstrm_pubBuffer;
 }
@@ -1184,7 +1135,7 @@ CTMemoryStream::CTMemoryStream(void *pvBuffer, SLONG slSize,
   }
 
   // allocate amount of memory needed to hold maximum allowed file length (when saving)
-  mstrm_pubBuffer = (UBYTE*)VirtualAlloc(NULL, _ulMaxLenghtOfSavingFile, MEM_COMMIT, PAGE_READWRITE);
+  mstrm_pubBuffer = new UBYTE[_ulMaxLenghtOfSavingFile];
   mstrm_pubBufferEnd = mstrm_pubBuffer + _ulMaxLenghtOfSavingFile;
   mstrm_pubBufferMax = mstrm_pubBuffer + slSize;
   // copy given block of memory into memory file
@@ -1213,7 +1164,7 @@ CTMemoryStream::CTMemoryStream(void *pvBuffer, SLONG slSize,
 CTMemoryStream::~CTMemoryStream(void)
 {
   ASSERT(mstrm_ctLocked==0);
-  VirtualFree(mstrm_pubBuffer, 0, MEM_RELEASE);
+  delete[] mstrm_pubBuffer;
   // remove memory stream from list of curently opened streams
   strm_lnListNode.Remove();
 }
