@@ -161,22 +161,9 @@ void InitStreams(void)
 
   CPrintF(TRANSV("Loading group files...\n"));
 
+  CDynamicArray<CTString> *files = NULL;
+
   // for each group file in base directory
-  struct _finddata_t c_file;
-  long hFile;
-  hFile = _findfirst(_fnmApplicationPath+"*.gro", &c_file);
-  BOOL bOK = (hFile!=-1);
-  while(bOK) {
-    if (CTString(c_file.name).Matches("*.gro")) {
-      // add it to active set
-      UNZIPAddArchive(_fnmApplicationPath+c_file.name);
-    }
-    bOK = _findnext(hFile, &c_file)==0;
-  }
-  _findclose( hFile );
-
-  CDynamicArray<CTString> *files;
-
   files = _pFileSystem->FindFiles(_fnmApplicationPath, "*.gro");
   int max = files->Count();
   int i;
