@@ -7,7 +7,7 @@ static void FailFunction_t(const char *strName) {
   ThrowF_t(TRANS("Required function %s not found."), strName);
 }
 
-static void SetFunctionPointers_t(HINSTANCE hiOGL)
+static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
 {
   const char *strName;
   // get gl function pointers
@@ -26,24 +26,20 @@ BOOL CGfxLibrary::InitDriver_OGL(BOOL init3dfx)
 
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     CPrintF( TRANS("Error starting OpenGL: %s\n"), SDL_GetError());
-    return(FALSE);
+    return FALSE;
   }
 
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
-  // !!! FIXME: Is it safe to add new cvars for a specific platform?
-  const char *envlib = getenv("SERIOUS_GLLIBRARY");
-  CTString strDriverFileName = ((envlib) ? envlib : "libGL.so.1");
-
-  if (SDL_GL_LoadLibrary(strDriverFileName) == -1) {
-    CPrintF(TRANSV("Cannot load OpenGL driver '%s'"), (const char *) strDriverFileName);
+  if (SDL_GL_LoadLibrary(NULL) == -1) {
+    CPrintF(TRANSV("Cannot load OpenGL driver"));
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
-    return(FALSE);
+    return FALSE;
   }
 
   // prepare functions
-  SetFunctionPointers_t(gl_hiDriver);
+  OGL_SetFunctionPointers_t(gl_hiDriver);
 
   // done
   return TRUE;

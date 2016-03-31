@@ -16,6 +16,7 @@
 
 #include <Engine/Base/ListIterator.inl>
 
+BOOL _TBCapability = FALSE;
 
 extern INDEX ogl_iTBufferEffect;
 extern INDEX ogl_iTBufferSamples;
@@ -329,7 +330,6 @@ void CGfxLibrary::InitContext_OGL(void)
     OGL_CHECKERROR;
   } 
 
-#ifdef PLATFORM_WIN32
   // if T-buffer is supported
   if( _TBCapability) {
     // add extension and disable t-buffer usage by default
@@ -337,7 +337,6 @@ void CGfxLibrary::InitContext_OGL(void)
     pglDisable( GL_MULTISAMPLE_3DFX);
     OGL_CHECKERROR;
   }
-#endif
 
   // test for clamp to edge
   TestExtension_OGL( GLF_EXT_EDGECLAMP, "GL_EXT_texture_edge_clamp");
@@ -440,69 +439,6 @@ void CGfxLibrary::InitContext_OGL(void)
   if( shd_bCacheAll) CacheShadows();
 }
 
-
-// initialize OpenGL driver
-BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
-{
-  ASSERT( gl_hiDriver==NONE);
-  UINT iOldErrorMode = SetErrorMode( SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
-  CTString strDriverFileName = b3Dfx ? "3DFXVGL.DLL" : "OPENGL32.DLL";
-
-  try
-  { // if driver doesn't exists on disk
-    char strBuffer[_MAX_PATH+1];
-    char *strDummy;
-    int iRes = SearchPathA( NULL, strDriverFileName, NULL, _MAX_PATH, strBuffer, &strDummy);
-    if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName);
-
-    // load opengl library
-    gl_hiDriver = ::LoadLibraryA( strDriverFileName);
-    // if it cannot be loaded (although it is present on disk)
-    if( gl_hiDriver==NONE) {
-      // if it is 3dfx stand-alone driver
-      if( b3Dfx) {
-        // do a fatal error and inform user to deinstall it,
-        // since this loading attempt probably messed up the entire system
-        FatalError(TRANS( "3Dfx OpenGL driver '%s' is installed, but cannot be loaded!\n"
-                          "If you previously had a 3Dfx card and it was removed,\n"
-                          "please deinstall the driver and restart windows before\n"
-                          "continuing.\n"), strDriverFileName);
-      } // fail!
-      ThrowF_t(TRANS("Cannot load OpenGL driver '%s'"), strDriverFileName);
-    }
-    // prepare functions
-    OGL_SetFunctionPointers_t(gl_hiDriver);
-  }
-  catch( char *strError)
-  { // didn't make it :(
-    if( gl_hiDriver!=NONE) FreeLibrary(gl_hiDriver);
-    gl_hiDriver = NONE;
-    CPrintF( TRANS("Error starting OpenGL: %s\n"), strError);
-    SetErrorMode(iOldErrorMode);
-    return FALSE;
-  }
-
-  // revert to old error mode
-  SetErrorMode(iOldErrorMode);
-
-  // if default driver
-  if( !b3Dfx) {
-    // use GDI functions
-    pwglSwapBuffers       = ::SwapBuffers;
-    pwglSetPixelFormat    = ::SetPixelFormat;
-    pwglChoosePixelFormat = ::ChoosePixelFormat;
-    // NOTE:
-    // some ICD implementations are not infact in OPENGL32.DLL, but in some
-    // other installed DLL, which is loaded when original OPENGL32.DLL from MS is
-    // loaded. For those, we in fact load OPENGL32.DLL from MS, so we must _not_
-    // call these functions directly, because they are in MS dll. We must call
-    // functions from GDI, which in turn call either OPENGL32.DLL, _or_ the client driver,
-    // as appropriate.
-  }
-  // done
-  return TRUE;
-} 
-
 static void ClearFunctionPointers(void)
 {
   // clear gl function pointers
@@ -526,6 +462,10 @@ void CGfxLibrary::EndDriver_OGL(void)
   gfxDeleteTexture( _fog_ulTexture); 
   gfxDeleteTexture( _haze_ulTexture);
 
+  ASSERT( _ptdFlat!=NULL);
+  _ptdFlat->td_tpLocal.Clear();
+  _ptdFlat->Unbind();
+
   PlatformEndDriver_OGL();
   ClearFunctionPointers();
 }
@@ -535,8 +475,6 @@ void CGfxLibrary::EndDriver_OGL(void)
 /*
  * 3dfx t-buffer control
  */
-
-
 extern void SetTBufferEffect( BOOL bEnable)
 {
   // adjust console vars

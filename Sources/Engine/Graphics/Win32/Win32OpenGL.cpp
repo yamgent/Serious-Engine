@@ -15,7 +15,7 @@ void WIN_CheckError(BOOL bRes, const char *strDescription)
 }
 
 
-static void SetFunctionPointers_t(HINSTANCE hiOGL)
+static void OGL_SetFunctionPointers_t(HINSTANCE hiOGL)
 {
   const char *strName;
   // get gl function pointers
@@ -40,11 +40,11 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
   { // if driver doesn't exists on disk
     char strBuffer[_MAX_PATH+1];
     char *strDummy;
-    int iRes = SearchPath( NULL, strDriverFileName, NULL, _MAX_PATH, strBuffer, &strDummy);
+    int iRes = SearchPathA( NULL, strDriverFileName, NULL, _MAX_PATH, strBuffer, &strDummy);
     if( iRes==0) ThrowF_t(TRANS("OpenGL driver '%s' not present"), strDriverFileName);
 
     // load opengl library
-    gl_hiDriver = ::LoadLibrary( strDriverFileName);
+    gl_hiDriver = ::LoadLibraryA( strDriverFileName);
 
     // if it cannot be loaded (although it is present on disk)
     if( gl_hiDriver==NONE) {
@@ -60,7 +60,7 @@ BOOL CGfxLibrary::InitDriver_OGL( BOOL b3Dfx/*=FALSE*/)
       ThrowF_t(TRANS("Cannot load OpenGL driver '%s'"), (const char *) strDriverFileName);
     }
     // prepare functions
-    SetFunctionPointers_t(gl_hiDriver);
+    OGL_SetFunctionPointers_t(gl_hiDriver);
   }
   catch( char *strError)
   { // didn't make it :(
@@ -131,11 +131,12 @@ BOOL CGfxLibrary::CreateContext_OGL(HDC hdc)
 	              pwglDeleteContext( hglrc); \
 	              ReleaseDC( dummyhwnd, hdc); \
 	              DestroyWindow( dummyhwnd); \
-            	  UnregisterClass( classname, hInstance)
+            	  UnregisterClassA( classname, hInstance);
 
 
-  // helper for choosing t-buffer's pixel format
-static _TBCapability = FALSE;
+
+// helper for choosing t-buffer's pixel format
+extern BOOL _TBCapability;
 static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
                                   PIX pixResWidth, PIX pixResHeight)
 {
@@ -144,9 +145,9 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	char *wglextensions = NULL;
 	HGLRC hglrc; 
 	HWND dummyhwnd;
-	WNDCLASS cls;
+	WNDCLASSA cls;
   HINSTANCE hInstance = GetModuleHandle(NULL);
-	char *classname = "dummyOGLwin";
+	LPCSTR classname = "dummyOGLwin";
 	cls.style = CS_OWNDC;
 	cls.lpfnWndProc = DefWindowProc;
 	cls.cbClsExtra = 0;
@@ -158,16 +159,16 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	cls.lpszMenuName = NULL;
 	cls.lpszClassName = classname;
   // didn't manage to register class?
-	if( !RegisterClass(&cls))	return 0;
+	if( !RegisterClassA(&cls))	return 0;
 
 	// create window fullscreen 
   //CPrintF( "  Dummy window: %d x %d\n", pixResWidth, pixResHeight);
-	dummyhwnd = CreateWindowEx( WS_EX_TOPMOST, classname, "Dummy OGL window",
+	dummyhwnd = CreateWindowExA( WS_EX_TOPMOST, classname, "Dummy OGL window",
                               WS_POPUP|WS_VISIBLE, 0, 0, pixResWidth, pixResHeight,
                               NULL, NULL, hInstance, NULL);
   // didn't make it?
   if( dummyhwnd == NULL) {
-	  UnregisterClass( classname, hInstance);
+	  UnregisterClassA( classname, hInstance);
     return 0;
   }
   //CPrintF( "  Dummy passed...\n");
@@ -177,7 +178,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	if( !iPixelFormat) {
     ReleaseDC( dummyhwnd, hdc);
     DestroyWindow(dummyhwnd);
-	  UnregisterClass( classname, hInstance);
+	  UnregisterClassA( classname, hInstance);
 	  return 0;
 	}
   //CPrintF( "  Choose pixel format passed...\n");
@@ -185,7 +186,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	if( !pwglSetPixelFormat( hdc, iPixelFormat, ppfd)) {
     ReleaseDC( dummyhwnd, hdc);
     DestroyWindow(dummyhwnd);
-	  UnregisterClass( classname, hInstance);
+	  UnregisterClassA( classname, hInstance);
 	  return 0;
 	}
   //CPrintF( "  Set pixel format passed...\n");
@@ -193,7 +194,6 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 	// create context using the default accelerated pixelformat that was passed
 	hglrc = pwglCreateContext(hdc);
 	pwglMakeCurrent( hdc, hglrc);
-
 	// update the value list with information passed from the ppfd.
 	aiAttribList[ 9] =  ppfd->cColorBits;
 	aiAttribList[11] =  ppfd->cDepthBits;
@@ -206,7 +206,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
   { // windows extension string supported
     pwglGetExtensionsStringARB = (char* (__stdcall*)(HDC))pwglGetProcAddress( "wglGetExtensionsStringARB");
     if( pwglGetExtensionsStringARB == NULL) {
-      BACKOFF;
+      BACKOFF
       return 0;
     }
     //CPrintF( "  WGL extension string passed...\n");
@@ -214,7 +214,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
 		wglextensions = (char*)pwglGetExtensionsStringARB(hdc);
  	}
   else {
-    BACKOFF;
+    BACKOFF
     return 0;
 	}
 
@@ -227,7 +227,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
     pwglGetPixelFormatAttribivARB = (BOOL (__stdcall*)(HDC,int,int,UINT,int*,int*)                 )pwglGetProcAddress( "wglGetPixelFormatAttribivARB");
 		pglTBufferMask3DFX = (void (__stdcall*)(GLuint))pwglGetProcAddress("glTBufferMask3DFX");
     if( pwglChoosePixelFormatARB==NULL && pglTBufferMask3DFX==NULL) {
-      BACKOFF;
+      BACKOFF
       return 0;
 		}
     //CPrintF( "  WGL choose pixel format present...\n");
@@ -243,7 +243,7 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
     // try to get all formats that fit the pixel format criteria
     if( !pwglChoosePixelFormatARB( hdc, piAttribList, NULL, iMaxFormats, piFormats, &uiNumFormats)) {
       FreeMemory(piFormats);
-      BACKOFF;
+      BACKOFF
       return 0;
     }
     //CPrintF( "  WGL choose pixel format passed...\n");
@@ -260,10 +260,9 @@ static INDEX ChoosePixelFormatTB( HDC hdc, const PIXELFORMATDESCRIPTOR *ppfd,
   {	// wglChoosePixelFormatARB extension does not exist :(
 		iPixelFormat = 0;
 	}
-  BACKOFF;
+  BACKOFF
   return iPixelFormat;
 }
-
 
 void *CGfxLibrary::OGL_GetProcAddress(const char *procname)
 {
@@ -438,5 +437,4 @@ BOOL CGfxLibrary::SetCurrentViewport_OGL(CViewPort *pvp)
   gl_pvpActive = pvp;
   return TRUE;
 }
-
 
