@@ -220,7 +220,7 @@ void InitStreams(void)
   CPrintF("\n");
 
   const char *dirsep = CFileSystem::GetDirSeparator();
-  LoadFileList(_afnmNoCRC, CTFILENAME("Data" + dirsep + "NoCRC.lst"));
+  LoadFileList(_afnmNoCRC, CTFILENAME("Data") + CTString(dirsep) + CTString("NoCRC.lst"));
 
   _pShell->SetINDEX(CTString("sys")+"_iCPU"+"Misc", 1);
 }
@@ -887,7 +887,7 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
   // if openning operation was not successfull
   if(fstrm_pFile == NULL && fstrm_iZipHandle==-1) {
     // throw exception
-    Throw_t(TRANS("Cannot open file `%s' (%s)"), (CTString&)fnmFullFileName,
+    Throw_t(TRANS("Cannot open file `%s' (%s)"), (const char *) (CTString&)fnmFullFileName,
       strerror(errno));
   }
 
@@ -912,7 +912,7 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   if (!_bThreadCanHandleStreams) {
     // error
     ::ThrowF_t(TRANS("Cannot create file `%s', stream handling is not enabled for this thread"),
-      (CTString&)fnFileNameAbsolute);
+      (const char *) (CTString&)fnFileNameAbsolute);
   }
 
   CTFileName fnmFullFileName;
