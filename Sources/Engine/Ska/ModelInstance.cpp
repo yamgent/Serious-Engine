@@ -71,7 +71,7 @@ void ParseSmcFile_t(CModelInstance &mi, const CTString &fnSmcFile)
 
   _yy_mi = &mi;
   SMCPushBuffer(fnFileName, strIncludeFile, TRUE);
-  syyparse();
+  engine_ska_yyparse();
 }
 
 // Create model instance and parse smc file in it

@@ -8,9 +8,9 @@
 #include <Engine/Templates/DynamicContainer.cpp>
 
 // for static linking mojo...
-#define yyparse yyparse_engine_ska_smcpars
-#define yyerror yyerror_engine_ska_smcpars
-#define yylex yylex_engine_ska_smcpars
+#define yyparse engine_ska_yyparse
+#define yyerror engine_ska_yyerror
+#define yylex engine_ska_yylex
 #include "ParsingSmbs.h"
 
 extern BOOL bRememberSourceFN;

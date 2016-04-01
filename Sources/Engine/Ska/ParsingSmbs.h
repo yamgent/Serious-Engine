@@ -1,10 +1,10 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
 // needed for parser and scanner
-extern int yylex(void);
-extern void yyerror(char *s);
-extern int syyparse(void);
-extern void syyrestart(FILE *f);
+extern int engine_ska_yylex(void);
+extern void engine_ska_yyerror(char *s);
+extern int engine_ska_yyparse(void);
+extern void engine_ska_yyrestart(FILE *f);
 
 #define YY_NEVER_INTERACTIVE 1
 
