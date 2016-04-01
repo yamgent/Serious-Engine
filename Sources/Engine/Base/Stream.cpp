@@ -897,6 +897,11 @@ void CTFileStream::Open_t(const CTFileName &fnFileName, CTStream::OpenMode om/*=
   _plhOpenedStreams->AddTail( strm_lnListNode);
 }
 
+static void MakeSureDirectoryPathExists(const CTFileName &fnmFullFileName)
+{
+    STUBBED("!!! FIXME: get the code back in from Ryan's original port.");
+}
+
 /*
  * Create a new file or overwrite existing.
  */

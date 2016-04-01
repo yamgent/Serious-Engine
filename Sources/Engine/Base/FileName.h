@@ -29,6 +29,8 @@ public:
   /* Constructor from character string for insertion in exe-file. */
   inline CTFileName(const char *pString, int i) : CTString(convertFromWin32(pString+i)), fnm_pserPreloaded(NULL) {}
 
+  void SetAbsolutePath(void) {}  // !!! FIXME
+
   /* Assignment. */
   CTFileName &operator=(const char *strCharString);
   inline void operator=(const CTString &strOther) {
