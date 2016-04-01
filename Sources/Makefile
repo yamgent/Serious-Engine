@@ -674,7 +674,7 @@ endif
 CFLAGS += $(shell sdl-config --cflags)
 
 ifneq ($(strip $(USE_ASM)),-DUSE_PORTABLE_C)
-#  CFLAGS += -O2 -fasm
+  #CFLAGS += -O2 -fasm
   ASMFLAGS += -f $(ASMOBJFMT) $(ASMDEFS)
 else
 endif
