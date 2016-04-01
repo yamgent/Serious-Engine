@@ -216,7 +216,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "./Ecc/Parser.y"
+#line 1 "Ecc/Parser.y"
 
 // rcg10042001 Changed to specify Ecc directory...
 #include "Ecc/StdH.h"
@@ -403,7 +403,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 407 "./Ecc/Parser.cpp"
+#line 407 "Ecc/Parser.cpp"
 
 #ifdef short
 # undef short
@@ -2687,7 +2687,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 253 "./Ecc/Parser.y"
+#line 253 "Ecc/Parser.y"
     {
     int iID = atoi((yyvsp[(1) - (1)]).strString);
     if(iID>32767) {
@@ -2702,7 +2702,7 @@ yyreduce:
     break;
 
   case 3:
-#line 263 "./Ecc/Parser.y"
+#line 263 "Ecc/Parser.y"
     {
 
     //fprintf(_fImplementation, "\n#undef DECL_DLL\n#define DECL_DLL _declspec(dllimport)\n");
@@ -2710,7 +2710,7 @@ yyreduce:
     break;
 
   case 4:
-#line 266 "./Ecc/Parser.y"
+#line 266 "Ecc/Parser.y"
     {
     //fprintf(_fImplementation, "\n#undef DECL_DLL\n#define DECL_DLL _declspec(dllexport)\n");
 
@@ -2720,31 +2720,31 @@ yyreduce:
     break;
 
   case 5:
-#line 271 "./Ecc/Parser.y"
+#line 271 "Ecc/Parser.y"
     {
   ;}
     break;
 
   case 6:
-#line 272 "./Ecc/Parser.y"
+#line 272 "Ecc/Parser.y"
     {
   ;}
     break;
 
   case 7:
-#line 273 "./Ecc/Parser.y"
+#line 273 "Ecc/Parser.y"
     {
     fprintf(_fDeclaration, "#endif // _%s_INCLUDED\n", _strFileNameBaseIdentifier);
   ;}
     break;
 
   case 9:
-#line 284 "./Ecc/Parser.y"
+#line 284 "Ecc/Parser.y"
     { fprintf(_fImplementation, "%s\n", (yyvsp[(1) - (1)]).strString); ;}
     break;
 
   case 12:
-#line 292 "./Ecc/Parser.y"
+#line 292 "Ecc/Parser.y"
     {
     char *strUsedFileName = strdup((yyvsp[(2) - (3)]).strString);
     strUsedFileName[strlen(strUsedFileName)-1] = 0;
@@ -2753,7 +2753,7 @@ yyreduce:
     break;
 
   case 16:
-#line 309 "./Ecc/Parser.y"
+#line 309 "Ecc/Parser.y"
     { 
     _strCurrentEnum = (yyvsp[(2) - (2)]).strString;
     fprintf(_fTables, "EP_ENUMBEG(%s)\n", _strCurrentEnum );
@@ -2763,7 +2763,7 @@ yyreduce:
     break;
 
   case 17:
-#line 314 "./Ecc/Parser.y"
+#line 314 "Ecc/Parser.y"
     {
     fprintf(_fTables, "EP_ENUMEND(%s);\n\n", _strCurrentEnum);
     fprintf(_fDeclaration, "};\n");
@@ -2772,7 +2772,7 @@ yyreduce:
     break;
 
   case 22:
-#line 327 "./Ecc/Parser.y"
+#line 327 "Ecc/Parser.y"
     {
     fprintf(_fTables, "  EP_ENUMVALUE(%s, %s),\n", (yyvsp[(2) - (3)]).strString, (yyvsp[(3) - (3)]).strString);
     fprintf(_fDeclaration, "  %s = %s,\n", (yyvsp[(2) - (3)]).strString, (yyvsp[(1) - (3)]).strString);
@@ -2780,7 +2780,7 @@ yyreduce:
     break;
 
   case 23:
-#line 337 "./Ecc/Parser.y"
+#line 337 "Ecc/Parser.y"
     { 
     _strCurrentEvent = (yyvsp[(2) - (2)]).strString;
     int iID = CreateID();
@@ -2800,7 +2800,7 @@ yyreduce:
     break;
 
   case 24:
-#line 352 "./Ecc/Parser.y"
+#line 352 "Ecc/Parser.y"
     {
     fprintf(_fImplementation, "};\n");
     fprintf(_fDeclaration, "};\n");
@@ -2809,7 +2809,7 @@ yyreduce:
     break;
 
   case 29:
-#line 370 "./Ecc/Parser.y"
+#line 370 "Ecc/Parser.y"
     {
     fprintf(_fDeclaration, "%s %s;\n", (yyvsp[(1) - (2)]).strString, (yyvsp[(2) - (2)]).strString);
     fprintf(_fImplementation, " ClearToDefault(%s);\n", (yyvsp[(2) - (2)]).strString);
@@ -2817,7 +2817,7 @@ yyreduce:
     break;
 
   case 33:
-#line 388 "./Ecc/Parser.y"
+#line 388 "Ecc/Parser.y"
     {
     _strCurrentClass = (yyvsp[(2) - (11)]).strString;
     _strCurrentBase = (yyvsp[(4) - (11)]).strString;
@@ -2834,7 +2834,7 @@ yyreduce:
     break;
 
   case 34:
-#line 400 "./Ecc/Parser.y"
+#line 400 "Ecc/Parser.y"
     {
     fprintf(_fDeclaration, "  %s virtual void SetDefaultProperties(void);\n", _bClassIsExported?"":"DECL_DLL");
     fprintf(_fImplementation, "void %s::SetDefaultProperties(void) {\n", _strCurrentClass);
@@ -2844,7 +2844,7 @@ yyreduce:
     break;
 
   case 35:
-#line 405 "./Ecc/Parser.y"
+#line 405 "Ecc/Parser.y"
     {
     fprintf(_fImplementation, "  %s::SetDefaultProperties();\n}\n", _strCurrentBase);
 
@@ -2853,13 +2853,13 @@ yyreduce:
     break;
 
   case 36:
-#line 409 "./Ecc/Parser.y"
+#line 409 "Ecc/Parser.y"
     {
   ;}
     break;
 
   case 37:
-#line 410 "./Ecc/Parser.y"
+#line 410 "Ecc/Parser.y"
     {
     _bTrackLineInformation = 1;
     fprintf(_fTables, "CEventHandlerEntry %s_handlers[] = {\n", _strCurrentClass);
@@ -2870,7 +2870,7 @@ yyreduce:
     break;
 
   case 38:
-#line 416 "./Ecc/Parser.y"
+#line 416 "Ecc/Parser.y"
     {
 
     _bInProcedure = 1;
@@ -2878,13 +2878,13 @@ yyreduce:
     break;
 
   case 39:
-#line 419 "./Ecc/Parser.y"
+#line 419 "Ecc/Parser.y"
     {
   ;}
     break;
 
   case 40:
-#line 420 "./Ecc/Parser.y"
+#line 420 "Ecc/Parser.y"
     {
     fprintf(_fTables, "};\n#define %s_handlersct ARRAYCOUNT(%s_handlers)\n", 
       _strCurrentClass, _strCurrentClass);
@@ -2950,17 +2950,17 @@ yyreduce:
     break;
 
   case 41:
-#line 485 "./Ecc/Parser.y"
+#line 485 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (1)]); _bClassIsExported = 0; ;}
     break;
 
   case 42:
-#line 486 "./Ecc/Parser.y"
+#line 486 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (2)])+" DECL_DLL "; _bClassIsExported = 1; ;}
     break;
 
   case 44:
-#line 491 "./Ecc/Parser.y"
+#line 491 "Ecc/Parser.y"
     {
     _bFeature_ImplementsOnWorldInit = 0;
     _bFeature_ImplementsOnWorldEnd = 0;
@@ -2975,7 +2975,7 @@ yyreduce:
     break;
 
   case 48:
-#line 508 "./Ecc/Parser.y"
+#line 508 "Ecc/Parser.y"
     {
     if (strcmp((yyvsp[(1) - (1)]).strString, "\"AbstractBaseClass\"")==0) {
       _bFeature_AbstractBaseClass = 1;
@@ -3019,14 +3019,14 @@ yyreduce:
     break;
 
   case 53:
-#line 559 "./Ecc/Parser.y"
+#line 559 "Ecc/Parser.y"
     { 
     fprintf(_fDeclaration, "%s %s;\n", (yyvsp[(1) - (3)]).strString, (yyvsp[(2) - (3)]).strString);
   ;}
     break;
 
   case 54:
-#line 569 "./Ecc/Parser.y"
+#line 569 "Ecc/Parser.y"
     {
     DeclareFeatureProperties(); // this won't work, but at least it will generate an error!!!!
     fprintf(_fTables, "  CEntityProperty()\n};\n");
@@ -3037,7 +3037,7 @@ yyreduce:
     break;
 
   case 55:
-#line 576 "./Ecc/Parser.y"
+#line 576 "Ecc/Parser.y"
     {
     DeclareFeatureProperties();
     fprintf(_fTables, "};\n");
@@ -3048,7 +3048,7 @@ yyreduce:
     break;
 
   case 59:
-#line 593 "./Ecc/Parser.y"
+#line 593 "Ecc/Parser.y"
     {
     fprintf(_fTables, " CEntityProperty(%s, %s, (0x%08x<<8)+%s, _offsetof(%s, %s), %s, %s, %s, %s),\n",
       _strCurrentPropertyPropertyType,
@@ -3073,17 +3073,17 @@ yyreduce:
     break;
 
   case 60:
-#line 616 "./Ecc/Parser.y"
+#line 616 "Ecc/Parser.y"
     { _strCurrentPropertyID = (yyvsp[(1) - (1)]).strString; ;}
     break;
 
   case 61:
-#line 617 "./Ecc/Parser.y"
+#line 617 "Ecc/Parser.y"
     { _strCurrentPropertyIdentifier = (yyvsp[(1) - (1)]).strString; ;}
     break;
 
   case 62:
-#line 620 "./Ecc/Parser.y"
+#line 620 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ENUM"; 
     _strCurrentPropertyEnumType = (SType("&")+(yyvsp[(2) - (2)])+"_enum").strString; 
@@ -3092,7 +3092,7 @@ yyreduce:
     break;
 
   case 63:
-#line 625 "./Ecc/Parser.y"
+#line 625 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLAGS"; 
     _strCurrentPropertyEnumType = (SType("&")+(yyvsp[(2) - (2)])+"_enum").strString; 
@@ -3101,7 +3101,7 @@ yyreduce:
     break;
 
   case 64:
-#line 630 "./Ecc/Parser.y"
+#line 630 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_STRING"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3110,7 +3110,7 @@ yyreduce:
     break;
 
   case 65:
-#line 635 "./Ecc/Parser.y"
+#line 635 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_STRINGTRANS"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3119,7 +3119,7 @@ yyreduce:
     break;
 
   case 66:
-#line 640 "./Ecc/Parser.y"
+#line 640 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FILENAME"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3128,7 +3128,7 @@ yyreduce:
     break;
 
   case 67:
-#line 645 "./Ecc/Parser.y"
+#line 645 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FILENAMENODEP"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3137,7 +3137,7 @@ yyreduce:
     break;
 
   case 68:
-#line 650 "./Ecc/Parser.y"
+#line 650 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_BOOL"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3146,7 +3146,7 @@ yyreduce:
     break;
 
   case 69:
-#line 655 "./Ecc/Parser.y"
+#line 655 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_COLOR"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3155,7 +3155,7 @@ yyreduce:
     break;
 
   case 70:
-#line 660 "./Ecc/Parser.y"
+#line 660 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOAT"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3164,7 +3164,7 @@ yyreduce:
     break;
 
   case 71:
-#line 665 "./Ecc/Parser.y"
+#line 665 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_INDEX"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3173,7 +3173,7 @@ yyreduce:
     break;
 
   case 72:
-#line 670 "./Ecc/Parser.y"
+#line 670 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_RANGE"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3182,7 +3182,7 @@ yyreduce:
     break;
 
   case 73:
-#line 675 "./Ecc/Parser.y"
+#line 675 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ENTITYPTR"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3191,7 +3191,7 @@ yyreduce:
     break;
 
   case 74:
-#line 680 "./Ecc/Parser.y"
+#line 680 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_MODELOBJECT"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3200,7 +3200,7 @@ yyreduce:
     break;
 
   case 75:
-#line 685 "./Ecc/Parser.y"
+#line 685 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_MODELINSTANCE"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3209,7 +3209,7 @@ yyreduce:
     break;
 
   case 76:
-#line 690 "./Ecc/Parser.y"
+#line 690 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ANIMOBJECT"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3218,7 +3218,7 @@ yyreduce:
     break;
 
   case 77:
-#line 695 "./Ecc/Parser.y"
+#line 695 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_SOUNDOBJECT"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3227,7 +3227,7 @@ yyreduce:
     break;
 
   case 78:
-#line 700 "./Ecc/Parser.y"
+#line 700 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_PLACEMENT3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3236,7 +3236,7 @@ yyreduce:
     break;
 
   case 79:
-#line 705 "./Ecc/Parser.y"
+#line 705 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOATAABBOX3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3245,7 +3245,7 @@ yyreduce:
     break;
 
   case 80:
-#line 710 "./Ecc/Parser.y"
+#line 710 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOATMATRIX3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3254,7 +3254,7 @@ yyreduce:
     break;
 
   case 81:
-#line 715 "./Ecc/Parser.y"
+#line 715 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOATQUAT3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3263,7 +3263,7 @@ yyreduce:
     break;
 
   case 82:
-#line 720 "./Ecc/Parser.y"
+#line 720 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ANGLE"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3272,7 +3272,7 @@ yyreduce:
     break;
 
   case 83:
-#line 725 "./Ecc/Parser.y"
+#line 725 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ANGLE3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3281,7 +3281,7 @@ yyreduce:
     break;
 
   case 84:
-#line 730 "./Ecc/Parser.y"
+#line 730 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOAT3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3290,7 +3290,7 @@ yyreduce:
     break;
 
   case 85:
-#line 735 "./Ecc/Parser.y"
+#line 735 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_FLOATplane3D"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3299,7 +3299,7 @@ yyreduce:
     break;
 
   case 86:
-#line 740 "./Ecc/Parser.y"
+#line 740 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ILLUMINATIONTYPE"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3308,7 +3308,7 @@ yyreduce:
     break;
 
   case 87:
-#line 745 "./Ecc/Parser.y"
+#line 745 "Ecc/Parser.y"
     {
     _strCurrentPropertyPropertyType = "CEntityProperty::EPT_ANIMATION"; 
     _strCurrentPropertyEnumType = "NULL"; 
@@ -3317,7 +3317,7 @@ yyreduce:
     break;
 
   case 88:
-#line 753 "./Ecc/Parser.y"
+#line 753 "Ecc/Parser.y"
     {
     _strCurrentPropertyName = "\"\""; 
     _strCurrentPropertyShortcut = "0"; 
@@ -3326,56 +3326,56 @@ yyreduce:
     break;
 
   case 89:
-#line 758 "./Ecc/Parser.y"
+#line 758 "Ecc/Parser.y"
     {
     _strCurrentPropertyName = (yyvsp[(1) - (3)]).strString; 
   ;}
     break;
 
   case 90:
-#line 763 "./Ecc/Parser.y"
+#line 763 "Ecc/Parser.y"
     {
     _strCurrentPropertyShortcut = "0"; 
   ;}
     break;
 
   case 91:
-#line 766 "./Ecc/Parser.y"
+#line 766 "Ecc/Parser.y"
     {
     _strCurrentPropertyShortcut = (yyvsp[(1) - (1)]).strString; 
   ;}
     break;
 
   case 92:
-#line 771 "./Ecc/Parser.y"
+#line 771 "Ecc/Parser.y"
     {
     _strCurrentPropertyColor = "0x7F0000FFUL"; // dark red
   ;}
     break;
 
   case 93:
-#line 774 "./Ecc/Parser.y"
+#line 774 "Ecc/Parser.y"
     {
     _strCurrentPropertyColor = (yyvsp[(3) - (4)]).strString; 
   ;}
     break;
 
   case 94:
-#line 778 "./Ecc/Parser.y"
+#line 778 "Ecc/Parser.y"
     {
     _strCurrentPropertyFlags = "0"; // dark red
   ;}
     break;
 
   case 95:
-#line 781 "./Ecc/Parser.y"
+#line 781 "Ecc/Parser.y"
     {
     _strCurrentPropertyFlags = (yyvsp[(3) - (4)]).strString; 
   ;}
     break;
 
   case 96:
-#line 786 "./Ecc/Parser.y"
+#line 786 "Ecc/Parser.y"
     {
     if (strcmp(_strCurrentPropertyDataType,"CEntityPointer")==0)  {
       _strCurrentPropertyDefaultCode = (SType(_strCurrentPropertyIdentifier)+" = NULL;").strString;
@@ -3401,7 +3401,7 @@ yyreduce:
     break;
 
   case 97:
-#line 808 "./Ecc/Parser.y"
+#line 808 "Ecc/Parser.y"
     {
     if (strcmp(_strCurrentPropertyDataType,"CEntityPointer")==0)  {
       yyerror("CEntityPointer type properties always default to NULL");
@@ -3412,32 +3412,32 @@ yyreduce:
     break;
 
   case 103:
-#line 818 "./Ecc/Parser.y"
+#line 818 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (1)]) + " ";;}
     break;
 
   case 104:
-#line 819 "./Ecc/Parser.y"
+#line 819 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (4)])+(yyvsp[(2) - (4)])+(yyvsp[(3) - (4)])+(yyvsp[(4) - (4)]);;}
     break;
 
   case 105:
-#line 820 "./Ecc/Parser.y"
+#line 820 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (4)])+(yyvsp[(2) - (4)])+(yyvsp[(3) - (4)])+(yyvsp[(4) - (4)]);;}
     break;
 
   case 106:
-#line 821 "./Ecc/Parser.y"
+#line 821 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 107:
-#line 822 "./Ecc/Parser.y"
+#line 822 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 108:
-#line 829 "./Ecc/Parser.y"
+#line 829 "Ecc/Parser.y"
     {
     fprintf(_fTables, "  CEntityComponent()\n};\n");
     fprintf(_fTables, "#define %s_componentsct 0\n", _strCurrentClass);
@@ -3447,7 +3447,7 @@ yyreduce:
     break;
 
   case 109:
-#line 835 "./Ecc/Parser.y"
+#line 835 "Ecc/Parser.y"
     {
     fprintf(_fTables, "};\n");
     fprintf(_fTables, "#define %s_componentsct ARRAYCOUNT(%s_components)\n", 
@@ -3457,7 +3457,7 @@ yyreduce:
     break;
 
   case 113:
-#line 851 "./Ecc/Parser.y"
+#line 851 "Ecc/Parser.y"
     {
   fprintf(_fTables, "#define %s ((0x%08x<<8)+%s)\n",
       _strCurrentComponentIdentifier,
@@ -3472,52 +3472,52 @@ yyreduce:
     break;
 
   case 114:
-#line 864 "./Ecc/Parser.y"
+#line 864 "Ecc/Parser.y"
     { _strCurrentComponentID = (yyvsp[(1) - (1)]).strString; ;}
     break;
 
   case 115:
-#line 865 "./Ecc/Parser.y"
+#line 865 "Ecc/Parser.y"
     { _strCurrentComponentIdentifier = (yyvsp[(1) - (1)]).strString; ;}
     break;
 
   case 116:
-#line 866 "./Ecc/Parser.y"
+#line 866 "Ecc/Parser.y"
     { _strCurrentComponentFileName = (yyvsp[(1) - (1)]).strString; ;}
     break;
 
   case 117:
-#line 869 "./Ecc/Parser.y"
+#line 869 "Ecc/Parser.y"
     { _strCurrentComponentType = "ECT_MODEL"; ;}
     break;
 
   case 118:
-#line 870 "./Ecc/Parser.y"
+#line 870 "Ecc/Parser.y"
     { _strCurrentComponentType = "ECT_TEXTURE"; ;}
     break;
 
   case 119:
-#line 871 "./Ecc/Parser.y"
+#line 871 "Ecc/Parser.y"
     { _strCurrentComponentType = "ECT_SOUND"; ;}
     break;
 
   case 120:
-#line 872 "./Ecc/Parser.y"
+#line 872 "Ecc/Parser.y"
     { _strCurrentComponentType = "ECT_CLASS"; ;}
     break;
 
   case 121:
-#line 879 "./Ecc/Parser.y"
+#line 879 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 122:
-#line 880 "./Ecc/Parser.y"
+#line 880 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 123:
-#line 885 "./Ecc/Parser.y"
+#line 885 "Ecc/Parser.y"
     {
     const char *strReturnType = (yyvsp[(3) - (13)]).strString;
     const char *strFunctionHeader = ((yyvsp[(4) - (13)])+(yyvsp[(5) - (13)])+(yyvsp[(6) - (13)])+(yyvsp[(7) - (13)])+(yyvsp[(8) - (13)])+(yyvsp[(9) - (13)])).strString;
@@ -3537,22 +3537,22 @@ yyreduce:
     break;
 
   case 124:
-#line 903 "./Ecc/Parser.y"
+#line 903 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 125:
-#line 904 "./Ecc/Parser.y"
+#line 904 "Ecc/Parser.y"
     { (yyval) = " ~ "; ;}
     break;
 
   case 126:
-#line 908 "./Ecc/Parser.y"
+#line 908 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 127:
-#line 909 "./Ecc/Parser.y"
+#line 909 "Ecc/Parser.y"
     { 
     if (_bClassIsExported) {
       (yyval) = ""; 
@@ -3563,109 +3563,109 @@ yyreduce:
     break;
 
   case 128:
-#line 919 "./Ecc/Parser.y"
+#line 919 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 129:
-#line 920 "./Ecc/Parser.y"
+#line 920 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (1)]); ;}
     break;
 
   case 130:
-#line 923 "./Ecc/Parser.y"
+#line 923 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 131:
-#line 924 "./Ecc/Parser.y"
+#line 924 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (1)]); ;}
     break;
 
   case 134:
-#line 931 "./Ecc/Parser.y"
+#line 931 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 138:
-#line 937 "./Ecc/Parser.y"
+#line 937 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 139:
-#line 940 "./Ecc/Parser.y"
+#line 940 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 144:
-#line 951 "./Ecc/Parser.y"
+#line 951 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 145:
-#line 952 "./Ecc/Parser.y"
+#line 952 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 146:
-#line 953 "./Ecc/Parser.y"
+#line 953 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 147:
-#line 954 "./Ecc/Parser.y"
+#line 954 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 148:
-#line 955 "./Ecc/Parser.y"
+#line 955 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 149:
-#line 956 "./Ecc/Parser.y"
+#line 956 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 150:
-#line 957 "./Ecc/Parser.y"
+#line 957 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 151:
-#line 958 "./Ecc/Parser.y"
+#line 958 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 152:
-#line 959 "./Ecc/Parser.y"
+#line 959 "Ecc/Parser.y"
     { (yyval)=(yyvsp[(1) - (4)])+" "+(yyvsp[(2) - (4)])+" "+(yyvsp[(3) - (4)])+" "+(yyvsp[(4) - (4)]); ;}
     break;
 
   case 153:
-#line 967 "./Ecc/Parser.y"
+#line 967 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 154:
-#line 968 "./Ecc/Parser.y"
+#line 968 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 155:
-#line 972 "./Ecc/Parser.y"
+#line 972 "Ecc/Parser.y"
     { (yyval) = "-1"; ;}
     break;
 
   case 156:
-#line 973 "./Ecc/Parser.y"
+#line 973 "Ecc/Parser.y"
     {
     (yyval) = SType("STATE_")+(yyvsp[(2) - (5)])+"_"+(yyvsp[(5) - (5)]);
   ;}
     break;
 
   case 157:
-#line 979 "./Ecc/Parser.y"
+#line 979 "Ecc/Parser.y"
     {
     char *strProcedureName = (yyvsp[(1) - (5)]).strString;
     char strInputEventType[80];
@@ -3701,7 +3701,7 @@ yyreduce:
     break;
 
   case 158:
-#line 1010 "./Ecc/Parser.y"
+#line 1010 "Ecc/Parser.y"
     {
     char *strFunctionBody = (yyvsp[(8) - (10)]).strString;
     fprintf(_fImplementation, "%s ASSERT(FALSE); return TRUE;};", strFunctionBody);
@@ -3709,203 +3709,203 @@ yyreduce:
     break;
 
   case 159:
-#line 1017 "./Ecc/Parser.y"
+#line 1017 "Ecc/Parser.y"
     {
     (yyval)="EVoid e";
   ;}
     break;
 
   case 160:
-#line 1020 "./Ecc/Parser.y"
+#line 1020 "Ecc/Parser.y"
     {
     (yyval)=(yyvsp[(1) - (1)])+" e";
   ;}
     break;
 
   case 161:
-#line 1023 "./Ecc/Parser.y"
+#line 1023 "Ecc/Parser.y"
     {
     (yyval)=(yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]);
   ;}
     break;
 
   case 167:
-#line 1030 "./Ecc/Parser.y"
+#line 1030 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (1)]) + " ";;}
     break;
 
   case 188:
-#line 1033 "./Ecc/Parser.y"
+#line 1033 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 189:
-#line 1034 "./Ecc/Parser.y"
+#line 1034 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 190:
-#line 1035 "./Ecc/Parser.y"
+#line 1035 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 191:
-#line 1036 "./Ecc/Parser.y"
+#line 1036 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 192:
-#line 1037 "./Ecc/Parser.y"
+#line 1037 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 193:
-#line 1038 "./Ecc/Parser.y"
+#line 1038 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 194:
-#line 1039 "./Ecc/Parser.y"
+#line 1039 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 195:
-#line 1040 "./Ecc/Parser.y"
+#line 1040 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 196:
-#line 1041 "./Ecc/Parser.y"
+#line 1041 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 197:
-#line 1042 "./Ecc/Parser.y"
+#line 1042 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 198:
-#line 1043 "./Ecc/Parser.y"
+#line 1043 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 199:
-#line 1044 "./Ecc/Parser.y"
+#line 1044 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 200:
-#line 1045 "./Ecc/Parser.y"
+#line 1045 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 201:
-#line 1046 "./Ecc/Parser.y"
+#line 1046 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 202:
-#line 1047 "./Ecc/Parser.y"
+#line 1047 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 203:
-#line 1048 "./Ecc/Parser.y"
+#line 1048 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 204:
-#line 1049 "./Ecc/Parser.y"
+#line 1049 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 205:
-#line 1050 "./Ecc/Parser.y"
+#line 1050 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 206:
-#line 1051 "./Ecc/Parser.y"
+#line 1051 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 207:
-#line 1052 "./Ecc/Parser.y"
+#line 1052 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 208:
-#line 1053 "./Ecc/Parser.y"
+#line 1053 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 209:
-#line 1054 "./Ecc/Parser.y"
+#line 1054 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 210:
-#line 1055 "./Ecc/Parser.y"
+#line 1055 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 211:
-#line 1056 "./Ecc/Parser.y"
+#line 1056 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 212:
-#line 1057 "./Ecc/Parser.y"
+#line 1057 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 213:
-#line 1058 "./Ecc/Parser.y"
+#line 1058 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (2)])+" "+(yyvsp[(2) - (2)]);;}
     break;
 
   case 245:
-#line 1071 "./Ecc/Parser.y"
+#line 1071 "Ecc/Parser.y"
     {(yyval) = (yyvsp[(1) - (1)]) + " ";;}
     break;
 
   case 246:
-#line 1078 "./Ecc/Parser.y"
+#line 1078 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 247:
-#line 1079 "./Ecc/Parser.y"
+#line 1079 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]); ;}
     break;
 
   case 248:
-#line 1082 "./Ecc/Parser.y"
+#line 1082 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]);;}
     break;
 
   case 249:
-#line 1083 "./Ecc/Parser.y"
+#line 1083 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (7)])+(yyvsp[(2) - (7)])+(yyvsp[(3) - (7)])+(yyvsp[(4) - (7)])+(yyvsp[(5) - (7)])+(yyvsp[(6) - (7)])+(yyvsp[(7) - (7)]);}
     break;
 
   case 250:
-#line 1084 "./Ecc/Parser.y"
+#line 1084 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (3)])+" "+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)])+" ";;}
     break;
 
   case 251:
-#line 1085 "./Ecc/Parser.y"
+#line 1085 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);;}
     break;
 
   case 252:
-#line 1086 "./Ecc/Parser.y"
+#line 1086 "Ecc/Parser.y"
     {(yyval)=(yyvsp[(1) - (4)])+(yyvsp[(2) - (4)])+(yyvsp[(3) - (4)])+(yyvsp[(4) - (4)]);;}
     break;
 
   case 269:
-#line 1107 "./Ecc/Parser.y"
+#line 1107 "Ecc/Parser.y"
     {
     if ((yyvsp[(6) - (7)]).bCrossesStates) {
       char strAfterIfName[80], strAfterIfID[11];
@@ -3922,7 +3922,7 @@ yyreduce:
     break;
 
   case 270:
-#line 1123 "./Ecc/Parser.y"
+#line 1123 "Ecc/Parser.y"
     {
     if ((yyvsp[(6) - (9)]).bCrossesStates || (yyvsp[(9) - (9)]).bCrossesStates) {
       char strAfterIfName[80], strAfterIfID[11];
@@ -3945,7 +3945,7 @@ yyreduce:
     break;
 
   case 271:
-#line 1145 "./Ecc/Parser.y"
+#line 1145 "Ecc/Parser.y"
     {
     if (strlen(_strInLoopName)>0) {
       yyerror("Nested loops are not implemented yet");
@@ -3954,7 +3954,7 @@ yyreduce:
     break;
 
   case 272:
-#line 1149 "./Ecc/Parser.y"
+#line 1149 "Ecc/Parser.y"
     {
     if ((yyvsp[(7) - (8)]).bCrossesStates) {
       CreateInternalHandlerFunction(_strInLoopName, _strInLoopID);
@@ -3976,7 +3976,7 @@ yyreduce:
     break;
 
   case 273:
-#line 1170 "./Ecc/Parser.y"
+#line 1170 "Ecc/Parser.y"
     {
     if (strlen(_strInLoopName)>0) {
       yyerror("Nested loops are not implemented yet");
@@ -3986,7 +3986,7 @@ yyreduce:
     break;
 
   case 274:
-#line 1175 "./Ecc/Parser.y"
+#line 1175 "Ecc/Parser.y"
     {
     if ((yyvsp[(3) - (10)]).bCrossesStates) {
       CreateInternalHandlerFunction(_strInLoopName, _strInLoopID);
@@ -4008,7 +4008,7 @@ yyreduce:
     break;
 
   case 275:
-#line 1196 "./Ecc/Parser.y"
+#line 1196 "Ecc/Parser.y"
     {
     if (strlen(_strInLoopName)>0) {
       yyerror("Nested loops are not implemented yet");
@@ -4017,7 +4017,7 @@ yyreduce:
     break;
 
   case 276:
-#line 1200 "./Ecc/Parser.y"
+#line 1200 "Ecc/Parser.y"
     {
     if ((yyvsp[(11) - (12)]).bCrossesStates) {
       CreateInternalHandlerFunction(_strInLoopName, _strInLoopID);
@@ -4031,7 +4031,7 @@ yyreduce:
     break;
 
   case 277:
-#line 1213 "./Ecc/Parser.y"
+#line 1213 "Ecc/Parser.y"
     {
       if (!_bInProcedure) {
         yyerror("Cannot have 'wait' in functions");
@@ -4044,7 +4044,7 @@ yyreduce:
     break;
 
   case 278:
-#line 1221 "./Ecc/Parser.y"
+#line 1221 "Ecc/Parser.y"
     {
     if ((yyvsp[(5) - (6)]).bCrossesStates) {
       yyerror("'wait' statements must not be nested");
@@ -4072,7 +4072,7 @@ yyreduce:
     break;
 
   case 279:
-#line 1247 "./Ecc/Parser.y"
+#line 1247 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       yyerror("Cannot have 'autowait' in functions");
@@ -4097,7 +4097,7 @@ yyreduce:
     break;
 
   case 280:
-#line 1271 "./Ecc/Parser.y"
+#line 1271 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       yyerror("Cannot have 'autocall' in functions");
@@ -4122,21 +4122,21 @@ yyreduce:
     break;
 
   case 281:
-#line 1296 "./Ecc/Parser.y"
+#line 1296 "Ecc/Parser.y"
     {
     (yyval) = SType("__e");
   ;}
     break;
 
   case 282:
-#line 1299 "./Ecc/Parser.y"
+#line 1299 "Ecc/Parser.y"
     {
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 283:
-#line 1304 "./Ecc/Parser.y"
+#line 1304 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       yyerror("Cannot have 'autocall' in functions");
@@ -4161,21 +4161,21 @@ yyreduce:
     break;
 
   case 284:
-#line 1328 "./Ecc/Parser.y"
+#line 1328 "Ecc/Parser.y"
     {
     (yyval) = SType("SetTimerAt(THINKTIME_NEVER)"); 
   ;}
     break;
 
   case 285:
-#line 1331 "./Ecc/Parser.y"
+#line 1331 "Ecc/Parser.y"
     {
     (yyval) = SType("SetTimerAfter")+(yyvsp[(1) - (3)])+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]); 
   ;}
     break;
 
   case 286:
-#line 1337 "./Ecc/Parser.y"
+#line 1337 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       yyerror("Cannot have 'jump' in functions");
@@ -4185,7 +4185,7 @@ yyreduce:
     break;
 
   case 287:
-#line 1346 "./Ecc/Parser.y"
+#line 1346 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       yyerror("Cannot have 'call' in functions");
@@ -4198,35 +4198,35 @@ yyreduce:
     break;
 
   case 288:
-#line 1358 "./Ecc/Parser.y"
+#line 1358 "Ecc/Parser.y"
     { 
     (yyval) = (yyvsp[(1) - (1)]);
   ;}
     break;
 
   case 289:
-#line 1361 "./Ecc/Parser.y"
+#line 1361 "Ecc/Parser.y"
     {
     (yyval) = SType("EVoid()");
   ;}
     break;
 
   case 290:
-#line 1367 "./Ecc/Parser.y"
+#line 1367 "Ecc/Parser.y"
     {
     (yyval) = SType("STATE_")+_strCurrentClass+"_"+(yyvsp[(1) - (1)])+", TRUE";
   ;}
     break;
 
   case 291:
-#line 1370 "./Ecc/Parser.y"
+#line 1370 "Ecc/Parser.y"
     {
     (yyval) = SType("STATE_")+(yyvsp[(1) - (4)])+"_"+(yyvsp[(4) - (4)])+", FALSE";
   ;}
     break;
 
   case 292:
-#line 1376 "./Ecc/Parser.y"
+#line 1376 "Ecc/Parser.y"
     {
     (yyval) = SType(GetLineDirective((yyvsp[(1) - (2)])))+"UnsetTimer();Jump(STATE_CURRENT,"
       +_strAfterWaitID+", FALSE, EInternal());"+"return TRUE"+(yyvsp[(2) - (2)]);
@@ -4234,21 +4234,21 @@ yyreduce:
     break;
 
   case 293:
-#line 1382 "./Ecc/Parser.y"
+#line 1382 "Ecc/Parser.y"
     {
     (yyval) = SType(GetLineDirective((yyvsp[(1) - (2)])))+"return TRUE"+(yyvsp[(2) - (2)]);
   ;}
     break;
 
   case 294:
-#line 1387 "./Ecc/Parser.y"
+#line 1387 "Ecc/Parser.y"
     {
     (yyval) = SType(GetLineDirective((yyvsp[(1) - (2)])))+"return FALSE"+(yyvsp[(2) - (2)]);
   ;}
     break;
 
   case 295:
-#line 1392 "./Ecc/Parser.y"
+#line 1392 "Ecc/Parser.y"
     {
     if (!_bInProcedure) {
       (yyval) = (yyvsp[(1) - (3)])+" "+(yyvsp[(2) - (3)])+(yyvsp[(3) - (3)]);
@@ -4264,12 +4264,12 @@ yyreduce:
     break;
 
   case 296:
-#line 1406 "./Ecc/Parser.y"
+#line 1406 "Ecc/Parser.y"
     {(yyval) = "";;}
     break;
 
   case 298:
-#line 1411 "./Ecc/Parser.y"
+#line 1411 "Ecc/Parser.y"
     {
     char strInputEventType[80];
     char strInputEventName[80];
@@ -4282,7 +4282,7 @@ yyreduce:
     break;
 
   case 299:
-#line 1420 "./Ecc/Parser.y"
+#line 1420 "Ecc/Parser.y"
     {
     char strInputEventType[80];
     char strInputEventName[80];
@@ -4294,18 +4294,18 @@ yyreduce:
     break;
 
   case 300:
-#line 1430 "./Ecc/Parser.y"
+#line 1430 "Ecc/Parser.y"
     { (yyval) = "";;}
     break;
 
   case 301:
-#line 1431 "./Ecc/Parser.y"
+#line 1431 "Ecc/Parser.y"
     { (yyval) = (yyvsp[(1) - (2)])+(yyvsp[(2) - (2)]); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 4309 "./Ecc/Parser.cpp"
+#line 4309 "Ecc/Parser.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -4519,6 +4519,6 @@ yyreturn:
 }
 
 
-#line 1434 "./Ecc/Parser.y"
+#line 1434 "Ecc/Parser.y"
 
 

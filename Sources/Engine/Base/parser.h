@@ -110,7 +110,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 197 "./Engine/Base/Parser.y"
+#line 197 "Engine/Base/Parser.y"
 {
   value val;                  // for constants and expressions
   arguments arg;               // for function input arguments
@@ -122,7 +122,7 @@ typedef union YYSTYPE
   void (*pPostFunc)(INDEX); // post-set function for a variable
 }
 /* Line 1529 of yacc.c.  */
-#line 126 "./Engine/Base/Parser.hpp"
+#line 126 "Engine/Base/Parser.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

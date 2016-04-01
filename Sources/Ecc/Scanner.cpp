@@ -1,6 +1,6 @@
-#line 2 "./Ecc/Scanner.cpp"
+#line 2 "Ecc/Scanner.cpp"
 
-#line 4 "./Ecc/Scanner.cpp"
+#line 4 "Ecc/Scanner.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -716,8 +716,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "./Ecc/Scanner.l"
-#line 2 "./Ecc/Scanner.l"
+#line 1 "Ecc/Scanner.l"
+#line 2 "Ecc/Scanner.l"
 // rcg10042001 Changed to specify Ecc directory...
 #include "Ecc/StdH.h"
 #include "Ecc/Main.h"
@@ -743,7 +743,7 @@ char *_strCppBlock;
 
 
 
-#line 747 "./Ecc/Scanner.cpp"
+#line 747 "Ecc/Scanner.cpp"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -927,11 +927,11 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 38 "./Ecc/Scanner.l"
+#line 38 "Ecc/Scanner.l"
 
 
  /* standard cpp-keywords */
-#line 935 "./Ecc/Scanner.cpp"
+#line 935 "Ecc/Scanner.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -1016,374 +1016,374 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 41 "./Ecc/Scanner.l"
+#line 41 "Ecc/Scanner.l"
 {RETURN(k_while);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 42 "./Ecc/Scanner.l"
+#line 42 "Ecc/Scanner.l"
 {RETURN(k_switch);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 43 "./Ecc/Scanner.l"
+#line 43 "Ecc/Scanner.l"
 {RETURN(k_case);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 44 "./Ecc/Scanner.l"
+#line 44 "Ecc/Scanner.l"
 {RETURN(k_for);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "./Ecc/Scanner.l"
+#line 45 "Ecc/Scanner.l"
 {RETURN(k_if);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "./Ecc/Scanner.l"
+#line 46 "Ecc/Scanner.l"
 {RETURN(k_else);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 47 "./Ecc/Scanner.l"
+#line 47 "Ecc/Scanner.l"
 {RETURN(k_enum);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 48 "./Ecc/Scanner.l"
+#line 48 "Ecc/Scanner.l"
 {RETURN(k_class);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 49 "./Ecc/Scanner.l"
+#line 49 "Ecc/Scanner.l"
 {RETURN(k_do);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 50 "./Ecc/Scanner.l"
+#line 50 "Ecc/Scanner.l"
 {RETURN(k_void);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 51 "./Ecc/Scanner.l"
+#line 51 "Ecc/Scanner.l"
 {RETURN(k_const);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 52 "./Ecc/Scanner.l"
+#line 52 "Ecc/Scanner.l"
 {RETURN(k_inline);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 53 "./Ecc/Scanner.l"
+#line 53 "Ecc/Scanner.l"
 {RETURN(k_static);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 54 "./Ecc/Scanner.l"
+#line 54 "Ecc/Scanner.l"
 {RETURN(k_virtual);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 55 "./Ecc/Scanner.l"
+#line 55 "Ecc/Scanner.l"
 {RETURN(k_return);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 56 "./Ecc/Scanner.l"
+#line 56 "Ecc/Scanner.l"
 {RETURN(k_autowait);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 57 "./Ecc/Scanner.l"
+#line 57 "Ecc/Scanner.l"
 {RETURN(k_autocall);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 58 "./Ecc/Scanner.l"
+#line 58 "Ecc/Scanner.l"
 {RETURN(k_waitevent);}
 	YY_BREAK
 /* aditional keywords */
 case 19:
 YY_RULE_SETUP
-#line 61 "./Ecc/Scanner.l"
+#line 61 "Ecc/Scanner.l"
 {RETURN(k_event);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 62 "./Ecc/Scanner.l"
+#line 62 "Ecc/Scanner.l"
 {RETURN(k_name);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 63 "./Ecc/Scanner.l"
+#line 63 "Ecc/Scanner.l"
 {RETURN(k_thumbnail);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 64 "./Ecc/Scanner.l"
+#line 64 "Ecc/Scanner.l"
 {RETURN(k_features);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 65 "./Ecc/Scanner.l"
+#line 65 "Ecc/Scanner.l"
 {RETURN(k_uses);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 66 "./Ecc/Scanner.l"
+#line 66 "Ecc/Scanner.l"
 {RETURN(k_export);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 68 "./Ecc/Scanner.l"
+#line 68 "Ecc/Scanner.l"
 {RETURN(k_texture);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 69 "./Ecc/Scanner.l"
+#line 69 "Ecc/Scanner.l"
 {RETURN(k_sound);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 70 "./Ecc/Scanner.l"
+#line 70 "Ecc/Scanner.l"
 {RETURN(k_model);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 72 "./Ecc/Scanner.l"
+#line 72 "Ecc/Scanner.l"
 {RETURN(k_properties);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 73 "./Ecc/Scanner.l"
+#line 73 "Ecc/Scanner.l"
 {RETURN(k_components);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 74 "./Ecc/Scanner.l"
+#line 74 "Ecc/Scanner.l"
 {RETURN(k_functions);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 75 "./Ecc/Scanner.l"
+#line 75 "Ecc/Scanner.l"
 {RETURN(k_procedures);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 77 "./Ecc/Scanner.l"
+#line 77 "Ecc/Scanner.l"
 {RETURN(k_wait     );}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 78 "./Ecc/Scanner.l"
+#line 78 "Ecc/Scanner.l"
 {RETURN(k_on       );}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "./Ecc/Scanner.l"
+#line 79 "Ecc/Scanner.l"
 {RETURN(k_otherwise);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 81 "./Ecc/Scanner.l"
+#line 81 "Ecc/Scanner.l"
 {RETURN(k_call     );}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 82 "./Ecc/Scanner.l"
+#line 82 "Ecc/Scanner.l"
 {RETURN(k_jump     );}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 83 "./Ecc/Scanner.l"
+#line 83 "Ecc/Scanner.l"
 {RETURN(k_stop     );}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 84 "./Ecc/Scanner.l"
+#line 84 "Ecc/Scanner.l"
 {RETURN(k_resume   );}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 85 "./Ecc/Scanner.l"
+#line 85 "Ecc/Scanner.l"
 {RETURN(k_pass     );}
 	YY_BREAK
 /* special data types */
 case 40:
 YY_RULE_SETUP
-#line 88 "./Ecc/Scanner.l"
+#line 88 "Ecc/Scanner.l"
 {RETURN(k_CTString);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 89 "./Ecc/Scanner.l"
+#line 89 "Ecc/Scanner.l"
 {RETURN(k_CTStringTrans);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 90 "./Ecc/Scanner.l"
+#line 90 "Ecc/Scanner.l"
 {RETURN(k_CTFileName);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 91 "./Ecc/Scanner.l"
+#line 91 "Ecc/Scanner.l"
 {RETURN(k_CTFileNameNoDep);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 92 "./Ecc/Scanner.l"
+#line 92 "Ecc/Scanner.l"
 {RETURN(k_BOOL);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 93 "./Ecc/Scanner.l"
+#line 93 "Ecc/Scanner.l"
 {RETURN(k_COLOR);}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 94 "./Ecc/Scanner.l"
+#line 94 "Ecc/Scanner.l"
 {RETURN(k_FLOAT);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 95 "./Ecc/Scanner.l"
+#line 95 "Ecc/Scanner.l"
 {RETURN(k_INDEX);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 96 "./Ecc/Scanner.l"
+#line 96 "Ecc/Scanner.l"
 {RETURN(k_RANGE);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 97 "./Ecc/Scanner.l"
+#line 97 "Ecc/Scanner.l"
 {RETURN(k_CEntityPointer);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 98 "./Ecc/Scanner.l"
+#line 98 "Ecc/Scanner.l"
 {RETURN(k_CModelObject);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 99 "./Ecc/Scanner.l"
+#line 99 "Ecc/Scanner.l"
 {RETURN(k_CModelInstance);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 100 "./Ecc/Scanner.l"
+#line 100 "Ecc/Scanner.l"
 {RETURN(k_CAnimObject);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 101 "./Ecc/Scanner.l"
+#line 101 "Ecc/Scanner.l"
 {RETURN(k_CSoundObject);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 102 "./Ecc/Scanner.l"
+#line 102 "Ecc/Scanner.l"
 {RETURN(k_CPlacement3D);}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 103 "./Ecc/Scanner.l"
+#line 103 "Ecc/Scanner.l"
 {RETURN(k_FLOATaabbox3D);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 104 "./Ecc/Scanner.l"
+#line 104 "Ecc/Scanner.l"
 {RETURN(k_FLOATmatrix3D);}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 105 "./Ecc/Scanner.l"
+#line 105 "Ecc/Scanner.l"
 {RETURN(k_FLOATquat3D);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 106 "./Ecc/Scanner.l"
+#line 106 "Ecc/Scanner.l"
 {RETURN(k_ANGLE);};
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 107 "./Ecc/Scanner.l"
+#line 107 "Ecc/Scanner.l"
 {RETURN(k_ANIMATION);};
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 108 "./Ecc/Scanner.l"
+#line 108 "Ecc/Scanner.l"
 {RETURN(k_ILLUMINATIONTYPE);};
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 109 "./Ecc/Scanner.l"
+#line 109 "Ecc/Scanner.l"
 {RETURN(k_FLOAT3D);};
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 110 "./Ecc/Scanner.l"
+#line 110 "Ecc/Scanner.l"
 {RETURN(k_ANGLE3D);};
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 111 "./Ecc/Scanner.l"
+#line 111 "Ecc/Scanner.l"
 {RETURN(k_FLOATplane3D);};
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 112 "./Ecc/Scanner.l"
+#line 112 "Ecc/Scanner.l"
 {RETURN(k_FLAGS);};
 	YY_BREAK
 /* single character operators and punctuations */
 case 65:
 YY_RULE_SETUP
-#line 115 "./Ecc/Scanner.l"
+#line 115 "Ecc/Scanner.l"
 {
   RETURN(yytext[0]);}
 	YY_BREAK
 /* constants */
 case 66:
 YY_RULE_SETUP
-#line 119 "./Ecc/Scanner.l"
+#line 119 "Ecc/Scanner.l"
 { RETURN(c_int); }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 120 "./Ecc/Scanner.l"
+#line 120 "Ecc/Scanner.l"
 { RETURN(c_int)};
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 121 "./Ecc/Scanner.l"
+#line 121 "Ecc/Scanner.l"
 { RETURN(c_int); }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 122 "./Ecc/Scanner.l"
+#line 122 "Ecc/Scanner.l"
 { RETURN(c_int); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 123 "./Ecc/Scanner.l"
+#line 123 "Ecc/Scanner.l"
 { RETURN(c_string); }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 124 "./Ecc/Scanner.l"
+#line 124 "Ecc/Scanner.l"
 { RETURN(c_char); }
 	YY_BREAK
 /* identifier */
 case 72:
 YY_RULE_SETUP
-#line 127 "./Ecc/Scanner.l"
+#line 127 "Ecc/Scanner.l"
 {RETURN(identifier);}
 	YY_BREAK
 /* specially bracketed cpp blocks */
 case 73:
 YY_RULE_SETUP
-#line 130 "./Ecc/Scanner.l"
+#line 130 "Ecc/Scanner.l"
 {
   char strLine[80];
   sprintf(strLine, "#line %d \"%s\"\n", _iLinesCt, _strInputFileName );
@@ -1393,7 +1393,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 136 "./Ecc/Scanner.l"
+#line 136 "Ecc/Scanner.l"
 {
   BEGIN(INITIAL);
   yylval = SType(_strCppBlock);
@@ -1403,7 +1403,7 @@ YY_RULE_SETUP
 case 75:
 /* rule 75 can match eol */
 YY_RULE_SETUP
-#line 141 "./Ecc/Scanner.l"
+#line 141 "Ecc/Scanner.l"
 {
   _iLinesCt++;
   _strCppBlock = (SType(_strCppBlock)+yytext).strString;
@@ -1411,7 +1411,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 145 "./Ecc/Scanner.l"
+#line 145 "Ecc/Scanner.l"
 {
   _strCppBlock = (SType(_strCppBlock)+yytext).strString;
 }
@@ -1419,29 +1419,29 @@ YY_RULE_SETUP
 /* eat up comments */
 case 77:
 YY_RULE_SETUP
-#line 150 "./Ecc/Scanner.l"
+#line 150 "Ecc/Scanner.l"
 { BEGIN(COMMENT); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 151 "./Ecc/Scanner.l"
+#line 151 "Ecc/Scanner.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 152 "./Ecc/Scanner.l"
+#line 152 "Ecc/Scanner.l"
 {}
 	YY_BREAK
 case 80:
 /* rule 80 can match eol */
 YY_RULE_SETUP
-#line 153 "./Ecc/Scanner.l"
+#line 153 "Ecc/Scanner.l"
 { _iLinesCt++; }
 	YY_BREAK
 /* eat up whitespace */
 case 81:
 YY_RULE_SETUP
-#line 156 "./Ecc/Scanner.l"
+#line 156 "Ecc/Scanner.l"
 {
 }
 	YY_BREAK
@@ -1449,7 +1449,7 @@ YY_RULE_SETUP
 case 82:
 /* rule 82 can match eol */
 YY_RULE_SETUP
-#line 159 "./Ecc/Scanner.l"
+#line 159 "Ecc/Scanner.l"
 {
   _iLinesCt++;
  }
@@ -1457,7 +1457,7 @@ YY_RULE_SETUP
 /* for all unrecognized characters */
 case 83:
 YY_RULE_SETUP
-#line 163 "./Ecc/Scanner.l"
+#line 163 "Ecc/Scanner.l"
 {
   // report an error
   char strError[80];
@@ -1468,10 +1468,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 171 "./Ecc/Scanner.l"
+#line 171 "Ecc/Scanner.l"
 ECHO;
 	YY_BREAK
-#line 1475 "./Ecc/Scanner.cpp"
+#line 1475 "Ecc/Scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 case YY_STATE_EOF(CPPBLOCK):
@@ -2470,7 +2470,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 171 "./Ecc/Scanner.l"
+#line 171 "Ecc/Scanner.l"
 
 
 
