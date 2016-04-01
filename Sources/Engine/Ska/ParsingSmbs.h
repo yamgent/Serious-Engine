@@ -2,7 +2,7 @@
 
 // needed for parser and scanner
 extern int engine_ska_yylex(void);
-extern void engine_ska_yyerror(char *s);
+extern void engine_ska_yyerror(const char *s);
 extern int engine_ska_yyparse(void);
 extern void engine_ska_yyrestart(FILE *f);
 

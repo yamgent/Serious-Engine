@@ -12,7 +12,7 @@
 #define yyparse yyparse_engine_base_parser
 #define yyerror yyerror_engine_base_parser
 
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern int yyparse(void);
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;

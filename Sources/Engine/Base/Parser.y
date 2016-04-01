@@ -18,7 +18,7 @@
 
 #define YYERROR_VERBOSE 1
 // if error occurs in parsing
-void yyerror(char *str)
+void yyerror(const char *str)
 {
   // just report the string
   _pShell->ErrorF("%s", str);

@@ -26,7 +26,7 @@ BOOL bOffsetAllreadySet = FALSE;
 #define YYERROR_VERBOSE 0
 
 // if error occurs in parsing
-void yyerror(char *str)
+void yyerror(const char *str)
 {
   //_pShell->ErrorF("%s", str);
   _pShell->ErrorF("File '%s'\n %s (line %d)",SMCGetBufferName(), str, SMCGetBufferLineNumber());
