@@ -2,7 +2,7 @@
 
 507
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
   
 #define ECF_SPAWNERPROJECTILE ( \
   ((ECBI_BRUSH)<<ECB_TEST) |\

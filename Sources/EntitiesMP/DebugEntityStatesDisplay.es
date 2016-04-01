@@ -2,7 +2,7 @@
 
 233
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 void HUD_SetEntityForStackDisplay(CRationalEntity *pren);
 %}
 

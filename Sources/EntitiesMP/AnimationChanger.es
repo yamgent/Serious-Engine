@@ -2,7 +2,7 @@
 
 218
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include <EntitiesMP/AnimationHub.h>
 %}
 

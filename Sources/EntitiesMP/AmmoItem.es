@@ -2,7 +2,7 @@
 
 803
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Items/ItemHolder/ItemHolder.h"
 #include "Models/Items/Ammo/Shells/Shells.h"
 #include "Models/Items/Ammo/Bullets/Bullets.h"

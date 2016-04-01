@@ -2,7 +2,7 @@
 
 704
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/Common/PathFinding.h"
 
 #define MAX_TARGETS 6

@@ -2,7 +2,7 @@
 
 307
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Enemies/WereBull/WereBull.h"
 %}
 

@@ -2,7 +2,7 @@
 
 341
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Enemies/Mental/Mental.h"
 #include "Models/CutSequences/CrateRider/Crate.h"
 %}

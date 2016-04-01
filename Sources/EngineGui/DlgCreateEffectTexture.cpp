@@ -3,7 +3,7 @@
 // DlgCreateEffectTexture.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 #include "DlgCreateEffectTexture.h"
 #include <Engine/Graphics/TextureEffects.h>
 #include <Engine/Templates/Stock_CTextureData.h>

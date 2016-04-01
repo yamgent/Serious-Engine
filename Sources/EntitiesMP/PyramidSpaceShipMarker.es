@@ -2,7 +2,7 @@
 
 610
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/PyramidSpaceShip.h"
 %}
 

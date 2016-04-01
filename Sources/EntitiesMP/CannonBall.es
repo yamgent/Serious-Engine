@@ -2,7 +2,7 @@
 
 506
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Weapons/Cannon/Projectile/CannonBall.h"
 #include "EntitiesMP/MovingBrush.h"
 #include "EntitiesMP/DestroyableArchitecture.h"

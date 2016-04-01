@@ -3,7 +3,7 @@
 // WndDisplayTexture.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 #include <Engine/Graphics/TextureEffects.h>
 
 #ifdef _DEBUG

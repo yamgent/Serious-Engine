@@ -3,7 +3,7 @@
 401
 %{
 
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "GameMP/SEColors.h"
 
 #include <Engine/Build.h>

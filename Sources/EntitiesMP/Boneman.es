@@ -2,7 +2,7 @@
 
 305
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Enemies/Boneman/Boneman.h"
 %}
 

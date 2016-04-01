@@ -2,7 +2,7 @@
 
 406
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 
 #include "ModelsMP/Player/SeriousSam/Player.h"
 #include "ModelsMP/Player/SeriousSam/Body.h"

@@ -2,7 +2,7 @@
 
 306
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Enemies/SCORPMAN/scorpman.h"
 #include "Models/Enemies/SCORPMAN/Gun.h"
 %}

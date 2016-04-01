@@ -2,7 +2,7 @@
 
 501
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Weapons/Laser/Projectile/LaserProjectile.h"
 #include "EntitiesMP/EnemyBase.h"
 //#include "EntitiesMP/Dragonman.h"

@@ -2,7 +2,7 @@
 
 353
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 
 #include "EntitiesMP/EnemyBase.h"
 #include "ModelsMP/Enemies/ExotechLarva/Projectile/TailProjectile.h"

@@ -3,7 +3,7 @@
 // DlgSelectMode.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 
 #ifdef _DEBUG
 #undef new

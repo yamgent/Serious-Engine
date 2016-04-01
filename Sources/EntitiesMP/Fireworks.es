@@ -2,7 +2,7 @@
 
 616
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #define RAND_05 (FLOAT(rand())/RAND_MAX-0.5f)
 #define LAUNCH_SPEED 32.0f
 %}

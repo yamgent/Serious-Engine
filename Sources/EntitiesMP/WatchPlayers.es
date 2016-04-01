@@ -2,7 +2,7 @@
 
 702
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 %}
 
 class CWatchPlayers: CRationalEntity {

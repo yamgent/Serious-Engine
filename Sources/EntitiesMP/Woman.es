@@ -2,7 +2,7 @@
 
 320
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "ModelsMP/Enemies/Woman/Woman.h"
 #include "Models/Enemies/Headman/headman.h"
 #include "EntitiesMP/Headman.h"

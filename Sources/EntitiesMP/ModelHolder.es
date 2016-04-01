@@ -2,7 +2,7 @@
 
 203
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 %}
 
 class CModelHolder : CEntity {

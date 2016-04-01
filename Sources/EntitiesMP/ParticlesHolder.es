@@ -2,7 +2,7 @@
 
 223
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 %}
 
 enum ParticlesHolderType {

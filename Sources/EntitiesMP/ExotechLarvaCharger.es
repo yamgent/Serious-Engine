@@ -2,7 +2,7 @@
 
 351
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "ModelsMP/Enemies/ExotechLarva/Charger/FloorCharger.h"
 %}
 

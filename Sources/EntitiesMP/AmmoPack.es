@@ -2,7 +2,7 @@
 
 806
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Items/ItemHolder/ItemHolder.h"
 %}
 

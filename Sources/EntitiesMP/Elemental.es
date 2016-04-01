@@ -2,7 +2,7 @@
 
 322
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 //#include "Models/Enemies/Elementals/AirMan.h"
 //#include "Models/Enemies/Elementals/IceMan.h"
 #include "Models/Enemies/Elementals/Stoneman.h"

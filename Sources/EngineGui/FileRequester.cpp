@@ -1,6 +1,6 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
-#include "stdh.h"
+#include "EngineGui/StdH.h"
 #include <Engine/Templates/Stock_CTextureData.h>
 
 // thumbnail window

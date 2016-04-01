@@ -2,7 +2,7 @@
 
 403
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/Player.h"
 #include "EntitiesMP/PlayerWeapons.h"
 %}

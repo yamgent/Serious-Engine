@@ -2,7 +2,7 @@
 
 507
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "ModelsMP/Enemies/AirElemental/Twister.h"
 
 #define ECF_TWISTER ( \

@@ -2,7 +2,7 @@
 
 347
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/BackgroundViewer.h"
 #include "EntitiesMP/WorldSettingsController.h"
 #include "ModelsMP/Enemies/Summoner/Summoner.h"

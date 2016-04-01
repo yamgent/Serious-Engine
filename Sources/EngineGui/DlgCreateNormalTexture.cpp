@@ -3,7 +3,7 @@
 // DlgCreateNormalTexture.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 #include "DlgCreateNormalTexture.h"
 #include <Engine/Templates/Stock_CTextureData.h>
 

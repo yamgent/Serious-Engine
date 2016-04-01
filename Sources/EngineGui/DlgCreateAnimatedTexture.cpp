@@ -3,7 +3,7 @@
 // DlgCreateAnimatedTexture.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 #include "DlgCreateAnimatedTexture.h"
 #include <Engine/Templates/Stock_CTextureData.h>
 

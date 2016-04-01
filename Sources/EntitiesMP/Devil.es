@@ -2,7 +2,7 @@
 
 332
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "Models/Enemies/Devil/Devil.h"
 #include "Models/Enemies/Devil/Weapons/Laser.h"
 #include "Models/Weapons/RocketLauncher/RocketLauncherItem.h"

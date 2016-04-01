@@ -3,7 +3,7 @@
 // DlgChooseTextureType.cpp : implementation file
 //
 
-#include "StdH.h"
+#include "EngineGui/StdH.h"
 #include "DlgChooseTextureType.h"
 
 #ifdef _DEBUG

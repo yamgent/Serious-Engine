@@ -2,7 +2,7 @@
 
 222
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "EntitiesMP/EnemyBase.h"
 #include "EntitiesMP/EnemySpawner.h"
 #include "EntitiesMP/Trigger.h"

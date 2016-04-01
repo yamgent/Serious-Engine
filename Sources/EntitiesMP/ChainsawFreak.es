@@ -2,7 +2,7 @@
 
 342
 %{
-#include "StdH.h"
+#include "EntitiesMP/StdH/StdH.h"
 #include "ModelsMP/Enemies/ChainSawFreak/Freak.h"
 #include "ModelsMP/Enemies/ChainSawFreak/Saw.h"
 %}
