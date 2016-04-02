@@ -31,7 +31,7 @@ CTString GetNextParam(void)
   // if the first char is quote
   if (_strCmd[0]=='"') {
     // find first next quote
-    char *pchClosingQuote = strchr(_strCmd+1, '"');
+    char *pchClosingQuote = (char *) strchr(_strCmd+1, '"');
     // if not found
     if (pchClosingQuote==NULL) {
       // error in command line
