@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.7)
 project(SeriousEngine)
 
 # Set @rpath for Mac OS X shared library install names.
-cmake_policy(SET CMP0042 NEW)
+#cmake_policy(SET CMP0042 NEW)
 
 
 # Set up some sanity stuff...
