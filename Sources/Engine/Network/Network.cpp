@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include <Engine/StdH.h>
 
@@ -319,7 +332,7 @@ static void NetworkInfo(void)
     for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
       CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
       if (plb.plb_Active) {
-        CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n", 
+        CPrintF("    %2d(%2d):'%s'@client%2d: (%dact)\n",
           iplb, plb.plb_Index, (const char *) plb.plb_pcCharacter.GetNameForPrinting(),
           plb.plb_iClient, plb.plb_abReceived.GetCount());
       }
@@ -329,7 +342,7 @@ static void NetworkInfo(void)
       CSessionSocket &sso = _pNetwork->ga_srvServer.srv_assoSessions[iSession];
       if (sso.sso_bActive) {
         CPrintF("  %2d:'%s'\n", iSession, (const char *) _cmiComm.Server_GetClientName(iSession)),
-        CPrintF("    buffer: %dblk=%dk\n", 
+        CPrintF("    buffer: %dblk=%dk\n",
           sso.sso_nsBuffer.GetUsedBlocks(),
           sso.sso_nsBuffer.GetUsedMemory()/1024);
         CPrintF("    state:");
@@ -347,7 +360,7 @@ static void NetworkInfo(void)
     CPrintF("  not a server\n");
   }
   CPrintF("Session state:\n");
-  CPrintF("  buffer: (%dblk)%dk\n", 
+  CPrintF("  buffer: (%dblk)%dk\n",
     _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedBlocks(),
     _pNetwork->ga_sesSessionState.ses_nsGameStream.GetUsedMemory()/1024);
   CPrintF("  last processed tick: %g\n", _pNetwork->ga_sesSessionState.ses_tmLastProcessedTick);
@@ -365,11 +378,11 @@ static void NetworkInfo(void)
   }
 
 
-	if (TIMER_PROFILING) {
-		CTString strNetProfile;
-		_pfNetworkProfile.Report(strNetProfile);
-		CPrintF(strNetProfile);
-	}
+    if (TIMER_PROFILING) {
+        CTString strNetProfile;
+        _pfNetworkProfile.Report(strNetProfile);
+        CPrintF(strNetProfile);
+    }
 }
 
 static void ListPlayers(void)
@@ -420,7 +433,7 @@ static void KickByName(const CTString &strName, const CTString &strReason)
   if (!_pNetwork->IsServer()) {
     CPrintF( TRANS("Only server can kick people!\n"));
     return;
-  } 
+  }
   for(INDEX iplb=0; iplb<_pNetwork->ga_srvServer.srv_aplbPlayers.Count(); iplb++) {
     CPlayerBuffer &plb = _pNetwork->ga_srvServer.srv_aplbPlayers[iplb];
     if (plb.plb_Active && plb.plb_pcCharacter.GetNameForPrinting().Undecorated().Matches(strName)) {
@@ -450,8 +463,8 @@ static void StockInfo(void)
   INDEX ctCachedShadows=0, ctDynamicShadows=0, ctFlatShadows=0;
   SLONG slStaticMemory=0,  slDynamicMemory=0,  slUploadMemory=0;
   SLONG slShdBytes=0,  slSlackMemory=0,    slFlatMemory=0;
-  INDEX ct256=0, ct128=0, ct64=0, ct32=0, ct16=0; 
-  SLONG sl256Memory=0, sl128Memory=0, sl64Memory=0, sl32Memory=0, sl16Memory=0; 
+  INDEX ct256=0, ct128=0, ct64=0, ct32=0, ct16=0;
+  SLONG sl256Memory=0, sl128Memory=0, sl64Memory=0, sl32Memory=0, sl16Memory=0;
 
   if( _pGfx!=NULL)
   {
@@ -521,15 +534,15 @@ static void StockInfo(void)
 
     // report shadow layers and world geometry memory usage
     FOREACHINDYNAMICARRAY( pwo->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) // for all brush entities in the world
-    { 
+    {
       // skip brush without entity
-      if( itbr->br_penEntity==NULL) continue; 
+      if( itbr->br_penEntity==NULL) continue;
 
       // for each mip
-      FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm) 
-      { 
+      FOREACHINLIST( CBrushMip, bm_lnInBrush, itbr->br_lhBrushMips, itbm)
+      {
         // for each sector in the brush mip
-        FOREACHINDYNAMICARRAY( itbm->bm_abscSectors, CBrushSector, itbsc) 
+        FOREACHINDYNAMICARRAY( itbm->bm_abscSectors, CBrushSector, itbsc)
         {
           // add sector class memory usage to polygons memory
           ctSectors++;
@@ -552,7 +565,7 @@ static void StockInfo(void)
 
           // for each polygon in sector
           ctPolys += itbsc->bsc_abpoPolygons.Count();
-          FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) { 
+          FOREACHINSTATICARRAY( itbsc->bsc_abpoPolygons, CBrushPolygon, itbpo) {
             CBrushPolygon &bpo = *itbpo;
             slPlyBytes += bpo.GetUsedMemory();
             // count in the shadow layers (if any)
@@ -576,7 +589,7 @@ static void StockInfo(void)
   const FLOAT fAstBytes = dToMB * _pAnimSetStock->CalculateUsedMemory();
   const FLOAT fShaBytes = dToMB * _pShaderStock->CalculateUsedMemory();
   const FLOAT fSkaBytes = dToMB * _pSkeletonStock->CalculateUsedMemory();
-        
+
   CPrintF("\nStock information:\n");
   CPrintF("     Textures: %5d (%5.2f MB)\n", _pTextureStock->GetTotalCount(), fTexBytes);
   CPrintF("   ShadowMaps: %5d (%5.2f MB)\n", ctCachedShadows, slShdBytes*dToMB);
@@ -741,7 +754,6 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("user void RemIPMask(CTString);", (void *)&RemIPMask);
   _pShell->DeclareSymbol("user void AddNameMask(CTString);", (void *)&AddNameMask);
   _pShell->DeclareSymbol("user void RemNameMask(CTString);", (void *)&RemNameMask);
-  
 
   _pShell->DeclareSymbol("user FLOAT dem_tmTimer;",         (void *)&ga_fDemoTimer);
   _pShell->DeclareSymbol("user FLOAT dem_fSyncRate;",       (void *)&ga_fDemoSyncRate);
@@ -790,7 +802,8 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("user INDEX ser_iRememberBehind;", (void *)&ser_iRememberBehind);
   _pShell->DeclareSymbol("user INDEX cli_bEmulateDesync;",  (void *)&cli_bEmulateDesync);
   _pShell->DeclareSymbol("user INDEX cli_bDumpSync;",       (void *)&cli_bDumpSync);
-  _pShell->DeclareSymbol("user INDEX cli_bDumpSyncEachTick;",&cli_bDumpSyncEachTick);
+  _pShell->DeclareSymbol("user INDEX cli_bDumpSyncEachTick;", (void *)&cli_bDumpSyncEachTick);
+
   _pShell->DeclareSymbol("persistent user INDEX ser_iExtensiveSyncCheck;", (void *)&ser_iExtensiveSyncCheck);
   _pShell->DeclareSymbol("persistent user INDEX net_bLookupHostNames;",    (void *)&net_bLookupHostNames);
   _pShell->DeclareSymbol("persistent user INDEX net_iCompression ;",       (void *)&net_iCompression);
@@ -848,7 +861,7 @@ void CNetworkLibrary::Init(const CTString &strGameID)
 
   _pShell->DeclareSymbol("user FLOAT phy_fCollisionCacheAhead;",  (void *)&phy_fCollisionCacheAhead);
   _pShell->DeclareSymbol("user FLOAT phy_fCollisionCacheAround;", (void *)&phy_fCollisionCacheAround);
-  
+
   _pShell->DeclareSymbol("persistent user INDEX inp_iKeyboardReadingMethod;",   (void *)&inp_iKeyboardReadingMethod);
   _pShell->DeclareSymbol("persistent user INDEX inp_bAllowMouseAcceleration;",  (void *)&inp_bAllowMouseAcceleration);
   _pShell->DeclareSymbol("persistent user FLOAT inp_fMouseSensitivity;",        (void *)&inp_fMouseSensitivity);
@@ -868,7 +881,7 @@ void CNetworkLibrary::Init(const CTString &strGameID)
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionFactor;",    (void *)&inp_f2ndMousePrecisionFactor);
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionThreshold;", (void *)&inp_f2ndMousePrecisionThreshold);
   _pShell->DeclareSymbol("persistent user FLOAT inp_f2ndMousePrecisionTimeout;",   (void *)&inp_f2ndMousePrecisionTimeout);
-  
+
   _pShell->DeclareSymbol("persistent user INDEX inp_bMsgDebugger;",    (void *)&inp_bMsgDebugger);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Up;", (void *)&inp_iMButton4Up);
   _pShell->DeclareSymbol("persistent user INDEX inp_iMButton4Dn;", (void *)&inp_iMButton4Dn);
@@ -880,7 +893,9 @@ void CNetworkLibrary::Init(const CTString &strGameID)
 
   _pShell->DeclareSymbol("persistent user INDEX wed_bUseGenericTextureReplacement;", (void *)&wed_bUseGenericTextureReplacement);
 
-  _pShell->DeclareSymbol("user CTString ga_strServer;", (void *)&ga_strServer);
+  _pShell->DeclareSymbol("persistent user CTString ga_strServer;", (void *)&ga_strServer);
+  _pShell->DeclareSymbol("persistent user CTString ga_strMSLegacy;", (void *)&ga_strMSLegacy);
+  _pShell->DeclareSymbol("persistent user INDEX ga_bMSLegacy;", (void *)&ga_bMSLegacy);
 
   _pShell->DeclareSymbol("INDEX pwoCurrentWorld;", (void *)&_pwoCurrentWorld);
 }
@@ -965,7 +980,7 @@ void CNetworkLibrary::AutoAdjustSettings(void)
  * remember to keep this routine up to date with CNetworkLibrary::Read()
  */
 void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
-  const CTFileName &fnmWorld, ULONG ulSpawnFlags, 
+  const CTFileName &fnmWorld, ULONG ulSpawnFlags,
   INDEX ctMaxPlayers, BOOL bWaitAllPlayers,
   void *pvSessionProperties) // throw char *
 {
@@ -1090,7 +1105,7 @@ void CNetworkLibrary::Save_t(const CTFileName &fnmGame) // throw char *
   if (!ga_IsServer) {
     throw TRANS("Cannot save game - not a server!\n");
   }
-  
+
   // create the file
   CTFileStream strmFile;
   strmFile.Create_t(fnmGame);
@@ -1148,7 +1163,7 @@ void CNetworkLibrary::Load_t(const CTFileName &fnmGame) // throw char *
     // if starting in network
     if (_cmiComm.IsNetworkEnabled()) {
       // make default state data for creating deltas
-      MakeDefaultState(ga_fnmWorld, ga_sesSessionState.ses_ulSpawnFlags, 
+      MakeDefaultState(ga_fnmWorld, ga_sesSessionState.ses_ulSpawnFlags,
         ga_aubProperties);
     }
     // players will be connected later
@@ -1613,7 +1628,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
 
   // destroy all entities that will cross level
   ga_World.DestroyEntities(senToCross);
-  
+
   // if should remember old levels
   if (ga_bNextRemember) {
     // remember current level
@@ -1678,7 +1693,7 @@ void CNetworkLibrary::ChangeLevel_internal(void)
 
   // copy entities from temporary world into new one
   CEntitySelection senCrossed;
-  ga_World.CopyEntities(wldTemp, senInTemp, 
+  ga_World.CopyEntities(wldTemp, senInTemp,
     senCrossed, CPlacement3D(FLOAT3D(0,0,0), ANGLE3D(0,0,0)));
 
   // restore pointers to entities for all active player targets
@@ -1797,7 +1812,7 @@ static void SendAdminResponse(ULONG ulAdr, UWORD uwPort, ULONG ulCode, const CTS
     strLine.OnlyFirstLine();
     str.RemovePrefix(strLine);
     str.DeleteChar(0);
-    if (strLine.Length()>0) { 
+    if (strLine.Length()>0) {
       CNetworkMessage nm(MSG_EXTRA);
       nm<<CTString(0, "log %u %d %s\n", ulCode, iLineCt++, (const char *) strLine);
       _pNetwork->SendBroadcast(nm, ulAdr, uwPort);
@@ -2320,7 +2335,7 @@ void CNetworkLibrary::AddNetGraphValue(enum NetGraphEntryType nget, FLOAT fLaten
 
 // make default state for a network game
 extern void NET_MakeDefaultState_t(
-  const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties, 
+  const CTFileName &fnmWorld, ULONG ulSpawnFlags, void *pvSessionProperties,
   CTStream &strmState) // throw char *
 {
   // mute all sounds
@@ -2421,7 +2436,7 @@ void CNetworkLibrary::GameInactive(void)
   FOREVER {
     CNetworkMessage nmReceived;
 
-//_cmiComm.Broadcast_Update();
+//  _cmiComm.Broadcast_Update();
     ULONG ulFrom;
     UWORD uwPort;
     BOOL bHasMsg = ReceiveBroadcast(nmReceived, ulFrom, uwPort);
@@ -2431,11 +2446,11 @@ void CNetworkLibrary::GameInactive(void)
       break;
     }
 
-    /* This is handled by GameAgent.
+    /* This is handled by GameAgent. 
 
     // if requesting enumeration and this is server and enumeration is allowed
     if (nmReceived.GetType()==MSG_REQ_ENUMSERVERS
-      && IsServer() 
+      && IsServer()
       && (ser_bEnumeration && ga_sesSessionState.ses_ctMaxPlayers>1)) {
       // create response
       CNetworkMessage nmEnum(MSG_SERVERINFO);
@@ -2464,7 +2479,7 @@ void CNetworkLibrary::GameInactive(void)
 void CNetworkLibrary::InitCRCGather(void)
 {
   CRCT_ResetActiveList();
-  CRCT_bGatherCRCs = TRUE;  
+  CRCT_bGatherCRCs = TRUE;
   CRCT_AddFile_t(CTString("Classes\\Player.ecl"));
 }
 

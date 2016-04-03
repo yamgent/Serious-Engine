@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 401
 %{
@@ -1945,7 +1958,24 @@ functions:
     strKey.PrintF("ping_%d\x02%d\x03", iPlayer, INDEX(ceil(en_tmPing*1000.0f)));
     strOut+=strKey;
   };
-
+  
+  // provide info for MSLegacy enumeration
+  void GetMSLegacyPlayerInf( INDEX iPlayer, CTString &strOut)
+  {
+    CTString strKey;
+    strKey.PrintF("\\player_%d\\%s", iPlayer, (const char*)GetPlayerName());
+	  strOut+=strKey;
+    if (GetSP()->sp_bUseFrags) {
+      strKey.PrintF("\\frags_%d\\%d", iPlayer, m_psLevelStats.ps_iKills);
+	    strOut+=strKey;
+    } else {
+      strKey.PrintF("\\frags_%d\\%d", iPlayer, m_psLevelStats.ps_iScore);
+	    strOut+=strKey;
+    }
+    strKey.PrintF("\\ping_%d\\%d", iPlayer, INDEX(ceil(en_tmPing*1000.0f)));
+    strOut+=strKey;
+  };
+  
   // check if message is in inbox
   BOOL HasMessage( const CTFileName &fnmMessage)
   {

@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include "SeriousSam/StdH.h"
 #include "resource.h"
@@ -41,7 +54,6 @@ static long FAR PASCAL SplashWindowProc( HWND hWnd, UINT message,
 
 void ShowSplashScreen(HINSTANCE hInstance)
 {
-// !!! FIXME: wire this up for SDL?
 #ifdef PLATFORM_WIN32
   _hbmSplash = LoadBitmapA(hInstance, (char*)IDB_SPLASH);
   if (_hbmSplash==NULL) {
@@ -100,6 +112,8 @@ void ShowSplashScreen(HINSTANCE hInstance)
   GetClientRect(hwnd, &rect); 
   InvalidateRect(hwnd, &rect, TRUE); 
   UpdateWindow(hwnd); 
+#else
+  STUBBED("!!! FIXME: wire this up for SDL?");
 #endif
 }
 
@@ -112,5 +126,7 @@ void HideSplashScreen(void)
   DestroyWindow(hwnd);
   DeleteObject(_hbmSplash);
   DeleteObject(_hbmSplashMask);
+#else
+  STUBBED("!!! FIXME: wire this up for SDL?");
 #endif
 }

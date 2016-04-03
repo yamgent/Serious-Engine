@@ -29,6 +29,8 @@ Building
 
 To build Serious Engine 1, you'll need Visual Studio 2013 or 2015, Professional or Community edition ( https://www.visualstudio.com/post-download-vs?sku=community ).
 
+Do not use spaces in the path to the solution.
+
 Once you've installed Visual Studio and (optionally) DirectX8 SDK, you can build the engine solution (`/Sources/All.sln`). Press F7 or Build -> Build solution. The libraries and executables will be put into `\Bin\` directory (or `\Bin\Debug\` if you are using the Debug configuration).
 
 Optional features
@@ -47,7 +49,7 @@ IFeel support is disabled in the open source version of Serious Engine 1 due to 
 Running
 -------
 
-This version of the engine comes with a set of resources (`\SE1_10.GRO`) that allow you to freely use the engine without any additional resources required. However if you want to open or modify levels from Serios Sam Classic: The First Encounter or The Second Encounter (including most user-made levels), you will have to copy the game's resources (.GRO files) into the engine folder. You can buy the original games on Steam, as a part of a bundle with Serious Sam Revolution ( http://store.steampowered.com/app/227780 )
+This version of the engine comes with a set of resources (`\SE1_10.GRO`) that allow you to freely use the engine without any additional resources required. However if you want to open or modify levels from Serious Sam Classic: The First Encounter or The Second Encounter (including most user-made levels), you will have to copy the game's resources (.GRO files) into the engine folder. You can buy the original games on Steam, as a part of a bundle with Serious Sam Revolution ( http://store.steampowered.com/app/227780 )
 
 When running a selected project, make sure its project settings on Debugging is set to the right command:
 * For debug:
@@ -60,7 +62,6 @@ And its working directory:
 Common problems
 ---------------
 
-In case if ECC crashes during compilation of ES files in debug mode, make your solution path shorter. Paths longer than 31 symbols are known to cause problems in debug mode.
 Before starting the build process, make sure you have a "Temp" folder in your development directory. If it doesn't exist, create it.
 SeriousSkaStudio has some issues with MFC windows that can prevent the main window from being displayed properly.
 

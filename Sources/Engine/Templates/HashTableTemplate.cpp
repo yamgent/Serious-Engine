@@ -1,8 +1,21 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
 
-#include <Engine\Base\Console.h>
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
+
+#include <Engine/Base/Console.h>
 #include <math.h>
-#include <Engine\Base\Translation.h>
+#include <Engine/Base/Translation.h>
 
 // default constructor
 CHashTable_TYPE::CHashTable_TYPE()
@@ -296,3 +309,4 @@ void CHashTable_TYPE::ReportEfficiency()
   CPrintF(TRANSV("  Percentage of full slots: %5.2f%%,  Average full slots per compartement: %5.2f \n"),dFullPercent*100,dAvg);
   CPrintF(TRANSV("  Standard deviation is: %5.2f\n"),dStDev);
 }
+

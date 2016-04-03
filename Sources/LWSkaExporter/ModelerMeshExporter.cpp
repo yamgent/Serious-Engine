@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 
 
@@ -400,12 +413,12 @@ void ExportMesh_modeler(int iFaceForward) {
 	char fnmOut[256];
 	char *strFileName;
 
-	_state = _meshEditOperations->state; 
-
 	if (_meshEditOperations == NULL) {
-		_msg->error("Error!","Error _meshEditOperations is NULL!");
+		_msg->error("Error!", "Error _meshEditOperations is NULL!");
 		return;
 	}
+
+	_state = _meshEditOperations->state; 
 
   _ctPntIDs = _meshEditOperations->pointCount(_state,OPLYR_FG,EDCOUNT_ALL);
 	_ctPolIDs = _meshEditOperations->polyCount(_state,OPLYR_FG,EDCOUNT_ALL);
@@ -425,6 +438,7 @@ void ExportMesh_modeler(int iFaceForward) {
 	_fpOutput = fopen(fnmOut, "w");
   if (_fpOutput==NULL) {
     msgbox_modeler(_xpanf, "Can't open file!");
+	return;
   }
 
   // write the mesh header

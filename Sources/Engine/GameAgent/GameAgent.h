@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #ifndef SE_INCL_GAMEAGENT_H
 #define SE_INCL_GAMEAGENT_H
@@ -7,6 +20,8 @@
 #endif
 
 extern CTString ga_strServer;
+extern CTString ga_strMSLegacy;
+extern BOOL ga_bMSLegacy;
 
 /// Initialize GameAgent.
 extern void GameAgent_ServerInit(void);
@@ -23,6 +38,10 @@ extern void GameAgent_EnumTrigger(BOOL bInternet);
 extern void GameAgent_EnumUpdate(void);
 /// Cancel the GameAgent serverlist enumeration.
 extern void GameAgent_EnumCancel(void);
+///
+DWORD WINAPI _MS_Thread(LPVOID lpParam);
+///
+DWORD WINAPI _LocalNet_Thread(LPVOID lpParam);
 
 /// Server request structure. Primarily used for getting server pings.
 class CServerRequest {

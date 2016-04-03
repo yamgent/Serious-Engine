@@ -1,4 +1,17 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
+/* Copyright (c) 2002-2012 Croteam Ltd. 
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include <Engine/StdH.h>
 
@@ -3521,7 +3534,7 @@ void CEntity::DumpSync_t(CTStream &strm, INDEX iExtensiveSyncCheck)  // throw ch
       (ULONG&)en_mRotation(3,1), (ULONG&)en_mRotation(3,2), (ULONG&)en_mRotation(3,3));
     if( en_pciCollisionInfo == NULL) {
       strm.FPrintF_t("Collision info NULL\n");
-    } else if (en_RenderType==RT_BRUSH && en_RenderType==RT_FIELDBRUSH) {
+    } else if (en_RenderType==RT_BRUSH || en_RenderType==RT_FIELDBRUSH) {
       strm.FPrintF_t("Collision info: Brush entity\n");
     } else {
       strm.FPrintF_t("Collision info:\n");
