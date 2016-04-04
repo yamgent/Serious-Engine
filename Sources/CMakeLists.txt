@@ -110,6 +110,8 @@ add_definitions(-DSINGLE_THREADED=1)
 include_directories(
     .
     External/SDL12
+    External/libogg/include
+    External/libvorbis/include
 )
 
 # We build ECC, then use it to generate C++ code for the game entities...
