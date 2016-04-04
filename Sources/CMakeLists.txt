@@ -598,54 +598,9 @@ add_executable(SeriousSam
     SeriousSam/LCDDrawing.cpp
     SeriousSam/SplashScreen.cpp
     SeriousSam/MainWindow.cpp
-    SeriousSam/GUI/Menus/GameMenu.cpp
-    SeriousSam/GUI/Menus/MAudioOptions.cpp
-    SeriousSam/GUI/Menus/MConfirm.cpp
-    SeriousSam/GUI/Menus/MControls.cpp
-    SeriousSam/GUI/Menus/MCustomizeAxis.cpp
-    SeriousSam/GUI/Menus/MCustomizeKeyboard.cpp
-    SeriousSam/GUI/Menus/MDisabled.cpp
-    SeriousSam/GUI/Menus/MenuActions.cpp
-    SeriousSam/GUI/Menus/Menu.cpp
-    SeriousSam/GUI/Menus/MenuManager.cpp
-    SeriousSam/GUI/Menus/MenuPrinting.cpp
-    SeriousSam/GUI/Menus/MenuStartersAF.cpp
-    SeriousSam/GUI/Menus/MenuStarters.cpp
-    SeriousSam/GUI/Menus/MenuStuff.cpp
-    SeriousSam/GUI/Menus/MHighScore.cpp
-    SeriousSam/GUI/Menus/MInGame.cpp
-    SeriousSam/GUI/Menus/MLevels.cpp
-    SeriousSam/GUI/Menus/MLoadSave.cpp
-    SeriousSam/GUI/Menus/MMain.cpp
-    SeriousSam/GUI/Menus/MNetwork.cpp
-    SeriousSam/GUI/Menus/MNetworkJoin.cpp
-    SeriousSam/GUI/Menus/MNetworkOpen.cpp
-    SeriousSam/GUI/Menus/MNetworkStart.cpp
-    SeriousSam/GUI/Menus/MOptions.cpp
-    SeriousSam/GUI/Menus/MPlayerProfile.cpp
-    SeriousSam/GUI/Menus/MSelectPlayers.cpp
-    SeriousSam/GUI/Menus/MServers.cpp
-    SeriousSam/GUI/Menus/MSinglePlayer.cpp
-    SeriousSam/GUI/Menus/MSinglePlayerNew.cpp
-    SeriousSam/GUI/Menus/MSplitScreen.cpp
-    SeriousSam/GUI/Menus/MSplitStart.cpp
-    SeriousSam/GUI/Menus/MVar.cpp
-    SeriousSam/GUI/Menus/MVideoOptions.cpp
-    SeriousSam/GUI/Components/MenuGadget.cpp
-    SeriousSam/GUI/Components/MGArrow.cpp
-    SeriousSam/GUI/Components/MGButton.cpp
-    SeriousSam/GUI/Components/MGChangePlayer.cpp
-    SeriousSam/GUI/Components/MGEdit.cpp
-    SeriousSam/GUI/Components/MGFileButton.cpp
-    SeriousSam/GUI/Components/MGHighScore.cpp
-    SeriousSam/GUI/Components/MGKeyDefinition.cpp
-    SeriousSam/GUI/Components/MGLevelButton.cpp
-    SeriousSam/GUI/Components/MGModel.cpp
-    SeriousSam/GUI/Components/MGServerList.cpp
-    SeriousSam/GUI/Components/MGSlider.cpp
-    SeriousSam/GUI/Components/MGTitle.cpp
-    SeriousSam/GUI/Components/MGTrigger.cpp
-    SeriousSam/GUI/Components/MGVarButton.cpp
+    SeriousSam/Menu.cpp
+    SeriousSam/MenuGadgets.cpp
+    SeriousSam/MenuPrinting.cpp
 )
 add_dependencies(SeriousSam ParseAllEntities)
 

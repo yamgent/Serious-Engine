@@ -1,22 +1,8 @@
-/* Copyright (c) 2002-2012 Croteam Ltd. 
-This program is free software; you can redistribute it and/or modify
-it under the terms of version 2 of the GNU General Public License as published by
-the Free Software Foundation
-
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
+/* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
 #include "SeriousSam/StdH.h"
 
-#include "SeriousSam/GUI/Menus/MenuPrinting.h"
-#include "SeriousSam/ArrowDir.h"
+#include "MenuPrinting.h"
 
 static const FLOAT _fBigStartJ = 0.25f;
 static const FLOAT _fBigSizeJ = 0.066f;
@@ -35,21 +21,18 @@ FLOATaabbox2D BoxTitle(void)
     FLOAT2D(0, _fBigSizeJ),
     FLOAT2D(1, _fBigSizeJ));
 }
-
 FLOATaabbox2D BoxNoUp(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(_fNoStartI+fRow*(_fNoSizeI+_fNoSpaceI), _fNoUpStartJ),
     FLOAT2D(_fNoStartI+fRow*(_fNoSizeI+_fNoSpaceI)+_fNoSizeI, _fNoUpStartJ+_fNoSizeJ));
 }
-
 FLOATaabbox2D BoxNoDown(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(_fNoStartI+fRow*(_fNoSizeI+_fNoSpaceI), _fNoDownStartJ),
     FLOAT2D(_fNoStartI+fRow*(_fNoSizeI+_fNoSpaceI)+_fNoSizeI, _fNoDownStartJ+_fNoSizeJ));
 }
-
 FLOATaabbox2D BoxBigRow(FLOAT fRow)
 {
   return FLOATaabbox2D(
@@ -62,7 +45,6 @@ FLOATaabbox2D BoxBigLeft(FLOAT fRow)
     FLOAT2D(0.1f, _fBigStartJ+fRow*_fBigSizeJ),
     FLOAT2D(0.45f, _fBigStartJ+(fRow+1)*_fBigSizeJ));
 }
-
 FLOATaabbox2D BoxBigRight(FLOAT fRow)
 {
   return FLOATaabbox2D(
@@ -83,56 +65,48 @@ FLOATaabbox2D BoxVersion(void)
     FLOAT2D(0.05f, _fBigStartJ+-5.5f*_fMediumSizeJ),
     FLOAT2D(0.97f, _fBigStartJ+(-5.5f+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxMediumRow(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.05f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.95f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxKeyRow(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.15f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.85f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxMediumLeft(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.05f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.45f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxPlayerSwitch(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.05f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.65f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxMediumMiddle(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(_fNoStartI, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.95f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxPlayerEdit(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(_fNoStartI, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.65f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxMediumRight(FLOAT fRow)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.55f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.95f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxPopup(void)
 {
   return FLOATaabbox2D(FLOAT2D(0.2f, 0.4f), FLOAT2D(0.8f, 0.6f));
@@ -144,35 +118,30 @@ FLOATaabbox2D BoxPopupLabel(void)
     FLOAT2D(0.22f, 0.43f),
     FLOAT2D(0.78f, 0.49f));
 }
-
 FLOATaabbox2D BoxPopupYesLarge(void)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.30f, 0.51f),
     FLOAT2D(0.48f, 0.57f));
 }
-
 FLOATaabbox2D BoxPopupNoLarge(void)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.52f, 0.51f),
     FLOAT2D(0.70f, 0.57f));
 }
-
 FLOATaabbox2D BoxPopupYesSmall(void)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.30f, 0.54f),
     FLOAT2D(0.48f, 0.59f));
 }
-
 FLOATaabbox2D BoxPopupNoSmall(void)
 {
   return FLOATaabbox2D(
     FLOAT2D(0.52f, 0.54f),
     FLOAT2D(0.70f, 0.59f));
 }
-
 FLOATaabbox2D BoxChangePlayer(INDEX iTable, INDEX iButton)
 {
   return FLOATaabbox2D(
@@ -235,7 +204,6 @@ FLOATaabbox2D BoxLeftColumn(FLOAT fRow)
     FLOAT2D(0.02f, _fBigStartJ+fRow*_fMediumSizeJ),
     FLOAT2D(0.15f, _fBigStartJ+(fRow+1)*_fMediumSizeJ));
 }
-
 FLOATaabbox2D BoxPlayerModel(void)
 {
   extern INDEX sam_bWideScreen;
@@ -245,12 +213,10 @@ FLOATaabbox2D BoxPlayerModel(void)
     return FLOATaabbox2D(FLOAT2D(0.68f, 0.235f), FLOAT2D(0.68f+(0.965f-0.68f)*9.0f/12.0f, 0.78f));
   }
 }
-
 FLOATaabbox2D BoxPlayerModelName(void)
 {
   return FLOATaabbox2D(FLOAT2D(0.68f, 0.78f), FLOAT2D(0.965f, 0.82f));
 }
-
 PIXaabbox2D FloatBoxToPixBox(const CDrawPort *pdp, const FLOATaabbox2D &boxF)
 {
   PIX pixW = pdp->GetWidth();
@@ -276,7 +242,6 @@ void SetFontTitle(CDrawPort *pdp)
   pdp->SetTextScaling( 1.25f * pdp->GetWidth() /640 *pdp->dp_fWideAdjustment);
   pdp->SetTextAspect(1.0f);
 }
-
 extern CFontData _fdBig;
 void SetFontBig(CDrawPort *pdp)
 {
@@ -284,7 +249,6 @@ void SetFontBig(CDrawPort *pdp)
   pdp->SetTextScaling( 1.0f * pdp->GetWidth() /640 *pdp->dp_fWideAdjustment);
   pdp->SetTextAspect(1.0f);
 }
-
 extern CFontData _fdMedium;
 void SetFontMedium(CDrawPort *pdp)
 {
@@ -292,7 +256,6 @@ void SetFontMedium(CDrawPort *pdp)
   pdp->SetTextScaling( 1.0f * pdp->GetWidth() /640 *pdp->dp_fWideAdjustment);
   pdp->SetTextAspect(0.75f);
 }
-
 void SetFontSmall(CDrawPort *pdp)
 {
   pdp->SetFont( _pfdConsoleFont);

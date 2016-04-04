@@ -42,7 +42,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #undef DECL_DLL
 
 #include "SeriousSam.h"
-#include "GUI/Menus/Menu.h"
+#include "Menu.h"
+#include "MenuGadgets.h"
 
 #endif
 
