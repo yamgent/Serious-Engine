@@ -15,8 +15,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "SeriousSam/StdH.h"
 
-#include "MenuPrinting.h"
-#include "ArrowDir.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
+#include "SeriousSam/ArrowDir.h"
 
 static const FLOAT _fBigStartJ = 0.25f;
 static const FLOAT _fBigSizeJ = 0.066f;

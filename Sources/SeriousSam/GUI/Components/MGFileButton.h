@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "MGEdit.h"
+#include "SeriousSam/GUI/Components/MGEdit.h"
 
 // file button states
 #define FBS_NORMAL    0 // normal active state

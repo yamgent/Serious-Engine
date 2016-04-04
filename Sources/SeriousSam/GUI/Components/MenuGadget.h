@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 
 #define DOING_NOTHING 0
 #define PRESS_KEY_WAITING 1

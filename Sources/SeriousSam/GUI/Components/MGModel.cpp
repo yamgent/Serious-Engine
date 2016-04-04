@@ -13,11 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGModel.h"
+#include "SeriousSam/GUI/Components/MGModel.h"
 
 extern INDEX sam_bWideScreen;
 
@@ -43,11 +43,11 @@ void CMGModel::Render(CDrawPort *pdp)
   dpModel.Lock();
   dpModel.FillZBuffer(1.0f);
 
-  LCDSetDrawport(&dpModel);
+  _pGame->LCDSetDrawport(&dpModel);
   // clear menu here
   dpModel.Fill(C_BLACK | 255);
-  LCDRenderClouds1();
-  LCDRenderClouds2();
+  _pGame->LCDRenderClouds1();
+  _pGame->LCDRenderClouds2();
 
   // prepare projection
   CRenderModel rmRenderModel;
@@ -106,13 +106,13 @@ void CMGModel::Render(CDrawPort *pdp)
   mg_moModel.RenderModel(rmRenderModel);
   EndModelRenderingView();
 
-  LCDScreenBox(LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
+  _pGame->LCDScreenBox(_pGame->LCDGetColor(C_GREEN, "model box") | GetCurrentColor());
 
   dpModel.Unlock();
 
   pdp->Unlock();
   pdp->Lock();
-  LCDSetDrawport(pdp);
+  _pGame->LCDSetDrawport(pdp);
 
   // print the model name
   {

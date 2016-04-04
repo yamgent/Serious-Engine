@@ -38,7 +38,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "SplashScreen.h"
 #include "MainWindow.h"
 #include "GLSettings.h"
-#include "LevelInfo.h"
+#include "SeriousSam/LevelInfo.h"
 #include "LCDDrawing.h"
 #include "CmdLine.h"
 #include "Credits.h"
@@ -1291,28 +1291,6 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
   _pInput->DisableInput();
   _pGame->StopGame();
   
-  if (_fnmModToLoad!="") {
-  
-    char strCmd [64] = {0};
-	char strParam [128] = {0};
-	STARTUPINFOA cif;
-	ZeroMemory(&cif,sizeof(STARTUPINFOA));
-	PROCESS_INFORMATION pi;
-	
-	strcpy_s(strCmd,"SeriousSam.exe");
-	strcpy_s(strParam," +game ");
-	strcat_s(strParam,_fnmModToLoad.FileName());
-	if (_strModServerJoin!="") {
-	  strcat_s(strParam," +connect ");
-	  strcat_s(strParam,_strModServerJoin);
-	  strcat_s(strParam," +quickjoin");
-    }	
-
-	if (CreateProcessA(strCmd,strParam,NULL,NULL,FALSE,CREATE_DEFAULT_ERROR_MODE,NULL,NULL,&cif,&pi) == FALSE)
-	{
-	  MessageBox(0, L"error launching the Mod!\n", L"Serious Sam", MB_OK|MB_ICONERROR);		
-	}
-  }
   // invoke quit screen if needed
   if( _bQuitScreen && _fnmModToLoad=="") QuitScreenLoop();
   
@@ -1345,6 +1323,7 @@ void CheckModReload(void)
     }
 
     _execv(strCommand, argv);
+    MessageBoxA(0, "Error launching the Mod!\n", "Serious Sam", MB_OK|MB_ICONERROR);
   }
 #else
     STUBBED("reload ourself?");
@@ -1380,7 +1359,7 @@ int CommonMainline( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     iResult = SubMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
   } CTSTREAM_END;
   
-  //CheckModReload();
+  CheckModReload();
 
   CheckTeaser();
 

@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "VarList.h"
-#include "MGVarButton.h"
+#include "SeriousSam/VarList.h"
+#include "SeriousSam/GUI/Components/MGVarButton.h"
 
 extern PIX  _pixCursorPosI;
 extern PIX  _pixCursorPosJ;
@@ -139,7 +139,7 @@ void CMGVarButton::Render(CDrawPort *pdp)
   if (mg_pvsVar->vs_bSeparator)
   {
     mg_bEnabled = FALSE;
-    COLOR col = LCDGetColor(C_WHITE | 255, "separator");
+    COLOR col = _pGame->LCDGetColor(C_WHITE | 255, "separator");
     CTString strText = mg_pvsVar->vs_strName;
     pdp->PutTextC(strText, pixIC, pixJ, col);
   } else if (mg_pvsVar->Validate()) {
@@ -157,8 +157,8 @@ void CMGVarButton::Render(CDrawPort *pdp)
         // draw box around slider
         PIX pixISize = box.Size()(1)*0.13f;
         PIX pixJSize = box.Size()(2);
-        LCDDrawBox(0, -1, PIXaabbox2D(PIX2D(pixIR, pixJ + 1), PIX2D(pixIR + pixISize - 4, pixJ + pixJSize - 6)),
-          LCDGetColor(C_GREEN | 255, "slider box"));
+        _pGame->LCDDrawBox(0, -1, PIXaabbox2D(PIX2D(pixIR, pixJ + 1), PIX2D(pixIR + pixISize - 4, pixJ + pixJSize - 6)),
+          _pGame->LCDGetColor(C_GREEN | 255, "slider box"));
 
         // draw filled part of slider
         if (mg_pvsVar->vs_iSlider == 1) {

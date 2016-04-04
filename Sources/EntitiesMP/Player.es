@@ -3191,7 +3191,7 @@ functions:
       if (GetFlags()&ENF_ALIVE) {
         // determine corresponding sound
         INDEX iSound;
-        char *strIFeel = NULL;
+        const char *strIFeel = NULL;
         if( m_fDamageAmmount<5.0f) {
           iSound = GenderSound(SOUND_WOUNDWEAK);
           strIFeel = "WoundWeak";

@@ -13,11 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGSlider.h"
+#include "SeriousSam/GUI/Components/MGSlider.h"
 
 extern PIX  _pixCursorPosI;
 extern PIX  _pixCursorPosJ;
@@ -113,8 +113,8 @@ void CMGSlider::Render(CDrawPort *pdp)
   pdp->PutTextR(mg_strText, pixIL, pixJ, col);
 
   // draw box around slider
-  LCDDrawBox(0, -1, PIXaabbox2D(PIX2D(pixIR + 1, pixJ), PIX2D(pixIR + pixISizeR - 2, pixJ + pixJSize - 2)),
-    LCDGetColor(C_GREEN | 255, "slider box"));
+  _pGame->LCDDrawBox(0, -1, PIXaabbox2D(PIX2D(pixIR + 1, pixJ), PIX2D(pixIR + pixISizeR - 2, pixJ + pixJSize - 2)),
+    _pGame->LCDGetColor(C_GREEN | 255, "slider box"));
 
   // draw filled part of slider
   pdp->Fill(pixIR + 2, pixJ + 1, (pixISizeR - 5)*mg_fFactor, (pixJSize - 4), col);

@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "MGButton.h"
+#include "SeriousSam/GUI/Components/MGButton.h"
 
 
 class CMGServerList : public CMGButton {

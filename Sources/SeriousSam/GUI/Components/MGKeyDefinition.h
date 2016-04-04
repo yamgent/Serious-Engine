@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "MenuGadget.h"
+#include "SeriousSam/GUI/Components/MenuGadget.h"
 
 
 class CMGKeyDefinition : public CMenuGadget {

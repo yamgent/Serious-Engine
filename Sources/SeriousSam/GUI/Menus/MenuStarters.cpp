@@ -15,14 +15,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 /* This file contains starter fuctions for all menus. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Build.h>
 
 #include "MenuManager.h"
 #include "MenuStarters.h"
 #include "MenuStartersAF.h"
 #include "MenuStuff.h"
-#include "LevelInfo.h"
+#include "SeriousSam/LevelInfo.h"
 
 extern void(*_pAfterLevelChosen)(void);
 extern BOOL _bPlayerMenuFromSinglePlayer;
@@ -329,7 +329,7 @@ void JoinNetworkGame(void)
       if (_strModURLSelected = "") {
         _strModURLSelected = "http://www.croteam.com/mods/Old";
       }
-      _strModServerSelected.PrintF("%s:%s", _pGame->gam_strJoinAddress, _pShell->GetValue("net_iPort"));
+      _strModServerSelected.PrintF("%s:%s", (const char *) _pGame->gam_strJoinAddress, (const char *) _pShell->GetValue("net_iPort"));
       extern void ModConnectConfirm(void);
       ModConnectConfirm();
     }

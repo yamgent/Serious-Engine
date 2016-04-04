@@ -167,7 +167,7 @@ static INDEX ctl_iCurrentPlayerLocal = -1;
 static INDEX ctl_iCurrentPlayer = -1;
 static FLOAT gam_fChatSoundVolume = 0.25f;
 
-extern BOOL map_bIsFirstEncounter = FALSE;
+BOOL map_bIsFirstEncounter = FALSE;
 BOOL _bUserBreakEnabled = FALSE;
 
 // make sure that console doesn't show last lines if not playing in network
@@ -353,7 +353,7 @@ CButtonAction::CButtonAction(void)
 }
 
 // Assignment operator.
-CButtonAction &CButtonAction ::operator=(CButtonAction &baOriginal)
+CButtonAction &CButtonAction ::operator=(const CButtonAction &baOriginal)
 {
   ba_iFirstKey                  = baOriginal.ba_iFirstKey;
   ba_iSecondKey                 = baOriginal.ba_iSecondKey;
@@ -504,7 +504,12 @@ void CControls::RemoveButtonAction( CButtonAction &baButtonAction)
   delete &baButtonAction;
 }
 
-
+void CControls::DeleteAllButtonActions()
+{
+  FORDELETELIST(CButtonAction, ba_lnNode, this->ctrl_lhButtonActions, itAct) {
+    delete &itAct.Current();
+  }
+}
 
 // calculate some useful demo vars
 static void CalcDemoProfile( INDEX ctFrames, INDEX &ctFramesNoPeaks,
@@ -2867,7 +2872,7 @@ void CGame::LCDSetDrawport(CDrawPort *pdp)
   
   ::_LCDSetDrawport(pdp);
 }
-void CGame::LCDDrawBox(PIX pixUL, PIX pixDR, PIXaabbox2D &box, COLOR col)
+void CGame::LCDDrawBox(PIX pixUL, PIX pixDR, const PIXaabbox2D &box, COLOR col)
 {
   col = SE_COL_BLUE_NEUTRAL|255;
 

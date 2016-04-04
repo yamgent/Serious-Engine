@@ -76,6 +76,7 @@ class CButtonAction {
 public:
   // default constructor
   CButtonAction();
+  ~CButtonAction() {}
   CListNode ba_lnNode;
   INDEX ba_iFirstKey;
   BOOL ba_bFirstKeyDown;
@@ -85,7 +86,7 @@ public:
   CTString ba_strCommandLineWhenPressed;
   CTString ba_strCommandLineWhenReleased;
   // Assignment operator.
-  virtual CButtonAction &operator=(CButtonAction &baOriginal);
+  virtual CButtonAction &operator=(const CButtonAction &baOriginal);
   virtual void Read_t( CTStream &istrm);    // throw char*
   virtual void Write_t( CTStream &ostrm);    // throw char*
 };
@@ -126,6 +127,7 @@ public:
   virtual void RemoveButtonAction( CButtonAction &baButtonAction);
   virtual void Load_t( CTFileName fnFile); // throw char *
   virtual void Save_t( CTFileName fnFile); // throw char *
+  virtual void DeleteAllButtonActions();
 };
 
 class CLocalPlayer
@@ -296,7 +298,7 @@ public:
   virtual void LCDEnd(void);
   virtual void LCDPrepare(FLOAT fFade);
   virtual void LCDSetDrawport(CDrawPort *pdp);
-  virtual void LCDDrawBox(PIX pixUL, PIX pixDR, PIXaabbox2D &box, COLOR col);
+  virtual void LCDDrawBox(PIX pixUL, PIX pixDR, const PIXaabbox2D &box, COLOR col);
   virtual void LCDScreenBox(COLOR col);
   virtual void LCDScreenBoxOpenLeft(COLOR col);
   virtual void LCDScreenBoxOpenRight(COLOR col);

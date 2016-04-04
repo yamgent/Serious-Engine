@@ -13,11 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGTitle.h"
+#include "SeriousSam/GUI/Components/MGTitle.h"
 
 
 void CMGTitle::Render(CDrawPort *pdp)
@@ -28,5 +28,5 @@ void CMGTitle::Render(CDrawPort *pdp)
   PIX pixI = box.Center()(1);
   PIX pixJ = box.Min()(2);
 
-  pdp->PutTextC(mg_strText, pixI, pixJ, LCDGetColor(C_WHITE | CT_OPAQUE, "title"));
+  pdp->PutTextC(mg_strText, pixI, pixJ, _pGame->LCDGetColor(C_WHITE | CT_OPAQUE, "title"));
 }

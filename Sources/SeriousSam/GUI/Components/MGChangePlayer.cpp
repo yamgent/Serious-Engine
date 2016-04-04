@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGChangePlayer.h"
-#include "GUI/Menus/MenuManager.h"
+#include "SeriousSam/GUI/Components/MGChangePlayer.h"
+#include "SeriousSam/GUI/Menus/MenuManager.h"
 
 extern CSoundData *_psdPress;
 
@@ -48,6 +48,6 @@ void CMGChangePlayer::SetPlayerText(void)
   if (iPlayer<0 || iPlayer>7) {
     mg_strText = "????";
   } else {
-    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer + 1, pc.GetNameForPrinting());
+    mg_strText.PrintF(TRANS("Player %d: %s\n"), mg_iLocalPlayer + 1, (const char *) pc.GetNameForPrinting());
   }
 }

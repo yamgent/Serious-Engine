@@ -65,7 +65,7 @@ struct SType {
     iLine = other.iLine;
     return *this;
   };
-  const SType &operator=(char *str) {
+  const SType &operator=(const char *str) {
     strString = strdup(str);
     bCrossesStates = 0;
     iLine = -1;

@@ -983,7 +983,7 @@ procedure_implementation
     sscanf($3.strString, "%s %s", strInputEventType, strInputEventName);
 
     char strStateID[256];
-    char *strBaseStateID = "-1";
+    const char *strBaseStateID = "-1";
     if(strcmp(RemoveLineDirective(strProcedureName), "Main")==0){
       strcpy(strStateID, "1");
       if(strncmp(strInputEventType, "EVoid", 4)!=0 && _strCurrentThumbnail[2]!=0) {

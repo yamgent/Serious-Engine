@@ -19,10 +19,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "GameMenu.h"
-#include "GUI/Components/MGArrow.h"
-#include "GUI/Components/MGKeyDefinition.h"
-#include "GUI/Components/MGTitle.h"
+#include "SeriousSam/GUI/Menus/GameMenu.h"
+#include "SeriousSam/GUI/Components/MGArrow.h"
+#include "SeriousSam/GUI/Components/MGKeyDefinition.h"
+#include "SeriousSam/GUI/Components/MGTitle.h"
 
 
 class CCustomizeKeyboardMenu : public CGameMenu {

@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 #include "MenuStuff.h"
 #include "MLoadSave.h"
 
@@ -74,7 +74,7 @@ void CLoadSaveMenu::StartMenu(void)
 
   // list the directory
   CDynamicStackArray<CTFileName> afnmDir;
-  MakeDirList(afnmDir, gm_fnmDirectory, "", 0);
+  MakeDirList(afnmDir, gm_fnmDirectory, CTString(""), 0);
   gm_iLastFile = -1;
 
   // for each file in the directory
@@ -222,7 +222,7 @@ BOOL CLoadSaveMenu::ParseFile(const CTFileName &fnm, CTString &strName)
       INDEX iCtl = -1;
       strName.ScanF("Controls%d", &iCtl);
       if (iCtl >= 0 && iCtl <= 7) {
-        strName.PrintF(TRANS("From player: %s"), _pGame->gm_apcPlayers[iCtl].GetNameForPrinting());
+        strName.PrintF(TRANS("From player: %s"), (const char *) _pGame->gm_apcPlayers[iCtl].GetNameForPrinting());
       }
     }
   }

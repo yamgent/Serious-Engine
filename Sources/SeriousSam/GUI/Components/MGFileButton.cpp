@@ -13,12 +13,12 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGFileButton.h"
-#include "GUI/Menus/MenuManager.h"
+#include "SeriousSam/GUI/Components/MGFileButton.h"
+#include "SeriousSam/GUI/Menus/MenuManager.h"
 
 extern CSoundData *_psdPress;
 
@@ -237,7 +237,7 @@ void CMGFileButton::Render(CDrawPort *pdp)
     PIX pixI = box.Min()(1);
     PIX pixJ = box.Min()(2);
 
-    COLOR col = LCDGetColor(C_mlGREEN | 255, "file info");
+    COLOR col = _pGame->LCDGetColor(C_mlGREEN | 255, "file info");
     pdp->PutText(mg_strInfo, pixI, pixJ, col);
   }
 }

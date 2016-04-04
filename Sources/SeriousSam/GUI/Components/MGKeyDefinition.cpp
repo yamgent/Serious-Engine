@@ -13,11 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGKeyDefinition.h"
+#include "SeriousSam/GUI/Components/MGKeyDefinition.h"
 
 extern CSoundData *_psdSelect;
 extern CSoundData *_psdPress;
@@ -63,7 +63,7 @@ void CMGKeyDefinition::SetBindingNames(BOOL bDefining)
   // find the button
   INDEX ict = 0;
   INDEX iDik = 0;
-  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions, itba) {
+  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itba) {
     if (ict == mg_iControlNumber) {
       CButtonAction &ba = *itba;
       // get the current bindings and names
@@ -122,7 +122,7 @@ void CMGKeyDefinition::DefineKey(INDEX iDik)
 {
   // for each button in controls
   INDEX ict = 0;
-  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions, itba) {
+  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itba) {
     CButtonAction &ba = *itba;
     // if it is this one
     if (ict == mg_iControlNumber) {

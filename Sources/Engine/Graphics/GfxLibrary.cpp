@@ -1106,10 +1106,10 @@ void CGfxLibrary::Init(void)
 {
   ASSERT( this!=NULL);
 
+#ifdef PLATFORM_WIN32
   // we will never allow glide splash screen
   putenv( "FX_GLIDE_NO_SPLASH=1");
 
-#ifdef PLATFORM_WIN32
   // report desktop settings
   CPrintF(TRANSV("Desktop settings...\n"));
 
@@ -1125,6 +1125,9 @@ void CGfxLibrary::Init(void)
   CPrintF(TRANSV("  Monitors directly reported: %d\n"), gfx_ctMonitors);
 
 #else
+
+  // we will never allow glide splash screen
+  setenv("FX_GLIDE_NO_SPLASH", "1", 1);
 
   gfx_ctMonitors = 1;
 

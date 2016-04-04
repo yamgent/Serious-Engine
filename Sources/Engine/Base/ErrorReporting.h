@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 /* Throw an exception of formatted string. */
-ENGINE_API extern void ThrowF_t(char *strFormat, ...); // throws char *
+ENGINE_API extern void ThrowF_t(const char *strFormat, ...); // throws char *
 /* Report error and terminate program. */
 ENGINE_API extern void FatalError(const char *strFormat, ...);
 /* Report warning without terminating program (stops program until user responds). */

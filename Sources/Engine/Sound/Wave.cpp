@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  */
 
 // check wave format
-void PCMWaveInput::CheckWaveFormat_t(WAVEFORMATEX wfeCheck, char *pcErrorString)
+void PCMWaveInput::CheckWaveFormat_t(WAVEFORMATEX wfeCheck, const char *pcErrorString)
 {
   // check format tag
   if (wfeCheck.wFormatTag != 1) {

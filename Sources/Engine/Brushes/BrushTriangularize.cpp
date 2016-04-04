@@ -155,7 +155,7 @@ public:
   void AddBestTriangleToTriangles(void);
 
   /* Print a statement to debugging output file. */
-  void DPrintF(char *strFormat, ...);
+  void DPrintF(const char *strFormat, ...);
   /* Dump triangle edges to debug output. */
   void DumpEdges(void);
 
@@ -584,7 +584,7 @@ void EdgeDir(const DOUBLE3D &vPoint0, const DOUBLE3D &vPoint1,
 /*
  * Print a statement to debugging output file.
  */
-void CTriangularizer::DPrintF(char *strFormat, ...)
+void CTriangularizer::DPrintF(const char *strFormat, ...)
 {
   char strBuffer[256];
   // format the message in buffer

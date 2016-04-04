@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 #include "MenuStuff.h"
 #include "MCustomizeKeyboard.h"
 
@@ -32,8 +32,8 @@ void CCustomizeKeyboardMenu::FillListItems(void)
   BOOL bHasLast = FALSE;
   // set diks to key buttons
   INDEX iLabel = 0;
-  INDEX ctLabels = _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions.Count();
-  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions, itAct)
+  INDEX ctLabels = _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions.Count();
+  FOREACHINLIST(CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itAct)
   {
     INDEX iInMenu = iLabel - gm_iListOffset;
     if ((iLabel >= gm_iListOffset) &&
@@ -100,7 +100,7 @@ void CCustomizeKeyboardMenu::StartMenu(void)
 {
   ControlsMenuOn();
   gm_iListOffset = 0;
-  gm_ctListTotal = _pGame->gm_ctrlControlsExtra.ctrl_lhButtonActions.Count();
+  gm_ctListTotal = _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions.Count();
   gm_iListWantedItem = 0;
   CGameMenu::StartMenu();
 }

@@ -68,7 +68,6 @@ void NewHandler(void)
   // terminate program
   FatalError(TRANS("Not enough memory!"));
 }
-#define _CrtCheckMemory()
 #endif
 
 /* Static class used for initializing memory handlers. */

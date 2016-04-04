@@ -190,10 +190,11 @@ ENGINE_API void AddTranslationTablesDir_t(const CTFileName &fnmDir, const CTFile
   }
 }
 
+// !!! FIXME: clean these out.
 // translate a string
-ENGINE_API char *Translate(char *str, INDEX iOffset)
+ENGINE_API char *Translate(const char *str, INDEX iOffset)
 {
-  return (char*)TranslateConst((const char*)str, iOffset);
+  return (char*)TranslateConst(str, iOffset);
 }
 
 ENGINE_API const char *TranslateConst(const char *str, INDEX iOffset)

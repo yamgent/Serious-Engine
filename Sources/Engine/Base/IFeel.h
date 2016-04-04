@@ -25,8 +25,8 @@ ENGINE_API CTString IFeel_GetProductName();
 ENGINE_API CTString IFeel_GetProjectFileName();
 ENGINE_API BOOL IFeel_LoadFile(CTFileName fnFile);
 ENGINE_API void IFeel_UnLoadFile();
-ENGINE_API void IFeel_PlayEffect(char *pstrEffectName);
-ENGINE_API void IFeel_StopEffect(char *pstrEffectName);
+ENGINE_API void IFeel_PlayEffect(const char *pstrEffectName);
+ENGINE_API void IFeel_StopEffect(const char *pstrEffectName);
 ENGINE_API void IFeel_ChangeGain(FLOAT fGain);
 
 #endif  /* include-once check. */

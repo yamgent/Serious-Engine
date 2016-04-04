@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 #include "MenuStuff.h"
 #include "MControls.h"
 
@@ -99,7 +99,7 @@ void CControlsMenu::StartMenu(void)
 
   ControlsMenuOn();
 
-  gm_mgNameLabel.mg_strText.PrintF(TRANS("CONTROLS FOR: %s"), _pGame->gm_apcPlayers[iPlayer].GetNameForPrinting());
+  gm_mgNameLabel.mg_strText.PrintF(TRANS("CONTROLS FOR: %s"), (const char *) _pGame->gm_apcPlayers[iPlayer].GetNameForPrinting());
 
   ObtainActionSettings();
   CGameMenu::StartMenu();
@@ -116,7 +116,7 @@ void CControlsMenu::EndMenu(void)
 
 void CControlsMenu::ObtainActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
 
   gm_mgSensitivity.mg_iMinPos = 0;
   gm_mgSensitivity.mg_iMaxPos = 50;
@@ -137,7 +137,7 @@ void CControlsMenu::ObtainActionSettings(void)
 
 void CControlsMenu::ApplyActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
 
   FLOAT fSensitivity =
     FLOAT(gm_mgSensitivity.mg_iCurPos - gm_mgSensitivity.mg_iMinPos) /

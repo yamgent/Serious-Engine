@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 extern BOOL _bFileReplacingApplied;
 
 BOOL GetReplacingFile(CTFileName fnSourceTexture, CTFileName &fnReplacingTexture,
-                      char *pFilter);
+                      const char *pFilter);
 void SetTextureWithPossibleReplacing_t(CTextureObject &to, CTFileName &fnmTexture);
 
 // read/write a texture object

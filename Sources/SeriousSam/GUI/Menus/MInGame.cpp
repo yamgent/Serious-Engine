@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 #include "MInGame.h"
 
 
@@ -136,7 +136,7 @@ void CInGameMenu::StartMenu(void)
 
   if (_gmRunningGameMode == GM_SINGLE_PLAYER) {
     CPlayerCharacter &pc = _pGame->gm_apcPlayers[_pGame->gm_iSinglePlayer];
-    gm_mgLabel1.mg_strText.PrintF(TRANS("Player: %s"), pc.GetNameForPrinting());
+    gm_mgLabel1.mg_strText.PrintF(TRANS("Player: %s"), (const char *) pc.GetNameForPrinting());
     gm_mgLabel2.mg_strText = "";
 
   } else {

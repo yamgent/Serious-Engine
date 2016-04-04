@@ -13,19 +13,19 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "LevelInfo.h"
-#include "VarList.h"
-#include "MenuGadget.h"
+#include "SeriousSam/LevelInfo.h"
+#include "SeriousSam/VarList.h"
+#include "SeriousSam/GUI/Components/MenuGadget.h"
 
 extern CSoundData *_psdSelect;
 
-extern BOOL _bDefiningKey = FALSE;
-extern BOOL _bEditingString = FALSE;
-extern CMenuGadget *_pmgLastActivatedGadget = NULL;
+BOOL _bDefiningKey = FALSE;
+BOOL _bEditingString = FALSE;
+CMenuGadget *_pmgLastActivatedGadget = NULL;
 
 
 CMenuGadget::CMenuGadget(void)
@@ -107,17 +107,17 @@ void CMenuGadget::OnMouseOver(PIX pixI, PIX pixJ)
 COLOR CMenuGadget::GetCurrentColor(void)
 {
   // use normal colors
-  COLOR colUnselected = LCDGetColor(C_GREEN, "unselected");
-  COLOR colSelected = LCDGetColor(C_WHITE, "selected");
+  COLOR colUnselected = _pGame->LCDGetColor(C_GREEN, "unselected");
+  COLOR colSelected = _pGame->LCDGetColor(C_WHITE, "selected");
   // if disabled
   if (!mg_bEnabled) {
     // use a bit darker colors
-    colUnselected = LCDGetColor(C_dGREEN, "disabled unselected");
-    colSelected = LCDGetColor(C_GRAY, "disabled selected");
+    colUnselected = _pGame->LCDGetColor(C_dGREEN, "disabled unselected");
+    colSelected = _pGame->LCDGetColor(C_GRAY, "disabled selected");
     // if label
     if (mg_bLabel) {
       // use white
-      colUnselected = colSelected = LCDGetColor(C_WHITE, "label");
+      colUnselected = colSelected = _pGame->LCDGetColor(C_WHITE, "label");
     }
   }
   // use unselected color

@@ -13,15 +13,15 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Build.h>
 
 #include "MenuManager.h"
 #include "MenuStarters.h"
 #include "MenuStuff.h"
-#include "GUI/Components/MenuGadget.h"
-#include "LevelInfo.h"
-#include "VarList.h"
+#include "SeriousSam/GUI/Components/MenuGadget.h"
+#include "SeriousSam/LevelInfo.h"
+#include "SeriousSam/VarList.h"
 
 ENGINE_API extern INDEX snd_iFormat;
 extern BOOL _bMouseUsedLast;
@@ -171,7 +171,7 @@ extern void ModConnectConfirm(void)
     return;
   }
 
-  CPrintF(TRANS("Server is running a different MOD (%s).\nYou need to reload to connect.\n"), _fnmModSelected);
+  CPrintF(TRANS("Server is running a different MOD (%s).\nYou need to reload to connect.\n"), (const char *) _fnmModSelected);
   gmCurrent._pConfimedYes = &ModConnect;
   gmCurrent._pConfimedNo = NULL;
   gmCurrent.gm_mgConfirmLabel.mg_strText = TRANS("CHANGE THE MOD?");

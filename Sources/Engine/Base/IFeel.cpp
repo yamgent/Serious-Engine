@@ -211,13 +211,13 @@ void IFeel_UnloadFile()
   if(immUnloadFile!=NULL) immUnloadFile();
 }
 // plays effect from ifr file
-void IFeel_PlayEffect(char *pstrEffectName)
+void IFeel_PlayEffect(const char *pstrEffectName)
 {
   IFeel_ChangeGain(ifeel_fGain);
   if(immPlayEffect!=NULL) immPlayEffect(pstrEffectName);
 }
 // stops effect from ifr file
-void IFeel_StopEffect(char *pstrEffectName)
+void IFeel_StopEffect(const char *pstrEffectName)
 {
   if(immStopEffect!=NULL) immStopEffect(pstrEffectName);
 }

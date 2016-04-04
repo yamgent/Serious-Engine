@@ -13,13 +13,13 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "LevelInfo.h"
-#include "VarList.h"
-#include "MGButton.h"
+#include "SeriousSam/LevelInfo.h"
+#include "SeriousSam/VarList.h"
+#include "SeriousSam/GUI/Components/MGButton.h"
 
 extern CSoundData *_psdPress;
 
@@ -74,14 +74,14 @@ void CMGButton::Render(CDrawPort *pdp)
 	PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
 	COLOR col = GetCurrentColor();
 	if (mg_bEditing) {
-		col = LCDGetColor(C_GREEN | 0xFF, "editing");
+		col = _pGame->LCDGetColor(C_GREEN | 0xFF, "editing");
 	}
 
 	COLOR colRectangle = col;
 	if (mg_bHighlighted) {
-		col = LCDGetColor(C_WHITE | 0xFF, "hilited");
+		col = _pGame->LCDGetColor(C_WHITE | 0xFF, "hilited");
 		if (!mg_bFocused) {
-			colRectangle = LCDGetColor(C_WHITE | 0xFF, "hilited rectangle");
+			colRectangle = _pGame->LCDGetColor(C_WHITE | 0xFF, "hilited rectangle");
 		}
 	}
 	if (mg_bMental) {
@@ -119,7 +119,7 @@ void CMGButton::Render(CDrawPort *pdp)
 			pixLeft = box.Min()(1) + box.Size()(1)*0.55f;
 			pixWidth = box.Size()(1)*0.45f + 1;
 		}
-		pdp->Fill(pixLeft, pixUp, pixWidth, pixHeight, LCDGetColor(C_dGREEN | 0x40, "edit fill"));
+		pdp->Fill(pixLeft, pixUp, pixWidth, pixHeight, _pGame->LCDGetColor(C_dGREEN | 0x40, "edit fill"));
 	}
 
 
@@ -163,7 +163,7 @@ void CMGButton::Render(CDrawPort *pdp)
 		if (!pdp->dp_FontData->fd_bFixedWidth) {
 			pixY -= pdp->dp_fTextScaling * 2;
 		}
-		pdp->PutText("|", pixX, pixY, LCDGetColor(C_WHITE | 0xFF, "editing cursor"));
+		pdp->PutText("|", pixX, pixY, _pGame->LCDGetColor(C_WHITE | 0xFF, "editing cursor"));
 	}
 }
 

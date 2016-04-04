@@ -26,7 +26,28 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Network/SessionState.h>
 #include <GameMP/SessionProperties.h>
 #include <Engine/GameAgent/GameAgent.h>
-#include <Engine/GameAgent/MSLegacy.h>
+
+#if defined(PLATFORM_WIN32)
+#pragma comment(lib, "wsock32.lib")
+WSADATA* _wsaData = NULL;
+typedef int socklen_t;
+#else
+#include <fcntl.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR   -1
+#define closesocket close
+typedef int SOCKET;
+typedef struct hostent HOSTENT, *PHOSTENT;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr    SOCKADDR;
+#define WSAGetLastError() (INDEX) errno
+#define WSACleanup()
+#endif
 
 #define MSPORT      28900
 #define BUFFSZ      8192
@@ -102,26 +123,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define SERIOUSSAMKEY       "AKbna4\0"
 #define SERIOUSSAMSTR       "serioussamse"
 
-#if defined(PLATFORM_WIN32)
-#pragma comment(lib, "wsock32.lib")
-WSADATA* _wsaData = NULL;
-typedef int socklen_t;
-#else
-#include <fcntl.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <errno.h>
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR   -1
-#define closesocket close
-typedef int SOCKET;
-typedef struct hostent HOSTENT;
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr    SOCKADDR;
-#define WSAGetLastError() (INDEX) errno
-#endif
+#include <Engine/GameAgent/MSLegacy.h>
 
 SOCKET _socket = INVALID_SOCKET;
 
@@ -131,9 +133,9 @@ sockaddr_in _sinFrom;
 
 CHAR* _szBuffer = NULL;
 CHAR* _szIPPortBuffer = NULL;
-INT   _iIPPortBufferLen = 0;
+LONG   _iIPPortBufferLen = 0;
 CHAR* _szIPPortBufferLocal = NULL;
-INT   _iIPPortBufferLocalLen = 0;
+LONG   _iIPPortBufferLocalLen = 0;
 
 BOOL _bServer = FALSE;
 BOOL _bInitialized = FALSE;
@@ -463,14 +465,14 @@ extern void GameAgent_ServerUpdate(void)
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKQUERY,
-          _pShell->GetString("sam_strGameName"),
+          (const char *) _pShell->GetString("sam_strGameName"),
           _SE_VER_STRING,
-          //_pShell->GetString("net_strLocalHost"),
-          strLocation,
-          _pShell->GetString("gam_strSessionName"),
+          //(const char *) _pShell->GetString("net_strLocalHost"),
+          (const char *) strLocation,
+          (const char *) _pShell->GetString("gam_strSessionName"),
           _pShell->GetINDEX("net_iPort"),
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          (const char *) _pNetwork->ga_World.wo_strName,
+          (const char *) _getGameModeName(_getSP()->sp_gmGameMode),
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers,
           _pShell->GetINDEX("gam_bFriendlyFire"),
@@ -506,10 +508,10 @@ extern void GameAgent_ServerUpdate(void)
 
         CTString strPacket;
         strPacket.PrintF( PCKINFO,
-          _pShell->GetString("gam_strSessionName"),
+          (const char *) _pShell->GetString("gam_strSessionName"),
           _pShell->GetINDEX("net_iPort"),
-          _pNetwork->ga_World.wo_strName,
-          _getGameModeName(_getSP()->sp_gmGameMode),
+          (const char *) _pNetwork->ga_World.wo_strName,
+          (const char *) _getGameModeName(_getSP()->sp_gmGameMode),
           _pNetwork->ga_srvServer.GetPlayersCount(),
           _pNetwork->ga_sesSessionState.ses_ctMaxPlayers);
         _sendPacketTo(strPacket, &_sinFrom);
@@ -523,10 +525,10 @@ extern void GameAgent_ServerUpdate(void)
           strLocation = "Heartland";
         }
         strPacket.PrintF( PCKBASIC,
-          _pShell->GetString("sam_strGameName"),
+          (const char *) _pShell->GetString("sam_strGameName"),
           _SE_VER_STRING,
-          //_pShell->GetString("net_strLocalHost"));
-          strLocation);
+          //(const char *) _pShell->GetString("net_strLocalHost"));
+          (const char *) strLocation);
         _sendPacketTo(strPacket, &_sinFrom);
 
       } else if (sPch4){
@@ -597,13 +599,11 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
     // we're not a server
     _bServer = FALSE;
     _pNetwork->ga_strEnumerationStatus = ".";
-	
-	WORD     _wsaRequested;
-	WSADATA  wsaData;
+
 	PHOSTENT _phHostinfo;
 	ULONG    _uIP,*_pchIP = &_uIP;
 	USHORT   _uPort,*_pchPort = &_uPort;
-	INT      _iLen;
+	LONG     _iLen;
 	char     _cName[256],*_pch,_strFinal[8] = {0};
 
 	struct in_addr addr;
@@ -613,9 +613,11 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
        return;
     }
     _szIPPortBufferLocal = new char[1024];
-	
+
+    #ifdef PLATFORM_WIN32
 	// start WSA
-	_wsaRequested = MAKEWORD( 2, 2 );
+	WSADATA  wsaData;
+	const WORD _wsaRequested = MAKEWORD( 2, 2 );
     if( WSAStartup(_wsaRequested, &wsaData) != 0) {
 		CPrintF("Error initializing winsock!\n");
 		if(_szIPPortBufferLocal != NULL) {
@@ -629,6 +631,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 		WSACleanup();
         return;
     }
+    #endif
 
     _pch = _szIPPortBufferLocal;
 	_iLen = 0;
@@ -691,7 +694,7 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
 
     struct  sockaddr_in peer;
 
-    SOCKET  _sock               = NULL;
+    SOCKET  _sock               = INVALID_SOCKET;
     u_int   uiMSIP;
     int     iErr,
             iLen,
@@ -704,21 +707,22 @@ extern void GameAgent_EnumTrigger(BOOL bInternet)
             *ucSec               = NULL,
             *ucKey               = NULL;
 
-    char    *cFilter             = "",
-            *cWhere              = "",
-            cMS[128]             = {0},
-            *cResponse           = NULL,
-            *cMsstring           = NULL,
-            *cSec                = NULL;
-
+    const char *cFilter             = "";
+    const char *cWhere              = "";
+    char cMS[128]             = {0};
+    char *cResponse           = NULL;
+    char *cMsstring           = NULL;
+    char *cSec                = NULL;
 
     strcpy(cMS,ga_strMSLegacy);
 
+    #if PLATFORM_WIN32
     WSADATA wsadata;
     if(WSAStartup(MAKEWORD(2,2), &wsadata) != 0) {
         CPrintF("Error initializing winsock!\n");
         return;
     }
+    #endif
 
 /* Open a socket and connect to the Master server */
 
@@ -1024,6 +1028,9 @@ extern void GameAgent_EnumUpdate(void)
     }
   }
  } else {
+ #ifndef PLATFORM_WIN32
+ STUBBED("write me");
+ #else
  /* MSLegacy */
     if(_bActivated) {
         HANDLE  _hThread;
@@ -1045,7 +1052,8 @@ extern void GameAgent_EnumUpdate(void)
         }
         _bActivatedLocal = FALSE;		
     }	
-  }
+ #endif
+ }
 }
 
 /// Cancel the GameAgent serverlist enumeration.
@@ -1058,6 +1066,7 @@ extern void GameAgent_EnumCancel(void)
   }
 }
 
+#ifdef PLATFORM_WIN32
 DWORD WINAPI _MS_Thread(LPVOID lpParam) {
     SOCKET _sockudp = NULL;
     struct _sIPPort {
@@ -1468,3 +1477,5 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
     WSACleanup();
     return 0;
 }
+#endif
+

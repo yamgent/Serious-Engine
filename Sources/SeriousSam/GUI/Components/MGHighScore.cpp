@@ -13,11 +13,11 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Base/KeyNames.h>
 #include <Engine/CurrentVersion.h>
 #include <GameMP/LCDDrawing.h>
-#include "MGHighScore.h"
+#include "SeriousSam/GUI/Components/MGHighScore.h"
 
 #define HSCOLUMNS 6
 CTString strHighScores[HIGHSCORE_COUNT + 1][HSCOLUMNS];
@@ -30,9 +30,9 @@ void CMGHighScore::Render(CDrawPort *pdp)
 {
   SetFontMedium(pdp);
 
-  COLOR colHeader = LCDGetColor(C_GREEN | 255, "hiscore header");
-  COLOR colData = LCDGetColor(C_mdGREEN | 255, "hiscore data");
-  COLOR colLastSet = LCDGetColor(C_mlGREEN | 255, "hiscore last set");
+  COLOR colHeader = _pGame->LCDGetColor(C_GREEN | 255, "hiscore header");
+  COLOR colData = _pGame->LCDGetColor(C_mdGREEN | 255, "hiscore data");
+  COLOR colLastSet = _pGame->LCDGetColor(C_mlGREEN | 255, "hiscore last set");
   INDEX iLastSet = _pGame->gm_iLastSetHighScore;
 
   CTString strText;

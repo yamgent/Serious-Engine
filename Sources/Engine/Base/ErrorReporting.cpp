@@ -168,7 +168,7 @@ BOOL YesNoMessage(const char *strFormat, ...)
 /*
  * Throw an exception of formatted string.
  */
-void ThrowF_t(char *strFormat, ...)  // throws char *
+void ThrowF_t(const char *strFormat, ...)  // throws char *
 {
   const SLONG slBufferSize = 256;
   //char strBuffer[slBufferSize+1];  // Can't throw from the stack like this!

@@ -94,14 +94,14 @@ public:
 };
 
 struct TextureEffectSourceType {
-  char *test_strName;    // name used for browsing
+  const char *test_strName;    // name used for browsing
   void (*test_Initialize)(CTextureEffectSource *ptes,
     PIX pixU0, PIX pixV0, PIX pixU1, PIX pixV1);   // function for initalization of a new effect source
   void (*test_Animate)(CTextureEffectSource *ptes);   // function for animation of one effect source
 };
 
 struct TextureEffectGlobalType {
-  char *tegt_strName;    // name used for browsing
+  const char *tegt_strName;    // name used for browsing
   void (*tegt_Initialize)(void);
   void (*tegt_Animate)(void);
 

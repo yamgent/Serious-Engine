@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "SeriousSam/StdH.h"
 
-#include "VarList.h"
+#include "SeriousSam/VarList.h"
 
 CListHead _lhVarSettings;
 

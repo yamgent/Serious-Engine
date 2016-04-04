@@ -43,12 +43,6 @@ public:
 extern CDynamicStackArray<CTFileName> _afnmNoCRC;
 extern BOOL FileMatchesList(CDynamicStackArray<CTFileName> &afnm, const CTFileName &fnm);
 
-#ifndef SE_INCL_CRCTABLE_CPP
-#define SE_INCL_CRCTABLE_CPP
-#ifdef PRAGMA_ONCE
-  #pragma once
-#endif
-
 #define TYPE CCRCEntry
 #define CNameTable_TYPE CNameTable_CCRCEntry
 #define CNameTableSlot_TYPE CNameTableSlot_CCRCEntry
@@ -199,6 +193,4 @@ ULONG CRCT_MakeCRCForFiles_t(CTStream &strmFiles)  // throw char *
   return ulCRC;
 }
 
-
-#endif  /* include-once check. */
 

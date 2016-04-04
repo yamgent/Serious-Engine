@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 /* This file contains additional functions called from starters. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/Build.h>
 
 #include "MenuManager.h"
@@ -112,7 +112,7 @@ BOOL LSLoadControls(const CTFileName &fnm)
 {
   try {
     ControlsMenuOn();
-    _pGame->gm_ctrlControlsExtra.Load_t(fnm);
+    _pGame->gm_ctrlControlsExtra->Load_t(fnm);
     ControlsMenuOff();
   }
   catch (char *strError) {

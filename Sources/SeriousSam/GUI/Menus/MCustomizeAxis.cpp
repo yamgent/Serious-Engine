@@ -13,9 +13,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-#include "StdH.h"
+#include "SeriousSam/StdH.h"
 #include <Engine/CurrentVersion.h>
-#include "MenuPrinting.h"
+#include "SeriousSam/GUI/Menus/MenuPrinting.h"
 #include "MenuStuff.h"
 #include "MCustomizeAxis.h"
 
@@ -84,7 +84,7 @@ CCustomizeAxisMenu::~CCustomizeAxisMenu(void)
 void CCustomizeAxisMenu::ObtainActionSettings(void)
 {
   ControlsMenuOn();
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
   INDEX iSelectedAction = gm_mgActionTrigger.mg_iSelected;
   INDEX iMountedAxis = ctrls.ctrl_aaAxisActions[iSelectedAction].aa_iAxisAction;
 
@@ -113,7 +113,7 @@ void CCustomizeAxisMenu::ObtainActionSettings(void)
 
 void CCustomizeAxisMenu::ApplyActionSettings(void)
 {
-  CControls &ctrls = _pGame->gm_ctrlControlsExtra;
+  CControls &ctrls = *_pGame->gm_ctrlControlsExtra;
   INDEX iSelectedAction = gm_mgActionTrigger.mg_iSelected;
   INDEX iMountedAxis = gm_mgMountedTrigger.mg_iSelected;
   FLOAT fSensitivity =

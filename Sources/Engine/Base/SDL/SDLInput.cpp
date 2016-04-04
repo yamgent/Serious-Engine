@@ -70,8 +70,8 @@ NOTE: Two different types of key codes are used here:
 static struct KeyConversion {
   INDEX kc_iKID;
   INDEX kc_iVirtKey;
-  char *kc_strName;
-  char *kc_strNameTrans;
+  const char *kc_strName;
+  const char *kc_strNameTrans;
 } _akcKeys[] = {
 
   // reserved for 'no-key-pressed'

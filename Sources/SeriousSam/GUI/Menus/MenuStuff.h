@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "FileInfo.h"
+#include "SeriousSam/FileInfo.h"
 
 #define TRIGGER_MG(mg, y, up, down, text, astr) \
   mg.mg_pmgUp = &up; \
@@ -44,10 +44,23 @@ extern CTString astrGameTypeRadioTexts[20];
 extern CTString astrDifficultyRadioTexts[6];
 extern CTString astrSplitScreenRadioTexts[4];
 extern CTString astrDisplayPrefsRadioTexts[4];
+
+// !!! FIXME: this sucks
+#ifdef SE1_D3D
 extern CTString astrDisplayAPIRadioTexts[2];
+#else
+extern CTString astrDisplayAPIRadioTexts[1];
+#endif
+
 extern CTString astrBitsPerPixelRadioTexts[3];
 extern CTString astrFrequencyRadioTexts[4];
+
+// !!! FIXME: this sucks
+#if PLATFORM_WIN32
 extern CTString astrSoundAPIRadioTexts[3];
+#else
+extern CTString astrSoundAPIRadioTexts[1];
+#endif
 
 extern PIX apixWidths[20][2];
 

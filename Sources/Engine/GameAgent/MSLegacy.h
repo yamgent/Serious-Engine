@@ -175,7 +175,7 @@ u_int resolv(char *host) {
     if(host_ip == INADDR_NONE) {
         hp = gethostbyname(host);
         if(!hp) {
-            return (NULL);
+            return 0;
         } else host_ip = *(u_int *)(hp->h_addr);
     }
     return(host_ip);

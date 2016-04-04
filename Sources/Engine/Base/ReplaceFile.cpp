@@ -52,7 +52,7 @@ BOOL _bFileReplacingApplied;
 
 extern INDEX wed_bUseBaseForReplacement;
 
-static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, char *pFilter)
+static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, const char *pFilter)
 {
 #ifdef PLATFORM_WIN32
   typedef CTFileName FileRequester_t(
@@ -75,7 +75,8 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
     return CTString("");
   }
 
-  return pFileRequester( achrTitle, pFilter, "Replace file directory", achrSelectedFile);
+  // !!! FIXME: make this const correct?  --ryan.
+  return pFileRequester( achrTitle, (char *) pFilter, "Replace file directory", achrSelectedFile);
 
 #else
 
@@ -86,7 +87,7 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, cha
 }
 
 BOOL GetReplacingFile(CTFileName fnSourceFile, CTFileName &fnReplacingFile,
-                      char *pFilter)
+                      const char *pFilter)
 {
   // don't replace files if this console variable is set
   if (!wed_bUseBaseForReplacement) {
