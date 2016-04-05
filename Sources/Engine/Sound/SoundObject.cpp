@@ -147,7 +147,7 @@ void CSoundObject::Set3DParameters( FLOAT fFalloff, FLOAT fHotSpot,
       //CPrintF("SET3D: ");
       CEntity *pen = so_penEntity->GetPredictionTail();
       if (pen!=so_penEntity) {
-        pso = (CSoundObject *)( ((UBYTE*)pen) + (int(this)-int(so_penEntity)) );
+        pso = (CSoundObject *)( ((UBYTE*)pen) + (size_t(this)-size_t(so_penEntity)) );
       }
     }
   }
@@ -175,7 +175,7 @@ CSoundObject *CSoundObject::GetPredictionTail(ULONG ulTypeID, ULONG ulEventID)
       // it must not play the sound
       return NULL;
     }
-    SLONG slOffset = int(this)-int(so_penEntity);
+    SLONG slOffset = size_t(this)-size_t(so_penEntity);
 
     ULONG ulCRC;
     CRC_Start(ulCRC);
