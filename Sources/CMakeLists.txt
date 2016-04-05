@@ -141,15 +141,22 @@ macro(add_parser_and_scanner _PARSER _SCANNER)
     )
 endmacro()
 
-add_parser_and_scanner("Ecc/Parser" "Ecc/Scanner")
-add_executable(ecc Ecc/Main.cpp Ecc/Parser.cpp Ecc/Parser.h Ecc/Scanner.cpp)
+# Build ECC from source if there wasn't a prebuilt-one specified on the command line.
+#  Normally we build it here, but we might need a prebuilt, native binary if
+#  we're cross-compiling the rest of the game.
+if(NOT ECC)
+    add_parser_and_scanner("Ecc/Parser" "Ecc/Scanner")
+    add_executable(ecc Ecc/Main.cpp Ecc/Parser.cpp Ecc/Parser.h Ecc/Scanner.cpp)
+    set(ECC "ecc")
+endif()
 
 macro(entity _NAME)
     add_custom_command(
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_NAME}.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/${_NAME}.h" "${CMAKE_CURRENT_SOURCE_DIR}/${_NAME}_tables.h"
         MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_NAME}.es"
+        DEPENDS ${ECC}
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMAND ecc
+        COMMAND ${ECC}
         ARGS "${_NAME}.es"
     )
     list(APPEND ENTITIES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/${_NAME}.cpp")
@@ -310,7 +317,7 @@ entity(EntitiesMP/WorldBase)
 entity(EntitiesMP/WorldLink)
 entity(EntitiesMP/WorldSettingsController)
 
-add_custom_target(ParseAllEntities DEPENDS ${ENTITIES_H})
+add_custom_target(ParseEntities DEPENDS ${ENTITIES_H})
 
 set(ENTITIESMPLIB "EntitiesMP${DEBUGSUFFIX}")
 add_library(${ENTITIESMPLIB} SHARED
@@ -324,7 +331,7 @@ add_library(${ENTITIESMPLIB} SHARED
 if(MACOSX)
     target_link_libraries(${ENTITIESMPLIB} "-undefined dynamic_lookup")
 endif()
-add_dependencies(${ENTITIESMPLIB} ParseAllEntities)
+add_dependencies(${ENTITIESMPLIB} ParseEntities)
 
 set(GAMEMPLIB "GameMP${DEBUGSUFFIX}")
 add_library(${GAMEMPLIB} SHARED
@@ -344,7 +351,7 @@ add_library(${GAMEMPLIB} SHARED
 if(MACOSX)
     target_link_libraries(${GAMEMPLIB} "-undefined dynamic_lookup")
 endif()
-add_dependencies(${GAMEMPLIB} ParseAllEntities)
+add_dependencies(${GAMEMPLIB} ParseEntities)
 
 set(SHADERSLIB "Shaders${DEBUGSUFFIX}")
 add_library(${SHADERSLIB} SHARED
@@ -372,7 +379,7 @@ add_library(${SHADERSLIB} SHARED
 if(MACOSX)
     target_link_libraries(${SHADERSLIB} "-undefined dynamic_lookup")
 endif()
-add_dependencies(${SHADERSLIB} ParseAllEntities)
+add_dependencies(${SHADERSLIB} ParseEntities)
 
 
 add_parser_and_scanner("Engine/Base/Parser" "Engine/Base/Scanner")
@@ -602,7 +609,7 @@ add_executable(SeriousSam
     SeriousSam/MenuGadgets.cpp
     SeriousSam/MenuPrinting.cpp
 )
-add_dependencies(SeriousSam ParseAllEntities)
+add_dependencies(SeriousSam ParseEntities)
 
 # !!! FIXME: this is an option because you have to recompile the entire engine twice.
 # !!! FIXME:  If we can put the engine in a static library and not lose symbols,
@@ -610,7 +617,7 @@ add_dependencies(SeriousSam ParseAllEntities)
 option(BUILD_DEDICATED_SERVER "Compile the dedicated server, too" FALSE)
 if(BUILD_DEDICATED_SERVER)
     add_executable(SeriousSamDedicated ${ENGINE_SRCS} DedicatedServer/DedicatedServer.cpp)
-    add_dependencies(SeriousSamDedicated ParseAllEntities)
+    add_dependencies(SeriousSamDedicated ParseEntities)
 endif()
 
 if(MACOSX)
