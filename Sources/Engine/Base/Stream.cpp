@@ -1570,12 +1570,14 @@ INDEX ExpandFilePath(ULONG ulType, const CTFileName &fnmFile, CTFileName &fnmExp
       // do that
       fnmExpanded = _fnmApplicationPath+_fnmMod+fnmFileAbsolute;
       fnmExpanded.SetAbsolutePath();
+      VerifyDirsExist(fnmExpanded.FileDir());
       return EFP_FILE;
     // if should not write to mod dir
     } else {
       // write to base dir
       fnmExpanded = _fnmApplicationPath+fnmFileAbsolute;
       fnmExpanded.SetAbsolutePath();
+      VerifyDirsExist(fnmExpanded.FileDir());
       return EFP_FILE;
     }
 
