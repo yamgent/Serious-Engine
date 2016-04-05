@@ -736,7 +736,7 @@ void StartCurrentQuickLoadMenu()
   }
 }
 
-void StartMenus(char *str)
+void StartMenus(const char *str)
 {
   _tmMenuLastTickDone=_pTimer->GetRealTimeTick();
   // disable printing of last lines
