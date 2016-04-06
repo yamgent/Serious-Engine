@@ -1,6 +1,6 @@
 %{
 #include "ParsingSymbols.h"
-#include "Parser.h"
+#include "parser.h"
 
 #include <Engine/Base/FileName.h>
 #include <Engine/Base/CTString.h>

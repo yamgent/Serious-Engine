@@ -84,7 +84,7 @@ endif()
 
 # !!! FIXME: you currently need this, but I'd like to flip this to not use
 # !!! FIXME:  assembly language. And maybe delete the asm code too.
-set(USE_I386_ASM TRUE)
+option(USE_I386_ASM "Use X86 ASM" TRUE)
 
 if (USE_I386_ASM)
     # You need the Netwide Assembler (NASM) to build this on Intel systems.
@@ -102,7 +102,15 @@ else()
     add_definitions(-DUSE_PORTABLE_C=1)
 endif()
 
+option(PANDORA "Compile for Pandora" FALSE)
+if (PANDORA)
+    add_definitions(-DPANDORA=1)
+endif()
 
+option(USE_TREMOR "Use Tremor instead of Vorbis" FALSE)
+if (USE_TREMOR)
+    add_definitions(-DUSE_TREMOR=1)
+endif()
 # !!! FIXME: I currently force this, but you shouldn't _have_ to.
 add_definitions(-DSINGLE_THREADED=1)
 
@@ -111,8 +119,16 @@ include_directories(
     .
     External/SDL12
     External/libogg/include
-    External/libvorbis/include
 )
+if(USE_TREMOR)
+if(PANDORA)
+    include_directories(/mnt/utmp/codeblocks/usr/include/tremor)
+else()
+    # !!!Do something here!
+endif()
+else()
+    include_directories(External/libvorbis/include)
+endif()
 
 # We build ECC, then use it to generate C++ code for the game entities...
 macro(add_parser_and_scanner _PARSER _SCANNER)
@@ -594,7 +610,7 @@ set(ENGINE_SRCS
     ${ADDITIONAL_ENGINE_SRCS}
 )
 
-add_executable(SeriousSam
+add_executable(ssam
     ${ENGINE_SRCS}
     SeriousSam/LevelInfo.cpp
     SeriousSam/CmdLine.cpp
@@ -609,7 +625,7 @@ add_executable(SeriousSam
     SeriousSam/MenuGadgets.cpp
     SeriousSam/MenuPrinting.cpp
 )
-add_dependencies(SeriousSam ParseEntities)
+add_dependencies(ssam ParseEntities)
 
 # !!! FIXME: this is an option because you have to recompile the entire engine twice.
 # !!! FIXME:  If we can put the engine in a static library and not lose symbols,
@@ -622,9 +638,9 @@ endif()
 
 if(MACOSX)
     find_library(COCOA_FRAMEWORK Cocoa)
-    target_link_libraries(SeriousSam "${COCOA_FRAMEWORK}")
-    target_link_libraries(SeriousSam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL-1.2.0.dylib")
-    target_link_libraries(SeriousSam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDLmain.a")
+    target_link_libraries(ssam "${COCOA_FRAMEWORK}")
+    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL-1.2.0.dylib")
+    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDLmain.a")
     if(BUILD_DEDICATED_SERVER)
         target_link_libraries(SeriousSamDedicated "${COCOA_FRAMEWORK}")
         target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL-1.2.0.dylib")
@@ -633,12 +649,14 @@ if(MACOSX)
 endif()
 
 if(LINUX)
-    set_target_properties(SeriousSam PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
-    target_link_libraries(SeriousSam "m")
-    target_link_libraries(SeriousSam "dl")
-    target_link_libraries(SeriousSam "pthread")
-    target_link_libraries(SeriousSam ${SDL_LIBRARY})
-
+    set_target_properties(ssam PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
+    target_link_libraries(ssam "m")
+    target_link_libraries(ssam "dl")
+    if(PANDORA)
+    target_link_libraries(ssam "rt")
+    endif()
+    target_link_libraries(ssam "pthread")
+    target_link_libraries(ssam ${SDL_LIBRARY})
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")

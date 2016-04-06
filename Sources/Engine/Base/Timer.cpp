@@ -28,9 +28,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/ListIterator.inl>
 #include <Engine/Base/Priority.inl>
 
-//#if ( (USE_PORTABLE_C) || (PLATFORM_UNIX) )
-//#define USE_GETTIMEOFDAY 1
-//#endif
+#if (USE_PORTABLE_C)
+#define USE_GETTIMEOFDAY 1
+#endif
 
 #if USE_GETTIMEOFDAY
 #include <sys/time.h>
@@ -40,10 +40,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static inline __int64 ReadTSC(void)
 {
 #if USE_GETTIMEOFDAY
+#ifdef PANDORA
+  struct timespec tp;
+  clock_gettime(CLOCK_MONOTONIC, &tp);
+  return( (((__int64) tp.tv_sec) * 1000000000LL) + ((__int64) tp.tv_nsec));
+#else
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return( (((__int64) tv.tv_sec) * 1000000) + ((__int64) tv.tv_usec) );
-
+#endif
 #elif (defined __MSVC_INLINE__)
   __int64 mmRet;
   __asm {
@@ -315,7 +320,11 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
 
 #if USE_GETTIMEOFDAY
   // just use gettimeofday.
+  #ifdef PANDORA
+  tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = 1000000000LL;
+  #else
   tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = 1000000;
+  #endif
 
 #elif PLATFORM_WIN32
   { // this part of code must be executed as precisely as possible

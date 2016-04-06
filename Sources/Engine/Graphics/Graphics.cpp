@@ -653,6 +653,15 @@ __int64 mmShifter = 0;
 __int64 mmMask  = 0;
 ULONG *pulDitherTable;
 
+#ifdef USE_PORTABLE_C
+extern const UBYTE *pubClipByte;
+// increment a byte without overflowing it
+static inline void IncrementByteWithClip( UBYTE &ub, SLONG slAdd)
+{
+  ub = pubClipByte[(SLONG)ub+slAdd];
+}
+#endif
+
 // performs dithering of a 32-bit bipmap (can be in-place)
 void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
                    PIX pixCanvasWidth, PIX pixCanvasHeight)
@@ -774,7 +783,32 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
 
 ditherOrder:
 #if (defined USE_PORTABLE_C)
-  STUBBED("ordered matrix dithering routine");
+  union uConv
+  {
+    ULONG val;
+    DWORD dwords[2];
+    UWORD words[4];
+    WORD  iwords[4];
+    UBYTE bytes[8];
+  };
+  for (int i=0; i<pixHeight; i++) {
+    int idx = i&3;
+    uConv dith;
+    dith.val = pulDitherTable[idx];
+    for (int j=0; j<4; j++) { dith.words[j] >>= mmShifter; }
+    dith.val &= mmMask;
+    uConv* src = (uConv*)(pulSrc+i*pixWidth);
+    uConv* dst = (uConv*)(pulDst+i*pixWidth);
+    for (int j=0; j<pixWidth; j+=2) {
+      uConv p=src[0];
+      for (int k=0; k<8; k++) {
+        IncrementByteWithClip(p.bytes[k], dith.bytes[k]);
+      }
+      dst[0] = p;
+      src++;
+      dst++;
+    }
+  }
 
 #elif (defined __MSVC_INLINE__)
   __asm {
@@ -894,7 +928,31 @@ ditherError:
   // slModulo+=4;
   // now, dither destination
 #if (defined USE_PORTABLE_C)
-  STUBBED("error diffusion dithering routine");
+  #if 1 //SEB doesn't works....
+  for (int i=0; i<pixHeight-1; i++) {
+    int step = (i&1)?-4:+4;
+    const UBYTE ubMask = (mmErrDiffMask&0xff);
+    UBYTE *src = ((UBYTE*)pulDst)+i*pixCanvasWidth*4;
+    if(i&1) src+=pixWidth*4;
+    // left to right or right to left
+    for (int j=0; j<pixWidth-1; j++) {
+      uConv p1, p3, p5, p7;
+      src+=step;
+      for (int k=0; k<4; k++) { p1.words[k] = src[k]&ubMask; }
+      //p1.val &= mmErrDiffMask;
+      for (int k=0; k<4; k++) { p3.words[k] = (p1.words[k]*3)>>4;
+                                p5.words[k] = (p1.words[k]*5)>>4;
+                                p7.words[k] = (p1.words[k]*7)>>4; }
+      for (int k=0; k<4; k++) { p1.words[k] -= (p3.words[k] + p5.words[k] + p7.words[k]);}
+      for (int k=0; k<4; k++) { 
+        IncrementByteWithClip( src[k + step]                 , p7.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 -step +k], p5.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 +0    +k], p3.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 +step +k], p1.words[k]);
+      }
+    }
+  }
+  #endif
 
 #elif (defined __MSVC_INLINE__)
   __asm {
@@ -1585,7 +1643,7 @@ void FilterBitmap( INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PI
     ULONG *dst = pulDst;
     ULONG *rowptr = aulRows;
 
-    ExtPix rmm1, rmm2, rmm3, rmm4, rmm5, rmm6, rmm7;
+    ExtPix rmm1={0}, rmm2={0}, rmm3={0}, rmm4={0}, rmm5={0}, rmm6={0}, rmm7={0};
     #define EXTPIXFROMINT64(x) ExtPix r##x; extpix_fromi64(r##x, x);
     EXTPIXFROMINT64(mmCm);
     EXTPIXFROMINT64(mmCe);

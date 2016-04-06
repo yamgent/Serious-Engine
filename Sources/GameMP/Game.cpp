@@ -1023,7 +1023,7 @@ void CGame::InitInternal( void)
   extern CTString GetCurrentGameTypeName(void);
   extern ULONG GetSpawnFlagsForGameType(INDEX);
   extern ULONG GetSpawnFlagsForGameTypeCfunc(void* pArgs);
-  extern BOOL IsMenuEnabled(const CTString &);
+  extern BOOL IsMenuEnabled_(const CTString &);
   extern BOOL IsMenuEnabledCfunc(void* pArgs);
   _pShell->DeclareSymbol("user CTString GetGameAgentRulesInfo(void);",   (void *)&GetGameAgentRulesInfo);
   _pShell->DeclareSymbol("user CTString GetGameTypeName(INDEX);",        (void *)&GetGameTypeNameCfunc);
@@ -1035,7 +1035,7 @@ void CGame::InitInternal( void)
 
   _pShell->DeclareSymbol("CTString GetGameTypeNameSS(INDEX);",           (void *)&GetGameTypeName);
   _pShell->DeclareSymbol("INDEX GetSpawnFlagsForGameTypeSS(INDEX);",     (void *)&GetSpawnFlagsForGameType);
-  _pShell->DeclareSymbol("INDEX IsMenuEnabledSS(CTString);",             (void *)&IsMenuEnabled);
+  _pShell->DeclareSymbol("INDEX IsMenuEnabledSS(CTString);",             (void *)&IsMenuEnabled_);
 
   _pShell->DeclareSymbol("user const INDEX ctl_iCurrentPlayerLocal;", (void *)&ctl_iCurrentPlayerLocal);
   _pShell->DeclareSymbol("user const INDEX ctl_iCurrentPlayer;",      (void *)&ctl_iCurrentPlayer);

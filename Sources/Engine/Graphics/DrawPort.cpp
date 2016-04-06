@@ -1028,6 +1028,11 @@ BOOL CDrawPort::IsPointVisible( PIX pixI, PIX pixJ, FLOAT fOoK, INDEX iID, INDEX
   // if the point is out or at the edge of drawport, it is not visible by default
   if( pixI<1 || pixI>dp_Width-2 || pixJ<1 || pixJ>dp_Height-2) return FALSE;
 
+  #ifdef __arm__
+  // Assuming here that all ARM machine use GLES based GPU, were DEPTH reading is probably not available (or super slow)
+  return FALSE;
+  #endif
+
   // check API
   const GfxAPIType eAPI = _pGfx->gl_eCurrentAPI;
   ASSERT( GfxValidApi(eAPI) );
