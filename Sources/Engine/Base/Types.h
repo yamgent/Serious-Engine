@@ -36,6 +36,21 @@ typedef unsigned short int  UWORD;
 typedef unsigned char       UBYTE;
 typedef unsigned int        UINT;
 
+// Flip this to 1 to turn off these messages everywhere.
+// !!! FIXME: I have it forced off for Windows because fprintf.
+#if 0 || PLATFORM_WIN32
+#define STUBBED(txt) do {} while (0)
+#endif
+
+#ifndef STUBBED
+    #define STUBBED(txt) do { \
+        static bool already_seen = false; \
+        if (!already_seen) { \
+            already_seen = true; \
+            fprintf(stderr, "STUBBED: %s in %s, line %d.\n", txt, __FILE__, __LINE__); \
+        } \
+    } while (0)
+#endif
 
 #if __POWERPC__  /* rcg03232004 */
   #define PLATFORM_BIGENDIAN 1
@@ -151,8 +166,6 @@ typedef unsigned int        UINT;
     #define _RPT2(type, fmt, a1, a2)         _RPT_do(type, fmt, a1, a2)
     #define _RPT3(type, fmt, a1, a2, a3)     _RPT_do(type, fmt, a1, a2, a3)
     #define _RPT4(type, fmt, a1, a2, a3, a4) _RPT_do(type, fmt, a1, a2, a3, a4)
-
-    #define STUBBED(txt) fprintf(stderr, "STUB: %s in %s, line %d.\n", txt, __FILE__, __LINE__)
 
     // !!! FIXME : Should inline functions go somewhere else?
 
