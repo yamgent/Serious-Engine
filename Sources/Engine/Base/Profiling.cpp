@@ -28,9 +28,15 @@ template class CStaticArray<CProfileTimer>;
 static inline __int64 ReadTSC_profile(void)
 {
 #if (defined USE_PORTABLE_C)
+  #ifdef __arm__
+  struct timespec tv;
+  clock_gettime(CLOCK_MONOTONIC, &tv);
+  return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_nsec) / 1000000) );
+  #else
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_usec) / 1000) );
+  #endif
 
 #elif (defined __MSVC_INLINE__)
   __int64 mmRet;
