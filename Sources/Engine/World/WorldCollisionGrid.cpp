@@ -14,7 +14,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
 #include <Engine/StdH.h>
-
+#pragma GCC optimize 0
 #include <Engine/World/World.h>
 #include <Engine/World/PhysicsProfile.h>
 #include <Engine/Templates/StaticStackArray.cpp>
@@ -47,10 +47,10 @@ static inline void BoxToGrid(
   FLOAT fMinZ = boxEntity.Min()(3);
   FLOAT fMaxX = boxEntity.Max()(1);
   FLOAT fMaxZ = boxEntity.Max()(3);
-  iMinX = INDEX(floor(fMinX/GRID_CELLSIZE));
-  iMinZ = INDEX(floor(fMinZ/GRID_CELLSIZE));
-  iMaxX = INDEX(ceil(fMaxX/GRID_CELLSIZE));
-  iMaxZ = INDEX(ceil(fMaxZ/GRID_CELLSIZE));
+  iMinX = (isinf(fMinX))?INDEX(GRID_MIN):INDEX(floor(fMinX/GRID_CELLSIZE));
+  iMinZ = (isinf(fMinZ))?INDEX(GRID_MIN):INDEX(floor(fMinZ/GRID_CELLSIZE));
+  iMaxX = (isinf(fMaxX))?INDEX(GRID_MIN):INDEX(ceil(fMaxX/GRID_CELLSIZE));
+  iMaxZ = (isinf(fMaxZ))?INDEX(GRID_MIN):INDEX(ceil(fMaxZ/GRID_CELLSIZE));
 
   iMinX = Clamp(iMinX, (INDEX)GRID_MIN, (INDEX)GRID_MAX);
   iMinZ = Clamp(iMinZ, (INDEX)GRID_MIN, (INDEX)GRID_MAX);
@@ -69,10 +69,10 @@ static inline INDEX MakeKey(INDEX iX, INDEX iZ)
   //INDEX iKey = (iX+iZ)&(GRID_HASHTABLESIZE-1);  // x+z
   // use absolute x and z, swap upper and lower bits in z, xor x and z
   INDEX iZ2 = abs(iZ);
-  INDEX iKey = (iZ2>>(GRID_HASHTABLESIZE_LOG2/2)) | (
-    (iZ2&(GRID_HASHTABLESIZE/2-1))<<(GRID_HASHTABLESIZE_LOG2/2));
-  iKey = iKey^abs(iX);
-  iKey = iKey&(GRID_HASHTABLESIZE-1);
+  INDEX iKey = (iZ2>>(GRID_HASHTABLESIZE_LOG2/2));
+  iKey |= ((iZ2&(GRID_HASHTABLESIZE/2-1))<<(GRID_HASHTABLESIZE_LOG2/2));
+  iKey ^= abs(iX);
+  iKey &= (GRID_HASHTABLESIZE-1);
   return iKey;
 }
 
