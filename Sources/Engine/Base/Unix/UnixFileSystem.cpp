@@ -106,6 +106,7 @@ static char *getUserDirByUID(void)
 }
 
 // !!! FIXME: This could stand to use CTFileNames ...
+// !!! FIXME: When we move to SDL2, just use SDL_GetBasePath()?
 static char *calcExePath(const char *_argv0)
 {
     char *ptr;
@@ -137,6 +138,8 @@ static char *calcExePath(const char *_argv0)
         start = envr;
         do
         {
+            while (*start == ':')
+                start++;  // skip empty entries.
             ptr = strchr(start, ':');
             if (ptr)
                 *ptr = '\0';
