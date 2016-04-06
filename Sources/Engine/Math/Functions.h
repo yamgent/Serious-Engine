@@ -312,7 +312,7 @@ inline FLOAT NormByteToFloat( const ULONG ul)
 // fast float to int conversion
 inline SLONG FloatToInt( FLOAT f)
 {
-#if (defined USE_PORTABLE_C)
+#if defined(__arm__) || defined(USE_PORTABLE_C)
   return((SLONG) (f + 0.5f));  /* best of luck to you. */
 
 #elif (defined __MSVC_INLINE__)
@@ -340,7 +340,7 @@ inline SLONG FloatToInt( FLOAT f)
 
 // log base 2 of any float numero
 inline FLOAT Log2( FLOAT f) {
-#if (defined USE_PORTABLE_C)
+#if (defined USE_PORTABLE_C) || defined(__arm__)
   // !!! FIXME: What's wrong with log2()?
   return (FLOAT)(log10(f)*3.321928094887);  // log10(x)/log10(2)
 
@@ -377,12 +377,12 @@ inline SLONG FastLog2( SLONG x)
 {
 #if (defined USE_PORTABLE_C)
   register SLONG val = x;
-  register SLONG retval = 0;
-  while (retval < 32)
+  register SLONG retval = 31;
+  while (retval > 0)
   {
     if (val & (1 << retval))
         return retval;
-    retval++;
+    retval--;
   }
 
   return 0;
@@ -497,30 +497,49 @@ ENGINE_API FLOAT Sin(ANGLE a);
 ENGINE_API FLOAT Cos(ANGLE a);
 ENGINE_API FLOAT Tan(ANGLE a);
 
+#ifdef __arm__
+inline ENGINE_API FLOAT SinFast(ANGLE a) { return sinf(a*(PI/ANGLE_180)); };
+inline ENGINE_API FLOAT CosFast(ANGLE a) { return cosf(a*(PI/ANGLE_180)); };
+inline ENGINE_API FLOAT TanFast(ANGLE a) { return tanf(a*(PI/ANGLE_180)); };
+inline ANGLE ASin(FLOAT y) {
+  return AngleRad (asinf(Clamp(y, -1.0f, 1.0f)));
+}
+inline ANGLE ACos(FLOAT x) {
+  return AngleRad (acosf(Clamp(x, -1.0f, 1.0f)));
+
+}
+inline ANGLE ATan(FLOAT z) {
+  return AngleRad (atanf(z));
+}
+inline ANGLE ATan2(FLOAT y, FLOAT x) {
+  return AngleRad (atan2f(y, x));
+}
+#else
 inline ENGINE_API FLOAT SinFast(ANGLE a) { return (FLOAT)sin(a*(PI/ANGLE_180)); };
 inline ENGINE_API FLOAT CosFast(ANGLE a) { return (FLOAT)cos(a*(PI/ANGLE_180)); };
 inline ENGINE_API FLOAT TanFast(ANGLE a) { return (FLOAT)tan(a*(PI/ANGLE_180)); };
-
 inline ANGLE ASin(FLOAT y) {
   return AngleRad (asin(Clamp(y, -1.0f, 1.0f)));
-}
-inline ANGLE ASin(DOUBLE y) {
-  return AngleRad (asin(Clamp(y, -1.0, 1.0)));
 }
 inline ANGLE ACos(FLOAT x) {
   return AngleRad (acos(Clamp(x, -1.0f, 1.0f)));
 }
-inline ANGLE ACos(DOUBLE x) {
-  return AngleRad (acos(Clamp(x, -1.0, 1.0)));
-}
 inline ANGLE ATan(FLOAT z) {
-  return AngleRad (atan(z));
-}
-inline ANGLE ATan(DOUBLE z) {
   return AngleRad (atan(z));
 }
 inline ANGLE ATan2(FLOAT y, FLOAT x) {
   return AngleRad (atan2(y, x));
+}
+#endif
+
+inline ANGLE ASin(DOUBLE y) {
+  return AngleRad (asin(Clamp(y, -1.0, 1.0)));
+}
+inline ANGLE ACos(DOUBLE x) {
+  return AngleRad (acos(Clamp(x, -1.0, 1.0)));
+}
+inline ANGLE ATan(DOUBLE z) {
+  return AngleRad (atan(z));
 }
 inline ANGLE ATan2(DOUBLE y, DOUBLE x) {
   return AngleRad (atan2(y, x));
