@@ -24,7 +24,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/DynamicArray.h>
 #include <Engine/Base/Shell_internal.h>
 
+#if 0
 #define NEXTARGUMENT(type) ( *((type*&)pArgs)++ )
+#else
+#define NEXTARGUMENT(type) ( *((type*)&pArgs) ); pArgs+=sizeof(void*);
+#endif
 
 // Object that takes care of shell functions, variables, macros etc.
 class ENGINE_API CShell {
