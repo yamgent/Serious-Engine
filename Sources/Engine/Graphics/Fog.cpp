@@ -25,7 +25,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/Fog_internal.h>
 #include <Engine/Graphics/GfxProfile.h>
 #include <Engine/Graphics/ImageInfo.h>
-
+#ifdef USE_PORTABLE_C
+# include <byteswap.h>  
+#endif
 
 // asm shortcuts
 #define O offset
@@ -69,7 +71,14 @@ ULONG PrepareTexture( UBYTE *pubTexture, PIX pixSizeI, PIX pixSizeJ)
   const PIX pixTextureSize = pixSizeI*pixSizeJ;
 
  #if (defined USE_PORTABLE_C)
-   STUBBED("PrepareTexture");
+   UBYTE* src = pubTexture;
+   DWORD* dst = (DWORD*)(pubTexture+pixTextureSize);
+   for (int i=0; i<pixTextureSize; i++) {
+    DWORD tmp = *src | 0xFFFFFF00;
+    *dst = bswap_32(tmp);
+    src++;
+    dst++;
+   }
 
  #elif (defined __MSVC_INLINE__)
   __asm {
