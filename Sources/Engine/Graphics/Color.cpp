@@ -447,8 +447,29 @@ COLOR AddColors( COLOR col1, COLOR col2)
   COLOR colRet;
 
 #if (defined USE_PORTABLE_C)
-  STUBBED("AddColors");
-  colRet = 0;
+  // !!! FIXME: This...is not fast.
+  union
+  {
+    COLOR col;
+    UBYTE bytes[4];
+  } conv1;
+
+  union
+  {
+    COLOR col;
+    UBYTE bytes[4];
+  } conv2;
+  #define MIN(a, b) ((a)>(b))?(b):(a)
+
+  conv1.col = col1;
+  conv2.col = col2;
+  conv1.bytes[0] = (UBYTE) MIN((((WORD) conv1.bytes[0]) + ((WORD) conv2.bytes[0])) , 255);
+  conv1.bytes[1] = (UBYTE) MIN((((WORD) conv1.bytes[1]) + ((WORD) conv2.bytes[1])) , 255);
+  conv1.bytes[2] = (UBYTE) MIN((((WORD) conv1.bytes[2]) + ((WORD) conv2.bytes[2])) , 255);
+  conv1.bytes[3] = (UBYTE) MIN((((WORD) conv1.bytes[3]) + ((WORD) conv2.bytes[3])) , 255);
+  #undef MIN
+
+  colRet = conv1.col;
 
 #elif (defined __MSVC_INLINE__)
   __asm {
@@ -605,7 +626,10 @@ extern void abgr2argb( ULONG *pulSrc, ULONG *pulDst, INDEX ct)
 {
 #if (defined USE_PORTABLE_C)
   //#error write me.
-  STUBBED("abgr2argb");
+  for (int i=0; i<ct; i++) {
+    ULONG tmp = pulSrc[i];
+    pulDst[i] = (tmp&0xff00ff00) | ((tmp&0x00ff0000)>>16) | ((tmp&0x000000ff)<<16);
+  }
 
 #elif (defined __MSVC_INLINE__)
   __asm {
