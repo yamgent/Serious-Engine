@@ -34,6 +34,14 @@ inline ULONG _control87(WORD newcw, WORD mask)
         fpw |= (newcw & mask);
     }
     return(fpw);
+#elif defined(__arm__)
+    static WORD fpw=_PC_64;
+    if (mask != 0)
+    {
+        fpw &= ~mask;
+        fpw |= (newcw & mask);
+    }
+    return(fpw);
 #else
     WORD fpw = 0;
 
