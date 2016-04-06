@@ -251,7 +251,7 @@ void CGame::SetMultiPlayerSession(CSessionProperties &sp)
   }
 }
 
-BOOL IsMenuEnabled(const CTString &strMenuName)
+BOOL IsMenuEnabled_(const CTString &strMenuName)
 {
   if (strMenuName=="Single Player") {
     return TRUE;
@@ -272,7 +272,7 @@ BOOL IsMenuEnabled(const CTString &strMenuName)
 BOOL IsMenuEnabledCfunc(void* pArgs)
 {
   CTString strMenuName = *NEXTARGUMENT(CTString*);
-  return IsMenuEnabled(strMenuName);
+  return IsMenuEnabled_(strMenuName);
 }
 
 CTString GetGameTypeName(INDEX iMode)
