@@ -168,18 +168,29 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
 
       #if (defined USE_PORTABLE_C)
       // Basically average every other pixel...
-      pixSize *= 4;
-
       UWORD w = 0;
       UBYTE *dptr = (UBYTE *) pulDst;
       UBYTE *sptr = (UBYTE *) pulSrc;
+      #if 0
+      pixSize *= 4;
       for (PIX i = 0; i < pixSize; i++)
       {
         *dptr = (UBYTE) ( (((UWORD) sptr[0]) + ((UWORD) sptr[1])) >> 1 );
         dptr++;
         sptr += 2;
       }
-
+      #else
+      for (PIX i = 0; i < pixSize; i++)
+      {
+        for (PIX j = 0; j < 4; j++)
+        {
+          *dptr = (UBYTE) ( (((UWORD) sptr[0]) + ((UWORD) sptr[4])) >> 1 );
+          dptr++;
+          sptr++;
+        }
+        sptr += 4;
+      }
+      #endif
       #elif (defined __MSVC_INLINE__)
       __asm {   
         pxor    mm0,mm0
