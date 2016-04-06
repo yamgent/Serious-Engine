@@ -521,15 +521,15 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
 
 #else
   // emulate x86's bsr opcode...not fast.  :/
-  register INDEX val = _ctGroupsCount;
-  register INDEX bsr = 0;
+  register DWORD val = _ctGroupsCount;
+  register INDEX bsr = 31;
   if (val != 0)
   {
-      while (bsr < 32)
+      while (bsr > 0)
       {
-        if (val & (1 << bsr))
+        if (val & (1l << bsr))
             break;
-        bsr++;
+        bsr--;
       }
   }
 
