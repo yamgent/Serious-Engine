@@ -104,7 +104,7 @@ endif()
 
 option(PANDORA "Compile for Pandora" FALSE)
 if (PANDORA)
-    add_definitions(-DPANDORA=1)
+    add_definitions(-DPLATFORM_PANDORA=1)
 endif()
 
 option(USE_TREMOR "Use Tremor instead of Vorbis" FALSE)

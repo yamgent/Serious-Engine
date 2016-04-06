@@ -40,7 +40,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static inline __int64 ReadTSC(void)
 {
 #if USE_GETTIMEOFDAY
-#ifdef PANDORA
+#ifdef PLATFORM_PANDORA
   struct timespec tp;
   clock_gettime(CLOCK_MONOTONIC, &tp);
   return( (((__int64) tp.tv_sec) * 1000000000LL) + ((__int64) tp.tv_nsec));
@@ -320,7 +320,7 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
 
 #if USE_GETTIMEOFDAY
   // just use gettimeofday.
-  #ifdef PANDORA
+  #ifdef PLATFORM_PANDORA
   tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = 1000000000LL;
   #else
   tm_llCPUSpeedHZ = tm_llPerformanceCounterFrequency = 1000000;
