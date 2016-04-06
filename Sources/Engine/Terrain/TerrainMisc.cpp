@@ -326,7 +326,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
     rc.rc_iTop    = (isinf(bbox.minvect(3)))?(INDEX)0:Clamp((INDEX)(bbox.minvect(3)-0),(INDEX)0,ptrTerrain->tr_pixHeightMapHeight);
     rc.rc_iRight  = (isinf(bbox.maxvect(1)))?(INDEX)0:Clamp((INDEX)(bbox.maxvect(1)+0),(INDEX)0,ptrTerrain->tr_pixHeightMapWidth);
     rc.rc_iBottom = (isinf(bbox.maxvect(3)))?(INDEX)0:Clamp((INDEX)(bbox.maxvect(3)+0),(INDEX)0,ptrTerrain->tr_pixHeightMapHeight);
-#endif
+#else
     rc.rc_iLeft   = Clamp((INDEX)(bbox.minvect(1)-0),(INDEX)0,ptrTerrain->tr_pixHeightMapWidth);
     rc.rc_iTop    = Clamp((INDEX)(bbox.minvect(3)-0),(INDEX)0,ptrTerrain->tr_pixHeightMapHeight);
     rc.rc_iRight  = Clamp((INDEX)(bbox.maxvect(1)+0),(INDEX)0,ptrTerrain->tr_pixHeightMapWidth);
