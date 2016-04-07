@@ -123,6 +123,20 @@ CTextureObject *_ptoLogoCT  = NULL;
 CTextureObject *_ptoLogoODI = NULL;
 CTextureObject *_ptoLogoEAX = NULL;
 
+#if 0  // First Encounter (not working for now)
+CTString sam_strVersion = "1.10";
+CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
+#if _SE_DEMO
+  CTString sam_strFirstLevel = "Levels\\KarnakDemo.wld";
+#else
+  CTString sam_strFirstLevel = "Levels\\01_Hatshepsut.wld";
+#endif
+CTString sam_strIntroLevel = "Levels\\Intro.wld";
+CTString sam_strGameName = "serioussamfe";
+
+CTString sam_strTechTestLevel = "Levels\\TechTest.wld";
+CTString sam_strTrainingLevel = "Levels\\KarnakDemo.wld";
+#else    // Second Encounter
 CTString sam_strVersion = "1.10";
 CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
 
@@ -130,11 +144,11 @@ CTString sam_strFirstLevel = "Levels\\LevelsMP\\1_0_InTheLastEpisode.wld";
 CTString sam_strIntroLevel = "Levels\\LevelsMP\\Intro.wld";
 CTString sam_strGameName = "serioussamse";
 
-CTString sam_strTechTestLevel = "Levels\\LevelsMP\\TechTest.wld";
+CTString sam_strTechTestLevel = "Levels\\LevelsMP\\Technology\\TechTest.wld";
 CTString sam_strTrainingLevel = "Levels\\KarnakDemo.wld";
+#endif
 
 ENGINE_API extern INDEX snd_iFormat;
-
 
 // main window canvas
 CDrawPort *pdp;
