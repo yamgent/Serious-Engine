@@ -1998,7 +1998,7 @@ __forceinline void CLayerMixer::FillShadowLayer( COLOR col)
 {
  #if (defined USE_PORTABLE_C)
    DWORD* dst = (DWORD*)lm_pulShadowMap;
-   int n = lm_pixCanvasSizeV*lm_pixCanvasSizeV;   
+   int n = lm_pixCanvasSizeU*lm_pixCanvasSizeV;   
    DWORD color = __builtin_bswap32(col);
    while(n--) {*(dst++)=color;}
  #elif (defined __MSVC_INLINE__)
