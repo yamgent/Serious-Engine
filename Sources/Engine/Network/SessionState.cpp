@@ -231,7 +231,7 @@ void CSessionState::Start_t(INDEX ctLocalPlayers)
   // if this computer is server
   if (_pNetwork->IsServer()) {
     // initialize local client
-    _cmiComm.Client_Init_t(0UL);
+    _cmiComm.Client_Init_t((ULONG) 0);
     // connect as main session state
     try {
       Start_AtServer_t();

@@ -41,9 +41,9 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
   SLONG slAG = (colAmbient & CT_GMASK)>>(CT_GSHIFT-iBright);
   SLONG slAB = (colAmbient & CT_BMASK)>>(CT_BSHIFT-iBright);
   if( bOverbright) {
-    slAR = ClampUp( slAR, 127L);
-    slAG = ClampUp( slAG, 127L);
-    slAB = ClampUp( slAB, 127L);
+    slAR = ClampUp( slAR, 127);
+    slAG = ClampUp( slAG, 127);
+    slAB = ClampUp( slAB, 127);
   }
 
 
@@ -70,9 +70,9 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 
   GFXColor colSrfSpec = shaGetColor(iSpecularColor);
   colSrfSpec.AttenuateRGB( (shaGetModelColor()&CT_AMASK)>>CT_ASHIFT);
-  colSrfSpec.ub.r = ClampUp( (colSrfSpec.ub.r *slLR)>>8, 255L);
-  colSrfSpec.ub.g = ClampUp( (colSrfSpec.ub.g *slLG)>>8, 255L);
-  colSrfSpec.ub.b = ClampUp( (colSrfSpec.ub.b *slLB)>>8, 255L);
+  colSrfSpec.ub.r = ClampUp( (colSrfSpec.ub.r *slLR)>>8, 255);
+  colSrfSpec.ub.g = ClampUp( (colSrfSpec.ub.g *slLG)>>8, 255);
+  colSrfSpec.ub.b = ClampUp( (colSrfSpec.ub.b *slLB)>>8, 255);
 
   GFXColor *pcolSpec = shaGetNewColorArray();
   GFXColor *pcolBase = shaGetColorArray();;

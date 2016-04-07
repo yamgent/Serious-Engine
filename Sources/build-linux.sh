@@ -12,6 +12,12 @@ mkdir $_
 cd $_
 #cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 ..
 #ninja
+
+# This is the eventual path for amd64.
+#cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_I386_ASM=FALSE ..
+
+# Right now we force x86, though...
 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 ..
+
 make -j$NCPU
 

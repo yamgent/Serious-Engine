@@ -442,8 +442,8 @@ static void SndPostFunc(void *pArgs)
   // clamp variables
   snd_tmMixAhead = Clamp( snd_tmMixAhead, 0.1f, 0.9f);
   snd_iFormat    = Clamp( snd_iFormat, (INDEX)CSoundLibrary::SF_NONE, (INDEX)CSoundLibrary::SF_44100_16);
-  snd_iDevice    = Clamp( snd_iDevice, -1L, 15L);
-  snd_iInterface = Clamp( snd_iInterface, 0L, 2L);
+  snd_iDevice    = Clamp( snd_iDevice, -1, 15);
+  snd_iInterface = Clamp( snd_iInterface, 0, 2);
   // if any variable has been changed
   if( _tmLastMixAhead!=snd_tmMixAhead || _iLastFormat!=snd_iFormat
    || _iLastDevice!=snd_iDevice || _iLastAPI!=snd_iInterface) {
@@ -977,9 +977,9 @@ static void SetFormat_internal( CSoundLibrary &sl, CSoundLibrary::SoundFormat Es
 
   // set wave format from library format
   SetWaveFormat( EsfNew, sl.sl_SwfeFormat);
-  snd_iDevice    = Clamp( snd_iDevice, -1L, (INDEX)(sl.sl_ctWaveDevices-1));
+  snd_iDevice    = Clamp( snd_iDevice, -1, (INDEX)(sl.sl_ctWaveDevices-1));
   snd_tmMixAhead = Clamp( snd_tmMixAhead, 0.1f, 0.9f);
-  snd_iInterface = Clamp( snd_iInterface, 0L, 2L);
+  snd_iInterface = Clamp( snd_iInterface, 0, 2);
 
   BOOL bSoundOK = FALSE;
 #ifdef PLATFORM_WIN32

@@ -1039,7 +1039,8 @@ void CNetworkLibrary::StartPeerToPeer_t(const CTString &strSessionName,
     throw;
   }
   // remember the world pointer
-  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
+  STUBBED("64-bit issue");
+  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)(size_t)&ga_World);
 
   SetProgressDescription(TRANS("starting server"));
   CallProgressHook_t(0.0f);
@@ -1276,7 +1277,8 @@ void CNetworkLibrary::JoinSession_t(const CNetworkSession &nsSesssion, INDEX ctL
   }
 
   // remember the world pointer
-  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
+  STUBBED("64-bit issue");
+  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)(size_t)&ga_World);
 
   // eventually cache all shadowmaps in world (memory eater!)
   if( shd_bCacheAll) ga_World.wo_baBrushes.CacheAllShadowmaps();
@@ -1348,7 +1350,8 @@ void CNetworkLibrary::StartDemoPlay_t(const CTFileName &fnDemo)  // throw char *
   _bNeedPretouch = TRUE;
 
   // remember the world pointer
-  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
+  STUBBED("64-bit issue");
+  _pShell->SetINDEX("pwoCurrentWorld", (INDEX)(size_t)&ga_World);
 
   // demo synchronization starts at the beginning initially
   ga_fDemoTimer = 0.0f;
@@ -1681,7 +1684,8 @@ void CNetworkLibrary::ChangeLevel_internal(void)
     // remember the world filename
     ga_fnmWorld = ga_fnmNextLevel;
     // remember the world pointer
-    _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&ga_World);
+    STUBBED("64-bit issue");
+    _pShell->SetINDEX("pwoCurrentWorld", (INDEX)(size_t)&ga_World);
   // if there is remembered level
   } else {
     // restore it
@@ -2386,7 +2390,8 @@ extern void NET_MakeDefaultState_t(
     _pNetwork->ga_fnmWorld = fnmWorld;
     _pNetwork->ga_fnmNextLevel = CTString("");
     // remember the world pointer
-    _pShell->SetINDEX("pwoCurrentWorld", (INDEX)&_pNetwork->ga_World);
+    STUBBED("64-bit issue");
+    _pShell->SetINDEX("pwoCurrentWorld", (INDEX)(size_t)&_pNetwork->ga_World);
 
     // reset random number generator
     _pNetwork->ga_sesSessionState.ResetRND();

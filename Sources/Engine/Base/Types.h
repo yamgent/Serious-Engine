@@ -26,12 +26,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Base.h>
 #include <Engine/Graphics/gl_types.h>
 
-typedef signed long  int    SLONG;
+// !!! FIXME: use stdint.h for this (and other things like INDEX, too)?
+typedef signed int    SLONG;
 typedef signed short int    SWORD;
 typedef signed char         SBYTE;
 typedef signed int          SINT;
 
-typedef unsigned long  int  ULONG;
+typedef unsigned int  ULONG;
 typedef unsigned short int  UWORD;
 typedef unsigned char       UBYTE;
 typedef unsigned int        UINT;
@@ -282,8 +283,8 @@ typedef unsigned int        UINT;
 #define MAX_UBYTE ((UBYTE)0xFF)
 
 typedef int BOOL;		        // this is for TRUE/FALSE
-typedef long int RESULT;		// for error codes
-typedef long int INDEX;     // for indexed values and quantities
+typedef int RESULT;		// for error codes
+typedef int INDEX;     // for indexed values and quantities
 
 #define FALSE 0
 #define TRUE  1

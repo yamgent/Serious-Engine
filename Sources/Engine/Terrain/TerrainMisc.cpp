@@ -770,9 +770,9 @@ static void CalcPointLight(CPlacement3D &plLight, CLightSource *plsLight, Rect &
       fDot = Clamp(fDot,0.0f,1.0f);
       SLONG slDot = NormFloatToByte(fDot);
 
-      pacolData->ub.r = ClampUp(pacolData->ub.r + ((colLight.ub.r*slDot)>>8),255L);
-      pacolData->ub.g = ClampUp(pacolData->ub.g + ((colLight.ub.g*slDot)>>8),255L);
-      pacolData->ub.b = ClampUp(pacolData->ub.b + ((colLight.ub.b*slDot)>>8),255L);
+      pacolData->ub.r = ClampUp(pacolData->ub.r + ((colLight.ub.r*slDot)>>8),255);
+      pacolData->ub.g = ClampUp(pacolData->ub.g + ((colLight.ub.g*slDot)>>8),255);
+      pacolData->ub.b = ClampUp(pacolData->ub.b + ((colLight.ub.b*slDot)>>8),255);
       pacolData->ub.a = 255;
       pacolData++;
     }
@@ -810,9 +810,9 @@ static void CalcDirectionalLight(CPlacement3D &plLight, CLightSource *plsLight, 
 
   // is overbrightning enabled
   if(bOverBrightning) {
-    slar = ClampUp(slar,127L);
-    slag = ClampUp(slag,127L);
-    slab = ClampUp(slab,127L);
+    slar = ClampUp(slar,127);
+    slag = ClampUp(slag,127);
+    slab = ClampUp(slab,127);
     ubColShift = 8;
   } else {
     slar*=2;
@@ -838,9 +838,9 @@ static void CalcDirectionalLight(CPlacement3D &plLight, CLightSource *plsLight, 
       fDot = Clamp(fDot,0.0f,1.0f);
       SLONG slDot = NormFloatToByte(fDot);
 
-      pacolData->ub.r = ClampUp(pacolData->ub.r + slar + ((colLight.ub.r*slDot)>>ubColShift),255L);
-      pacolData->ub.g = ClampUp(pacolData->ub.g + slag + ((colLight.ub.g*slDot)>>ubColShift),255L);
-      pacolData->ub.b = ClampUp(pacolData->ub.b + slab + ((colLight.ub.b*slDot)>>ubColShift),255L);
+      pacolData->ub.r = ClampUp(pacolData->ub.r + slar + ((colLight.ub.r*slDot)>>ubColShift),255);
+      pacolData->ub.g = ClampUp(pacolData->ub.g + slag + ((colLight.ub.g*slDot)>>ubColShift),255);
+      pacolData->ub.b = ClampUp(pacolData->ub.b + slab + ((colLight.ub.b*slDot)>>ubColShift),255);
       pacolData->ub.a = 255;
       pacolData++;
     }

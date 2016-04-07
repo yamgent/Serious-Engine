@@ -1700,7 +1700,7 @@ colEnd:
     // generate colors from shades
     for( INDEX iMipVx=0; iMipVx<_ctAllMipVx; iMipVx++) {
       GFXColor &col = pcolMipBase[iMipVx];
-      const SLONG slShade = Clamp( (SLONG)pswMipCol[iMipVx], 0L, 255L);
+      const SLONG slShade = Clamp( (SLONG)pswMipCol[iMipVx], 0, 255);
       col.ub.r = pubClipByte[_slAR + ((_slLR*slShade)>>8)];
       col.ub.g = pubClipByte[_slAG + ((_slLG*slShade)>>8)];
       col.ub.b = pubClipByte[_slAB + ((_slLB*slShade)>>8)];
@@ -1816,9 +1816,9 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
   _slAG = (colA & CT_GMASK)>>(CT_GSHIFT-iBright);
   _slAB = (colA & CT_BMASK)>>(CT_BSHIFT-iBright);
   if( bOverbright) {
-    _slAR = ClampUp( _slAR, 127L);
-    _slAG = ClampUp( _slAG, 127L);
-    _slAB = ClampUp( _slAB, 127L);
+    _slAR = ClampUp( _slAR, 127);
+    _slAG = ClampUp( _slAG, 127);
+    _slAB = ClampUp( _slAB, 127);
   }
 
   // set forced translucency and color mask
@@ -2648,9 +2648,9 @@ specMipLoop:
     const COLOR colS = AdjustColor( rm.rm_pmdModelData->md_colSpecular, _slTexHueShift, _slTexSaturation);
     colMdlSpec.ul.abgr  = ByteSwap(colS);
     colMdlSpec.AttenuateRGB( (rm.rm_colBlend&CT_AMASK)>>CT_ASHIFT);
-    colMdlSpec.ub.r = ClampUp( (colMdlSpec.ub.r *_slLR)>>8, 255L);
-    colMdlSpec.ub.g = ClampUp( (colMdlSpec.ub.g *_slLG)>>8, 255L);
-    colMdlSpec.ub.b = ClampUp( (colMdlSpec.ub.b *_slLB)>>8, 255L);
+    colMdlSpec.ub.r = ClampUp( (colMdlSpec.ub.r *_slLR)>>8, 255);
+    colMdlSpec.ub.g = ClampUp( (colMdlSpec.ub.g *_slLG)>>8, 255);
+    colMdlSpec.ub.b = ClampUp( (colMdlSpec.ub.b *_slLB)>>8, 255);
 
     // for each specular surface in current mip model
     FOREACHINSTATICARRAY( mmi.mmpi_MappingSurfaces, MappingSurface, itms)

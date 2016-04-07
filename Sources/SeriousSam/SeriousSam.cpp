@@ -273,12 +273,12 @@ void LimitFrameRate(void)
   TIME tmCurrentDelta = (tvNow-tvLast).GetSeconds();
 
   // limit maximum frame rate
-  sam_iMaxFPSActive   = ClampDn( (INDEX)sam_iMaxFPSActive,   1L);
-  sam_iMaxFPSInactive = ClampDn( (INDEX)sam_iMaxFPSInactive, 1L);
+  sam_iMaxFPSActive   = ClampDn( (INDEX)sam_iMaxFPSActive,   1);
+  sam_iMaxFPSInactive = ClampDn( (INDEX)sam_iMaxFPSInactive, 1);
   INDEX iMaxFPS = sam_iMaxFPSActive;
   if( IsIconic(_hwndMain)) iMaxFPS = sam_iMaxFPSInactive;
   if(_pGame->gm_CurrentSplitScreenCfg==CGame::SSC_DEDICATED) {
-    iMaxFPS = ClampDn(iMaxFPS, 60L); // never go very slow if dedicated server
+    iMaxFPS = ClampDn(iMaxFPS, 60); // never go very slow if dedicated server
   }
   TIME tmWantedDelta = 1.0f / iMaxFPS;
   if( tmCurrentDelta<tmWantedDelta) _pTimer->Sleep( (tmWantedDelta-tmCurrentDelta)*1000.0f);

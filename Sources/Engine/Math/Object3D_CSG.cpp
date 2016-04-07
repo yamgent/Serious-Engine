@@ -323,14 +323,16 @@ void CObjectCSG::PolygonEdgesToBSPEdges(
     // if it is reversed
     if (ope.ope_Backward) {
       // add bsp edge with reverse vertices
+      STUBBED("64-bit issue"); // we're casting ope.ope_Edge to a 32-bit value. Code really only cares if this is zero or !zero, but one could totally have a non-NULL 64-bit pointer that truncates down to zero!
       abed[iEdge] = DOUBLEbspedge3D(*ope.ope_Edge->oed_Vertex1,
-        *ope.ope_Edge->oed_Vertex0, (ULONG)ope.ope_Edge);
+        *ope.ope_Edge->oed_Vertex0, (ULONG)(size_t)ope.ope_Edge);
 
     // if it is not reversed
     } else{
       // add bsp edge with normal vertices
+      STUBBED("64-bit issue"); // we're casting ope.ope_Edge to a 32-bit value. Code really only cares if this is zero or !zero, but one could totally have a non-NULL 64-bit pointer that truncates down to zero!
       abed[iEdge] = DOUBLEbspedge3D(*ope.ope_Edge->oed_Vertex0,
-        *ope.ope_Edge->oed_Vertex1, (ULONG)ope.ope_Edge);
+        *ope.ope_Edge->oed_Vertex1, (ULONG)(size_t)ope.ope_Edge);
     }
   }
 
@@ -542,7 +544,8 @@ void CObjectCSG::DoCSGSplitting(
         oc_popoPortalB1B2 = NULL;
 
         // create a bsp polygon from first temporary array
-        DOUBLEbsppolygon3D bpoA(*itopoA->opo_Plane, abedRemaining, (ULONG)itopoA->opo_Plane);
+        STUBBED("64-bit issue");
+        DOUBLEbsppolygon3D bpoA(*itopoA->opo_Plane, abedRemaining, (ULONG)(size_t)itopoA->opo_Plane);
 
         // create a BSP cutter for B's sector BSP and A's polygon
         DOUBLEbspcutter3D bcCutter(bpoA, *itoscB->osc_BSPTree.bt_pbnRoot);

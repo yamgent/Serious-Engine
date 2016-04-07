@@ -203,9 +203,9 @@ COLOR AdjustGamma( COLOR const col, FLOAT const fGamma)
   const FLOAT f1o255   = 1.0f / 255.0f;
   UBYTE ubR,ubG,ubB,ubA;
   ColorToRGBA( col, ubR,ubG,ubB,ubA);
-  ubR = ClampUp( NormFloatToByte(pow(ubR*f1o255,f1oGamma)), 255UL);
-  ubG = ClampUp( NormFloatToByte(pow(ubG*f1o255,f1oGamma)), 255UL);
-  ubB = ClampUp( NormFloatToByte(pow(ubB*f1o255,f1oGamma)), 255UL);
+  ubR = ClampUp( NormFloatToByte(pow(ubR*f1o255,f1oGamma)), (ULONG) 255);
+  ubG = ClampUp( NormFloatToByte(pow(ubG*f1o255,f1oGamma)), (ULONG) 255);
+  ubB = ClampUp( NormFloatToByte(pow(ubB*f1o255,f1oGamma)), (ULONG) 255);
   return RGBAToColor( ubR,ubG,ubB,ubA);
 }
 
@@ -459,15 +459,15 @@ COLOR AddColors( COLOR col1, COLOR col2)
     COLOR col;
     UBYTE bytes[4];
   } conv2;
-  #define MIN(a, b) ((a)>(b))?(b):(a)
+  #define MINVAL(a, b) ((a)>(b))?(b):(a)
 
   conv1.col = col1;
   conv2.col = col2;
-  conv1.bytes[0] = (UBYTE) MIN((((WORD) conv1.bytes[0]) + ((WORD) conv2.bytes[0])) , 255);
-  conv1.bytes[1] = (UBYTE) MIN((((WORD) conv1.bytes[1]) + ((WORD) conv2.bytes[1])) , 255);
-  conv1.bytes[2] = (UBYTE) MIN((((WORD) conv1.bytes[2]) + ((WORD) conv2.bytes[2])) , 255);
-  conv1.bytes[3] = (UBYTE) MIN((((WORD) conv1.bytes[3]) + ((WORD) conv2.bytes[3])) , 255);
-  #undef MIN
+  conv1.bytes[0] = (UBYTE) MINVAL((((WORD) conv1.bytes[0]) + ((WORD) conv2.bytes[0])) , 255);
+  conv1.bytes[1] = (UBYTE) MINVAL((((WORD) conv1.bytes[1]) + ((WORD) conv2.bytes[1])) , 255);
+  conv1.bytes[2] = (UBYTE) MINVAL((((WORD) conv1.bytes[2]) + ((WORD) conv2.bytes[2])) , 255);
+  conv1.bytes[3] = (UBYTE) MINVAL((((WORD) conv1.bytes[3]) + ((WORD) conv2.bytes[3])) , 255);
+  #undef MINVAL
 
   colRet = conv1.col;
 

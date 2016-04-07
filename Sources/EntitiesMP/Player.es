@@ -1643,7 +1643,9 @@ functions:
   CTString GetStatsRealWorldStarted(void)
   {
     struct tm *newtime;
-    newtime = localtime(&m_iStartTime);
+    STUBBED("this isn't 64-bit clean");
+    time_t t = (time_t) m_iStartTime;
+    newtime = localtime(&t);
 
     setlocale(LC_ALL, "");
     CTString strTimeline;
@@ -2663,7 +2665,7 @@ functions:
 
   void RenderGameView(CDrawPort *pdp, void *pvUserData)
   {
-    BOOL bShowExtras = (ULONG(pvUserData)&GRV_SHOWEXTRAS);
+    BOOL bShowExtras = (size_t(pvUserData)&GRV_SHOWEXTRAS) != 0;
     pdp->Unlock();
 
     // if not yet initialized
@@ -5370,7 +5372,10 @@ functions:
     m_iMayRespawn = 0;
     m_bEndOfLevel = TRUE;
     // remember end time
-    time(&m_iEndTime);
+    STUBBED("Not 64-bit clean");
+    time_t t;
+    time(&t);
+    m_iEndTime = (INDEX) t;
     // add time score
     TIME tmLevelTime = _pTimer->CurrentTick()-m_tmLevelStarted;
     m_psLevelStats.ps_tmTime = tmLevelTime;
@@ -6552,8 +6557,10 @@ procedures:
   Main(EVoid evoid)
   {
     // remember start time
-    time(&m_iStartTime);
-
+    STUBBED("Not 64-bit clean");
+    time_t t;
+    time(&t);
+    m_iStartTime = (INDEX) t;
     m_ctUnreadMessages = 0;
     SetFlags(GetFlags()|ENF_CROSSESLEVELS|ENF_NOTIFYLEVELCHANGE);
     InitAsEditorModel();

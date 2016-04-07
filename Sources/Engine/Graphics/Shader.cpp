@@ -213,9 +213,9 @@ void shaCalculateLight(void)
   SLONG slab = colAmbient.ub.b;
 
   if(shaOverBrightningEnabled()) {
-    slar = ClampUp(slar,127L);
-    slag = ClampUp(slag,127L);
-    slab = ClampUp(slab,127L);
+    slar = ClampUp(slar,127);
+    slag = ClampUp(slag,127);
+    slab = ClampUp(slab,127);
     ubColShift = 8;
   } else {
     slar*=2;
@@ -232,9 +232,9 @@ void shaCalculateLight(void)
     fDot = Clamp(fDot,0.0f,1.0f);
     SLONG slDot = NormFloatToByte(fDot);
 
-    _acolVtxColors[ivx].ub.r = ClampUp(colModel.ub.r * (slar + ((colLight.ub.r * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].ub.g = ClampUp(colModel.ub.g * (slag + ((colLight.ub.g * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].ub.b = ClampUp(colModel.ub.b * (slab + ((colLight.ub.b * slDot)>>ubColShift))>>8,255L);
+    _acolVtxColors[ivx].ub.r = ClampUp(colModel.ub.r * (slar + ((colLight.ub.r * slDot)>>ubColShift))>>8,255);
+    _acolVtxColors[ivx].ub.g = ClampUp(colModel.ub.g * (slag + ((colLight.ub.g * slDot)>>ubColShift))>>8,255);
+    _acolVtxColors[ivx].ub.b = ClampUp(colModel.ub.b * (slab + ((colLight.ub.b * slDot)>>ubColShift))>>8,255);
     _acolVtxColors[ivx].ub.a = colModel.ub.a;//slDot;
   }
   // Set current vertex color array 
@@ -262,9 +262,9 @@ void shaCalculateLightForSpecular(void)
   SLONG slab = colAmbient.ub.b;
 
   if(shaOverBrightningEnabled()) {
-    slar = ClampUp(slar,127L);
-    slag = ClampUp(slag,127L);
-    slab = ClampUp(slab,127L);
+    slar = ClampUp(slar,127);
+    slag = ClampUp(slag,127);
+    slab = ClampUp(slab,127);
     ubColShift = 8;
   } else {
     slar*=2;
@@ -281,9 +281,9 @@ void shaCalculateLightForSpecular(void)
     fDot = Clamp(fDot,0.0f,1.0f);
     SLONG slDot = NormFloatToByte(fDot);
 
-    _acolVtxColors[ivx].ub.r = ClampUp(colModel.ub.r * (slar + ((colLight.ub.r * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].ub.g = ClampUp(colModel.ub.g * (slag + ((colLight.ub.g * slDot)>>ubColShift))>>8,255L);
-    _acolVtxColors[ivx].ub.b = ClampUp(colModel.ub.b * (slab + ((colLight.ub.b * slDot)>>ubColShift))>>8,255L);
+    _acolVtxColors[ivx].ub.r = ClampUp(colModel.ub.r * (slar + ((colLight.ub.r * slDot)>>ubColShift))>>8,255);
+    _acolVtxColors[ivx].ub.g = ClampUp(colModel.ub.g * (slag + ((colLight.ub.g * slDot)>>ubColShift))>>8,255);
+    _acolVtxColors[ivx].ub.b = ClampUp(colModel.ub.b * (slab + ((colLight.ub.b * slDot)>>ubColShift))>>8,255);
     _acolVtxColors[ivx].ub.a = slDot;//colModel.ub.a;//slDot;
   }
   // Set current wertex array 

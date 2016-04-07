@@ -491,7 +491,7 @@ void CGfxLibrary::EndDriver_OGL(void)
 extern void SetTBufferEffect( BOOL bEnable)
 {
   // adjust console vars
-  ogl_iTBufferEffect  = Clamp( ogl_iTBufferEffect, 0L, 2L);
+  ogl_iTBufferEffect  = Clamp( ogl_iTBufferEffect, 0, 2);
   ogl_iTBufferSamples = (1L) << FastLog2(ogl_iTBufferSamples);
   if( ogl_iTBufferSamples<2) ogl_iTBufferSamples = 4;
   // if supported

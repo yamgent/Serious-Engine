@@ -2050,7 +2050,7 @@ void RefreshSoundFormat( void)
   }
 
   mgAudioAutoTrigger.mg_iSelected = Clamp(sam_bAutoAdjustAudio, 0, 1);
-  mgAudioAPITrigger.mg_iSelected = Clamp(_pShell->GetINDEX("snd_iInterface"), 0L, 2L);
+  mgAudioAPITrigger.mg_iSelected = Clamp(_pShell->GetINDEX("snd_iInterface"), 0, 2);
 
   mgWaveVolume.mg_iMinPos = 0;
   mgWaveVolume.mg_iMaxPos = VOLUME_STEPS;
@@ -2564,8 +2564,8 @@ BOOL DoMenu( CDrawPort *pdp)
   _pGfx->GetCurrentDisplayMode(dmCurrent);
   if (dmCurrent.IsFullScreen()) {
     // clamp mouse pointer
-    _pixCursorPosI = Clamp(_pixCursorPosI, 0L, dpMenu.GetWidth());
-    _pixCursorPosJ = Clamp(_pixCursorPosJ, 0L, dpMenu.GetHeight());
+    _pixCursorPosI = Clamp(_pixCursorPosI, 0, dpMenu.GetWidth());
+    _pixCursorPosJ = Clamp(_pixCursorPosJ, 0, dpMenu.GetHeight());
   // if in window
   } else {
     // use same mouse pointer as windows
@@ -3020,7 +3020,7 @@ void CGameMenu::StartMenu(void)
     // scroll it so that the wanted tem is centered
     gm_iListOffset = gm_iListWantedItem-gm_ctListVisible/2;
     // clamp the scrolling
-    gm_iListOffset = Clamp(gm_iListOffset, 0L, Max(0L, gm_ctListTotal-gm_ctListVisible));
+    gm_iListOffset = Clamp(gm_iListOffset, 0, Max(0, gm_ctListTotal-gm_ctListVisible));
 
     // fill the list
     FillListItems();
@@ -5660,7 +5660,7 @@ void CNetworkStartMenu::StartMenu(void)
   extern INDEX sam_bMentalActivated;
   mgNetworkDifficulty.mg_ctTexts = sam_bMentalActivated?6:5;
 
-  mgNetworkGameType.mg_iSelected = Clamp(_pShell->GetINDEX("gam_iStartMode"), 0L, ctGameTypeRadioTexts-1L);
+  mgNetworkGameType.mg_iSelected = Clamp(_pShell->GetINDEX("gam_iStartMode"), 0, ctGameTypeRadioTexts-1);
   mgNetworkGameType.ApplyCurrentSelection();
   mgNetworkDifficulty.mg_iSelected = _pShell->GetINDEX("gam_iStartDifficulty")+1;
   mgNetworkDifficulty.ApplyCurrentSelection();
@@ -5676,7 +5676,7 @@ void CNetworkStartMenu::StartMenu(void)
   mgNetworkMaxPlayers.mg_iSelected = ctMaxPlayers-2;
   mgNetworkMaxPlayers.ApplyCurrentSelection();
 
-  mgNetworkWaitAllPlayers.mg_iSelected = Clamp(_pShell->GetINDEX("gam_bWaitAllPlayers"), 0L, 1L);
+  mgNetworkWaitAllPlayers.mg_iSelected = Clamp(_pShell->GetINDEX("gam_bWaitAllPlayers"), 0, 1);
   mgNetworkWaitAllPlayers.ApplyCurrentSelection();
 
   mgNetworkVisible.mg_iSelected = _pShell->GetINDEX("ser_bEnumeration");
@@ -6131,13 +6131,13 @@ void CSplitStartMenu::StartMenu(void)
   extern INDEX sam_bMentalActivated;
   mgSplitDifficulty.mg_ctTexts = sam_bMentalActivated?6:5;
 
-  mgSplitGameType.mg_iSelected = Clamp(_pShell->GetINDEX("gam_iStartMode"), 0L, ctGameTypeRadioTexts-1L);
+  mgSplitGameType.mg_iSelected = Clamp(_pShell->GetINDEX("gam_iStartMode"), 0, ctGameTypeRadioTexts-1);
   mgSplitGameType.ApplyCurrentSelection();
   mgSplitDifficulty.mg_iSelected = _pShell->GetINDEX("gam_iStartDifficulty")+1;
   mgSplitDifficulty.ApplyCurrentSelection();
 
   // clamp maximum number of players to at least 4
-  _pShell->SetINDEX("gam_ctMaxPlayers", ClampDn(_pShell->GetINDEX("gam_ctMaxPlayers"), 4L));
+  _pShell->SetINDEX("gam_ctMaxPlayers", ClampDn(_pShell->GetINDEX("gam_ctMaxPlayers"), 4));
 
   UpdateSplitLevel(0);
   CGameMenu::StartMenu();

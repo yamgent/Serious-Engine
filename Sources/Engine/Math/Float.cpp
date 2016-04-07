@@ -26,15 +26,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 inline ULONG _control87(WORD newcw, WORD mask)
 {
-#if __POWERPC__
-    static WORD fpw=_PC_64;
-    if (mask != 0)
-    {
-        fpw &= ~mask;
-        fpw |= (newcw & mask);
-    }
-    return(fpw);
-#elif defined(__arm__)
+// !!! FIXME: I'd like to remove any dependency on the FPU control word from the game, asap.  --ryan.
+#if defined(__x86_64__) || defined(__POWERPC__) || defined(__arm__)
     static WORD fpw=_PC_64;
     if (mask != 0)
     {
