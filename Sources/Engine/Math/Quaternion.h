@@ -370,8 +370,8 @@ void Quaternion<Type>::FromEuler(const Vector<Type, 3> &a)
 template<class Type>
 Type Quaternion<Type>::EPS(Type orig) const
 {
-    if ((orig <= 10e-6) && (orig >= -10e-6))
-        return(0.0);
+    if ((orig <= 10e-6f) && (orig >= -10e-6f))
+        return(0.0f);
 
     return(orig);
 }
@@ -384,9 +384,9 @@ void Quaternion<Type>::ToMatrix(Matrix<Type, 3, 3> &m) const
   Type yy = 2*q_y*q_y; Type yz = 2*q_y*q_z; Type zz = 2*q_z*q_z;
   Type wx = 2*q_w*q_x; Type wy = 2*q_w*q_y; Type wz = 2*q_w*q_z;
 
-  m(1,1) = EPS(1.0-(yy+zz)); m(1,2) = EPS(xy-wz);       m(1,3) = EPS(xz+wy);
-  m(2,1) = EPS(xy+wz);       m(2,2) = EPS(1.0-(xx+zz)); m(2,3) = EPS(yz-wx);
-  m(3,1) = EPS(xz-wy);       m(3,2) = EPS(yz+wx);       m(3,3) = EPS(1.0-(xx+yy));
+  m(1,1) = EPS(1.0f-(yy+zz));m(1,2) = EPS(xy-wz);       m(1,3) = EPS(xz+wy);
+  m(2,1) = EPS(xy+wz);       m(2,2) = EPS(1.0f-(xx+zz));m(2,3) = EPS(yz-wx);
+  m(3,1) = EPS(xz-wy);       m(3,2) = EPS(yz+wx);       m(3,3) = EPS(1.0f-(xx+yy));
 }
 
 // conversion from matrix
@@ -396,12 +396,12 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
     Type trace = m(1,1)+m(2,2)+m(3,3);
     Type root;
 
-    if ( trace > 0.0 )
+    if ( trace > 0.0f )
     {
         // |w| > 1/2, may as well choose w > 1/2
-        root = sqrt(trace+1.0);  // 2w
-        q_w = 0.5*root;
-        root = 0.5/root;  // 1/(4w)
+        root = sqrt(trace+1.0f);  // 2w
+        q_w = 0.5f*root;
+        root = 0.5f/root;  // 1/(4w)
         q_x = (m(3,2)-m(2,3))*root;
         q_y = (m(1,3)-m(3,1))*root;
         q_z = (m(2,1)-m(1,2))*root;
@@ -418,10 +418,10 @@ void Quaternion<Type>::FromMatrix(Matrix<Type, 3, 3> &m)
         int j = next[i];
         int k = next[j];
 
-        root = sqrt(m(i+1,i+1)-m(j+1,j+1)-m(k+1,k+1)+1.0);
+        root = sqrt(m(i+1,i+1)-m(j+1,j+1)-m(k+1,k+1)+1.0f);
         Type* quat[3] = { &q_x, &q_y, &q_z };
-        *quat[i] = 0.5*root;
-        root = 0.5/root;
+        *quat[i] = 0.5f*root;
+        root = 0.5f/root;
         q_w = (m(k+1,j+1)-m(j+1,k+1))*root;
         *quat[j] = (m(j+1,i+1)+m(i+1,j+1))*root;
         *quat[k] = (m(k+1,i+1)+m(i+1,k+1))*root;

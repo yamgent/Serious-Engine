@@ -824,14 +824,14 @@ void Particles_GrenadeTrail(CEntity *pen)
     pvPos2 = &plp->GetPosition(iPos);
     for (INDEX iInter=0; iInter<GRENADE_TRAIL_INTERPOSITIONS; iInter++)
     {
-      FLOAT fAngle = iParticle*4.0f*180/iParticlesLiving;
+      FLOAT fAngle = iParticle*4.0f*180.0f/iParticlesLiving;
       FLOAT3D vPos = Lerp(*pvPos1, *pvPos2, iInter*1.0f/GRENADE_TRAIL_INTERPOSITIONS);
       FLOAT fRatio = FLOAT(iParticle)/iParticlesLiving+fSeconds;
       FLOAT fSize = iParticle*0.3f/iParticlesLiving+0.1f;
       vPos(2) += iParticle*1.0f/iParticlesLiving;
-      vPos(1) += FLOAT(sin(fRatio*1.264*PI))*0.05f;
-      vPos(2) += FLOAT(sin(fRatio*0.704*PI))*0.05f;
-      vPos(3) += FLOAT(sin(fRatio*0.964*PI))*0.05f;
+      vPos(1) += FLOAT(sin(fRatio*1.264f*PI))*0.05f;
+      vPos(2) += FLOAT(sin(fRatio*0.704f*PI))*0.05f;
+      vPos(3) += FLOAT(sin(fRatio*0.964f*PI))*0.05f;
       UBYTE ub = 255-(UBYTE)((ULONG)iParticle*255/iParticlesLiving);
       Particle_RenderSquare( vPos, fSize, fAngle, RGBToColor(ub,ub,ub)|ub);
       iParticle++;
@@ -894,14 +894,14 @@ void Particles_LavaTrail(CEntity *pen)
     pvPos2 = &plp->GetPosition(iPos);
     for (INDEX iInter=0; iInter<LAVA_TRAIL_INTERPOSITIONS; iInter++)
     {
-      FLOAT fAngle = iParticle*4.0f*180/iParticlesLiving;
+      FLOAT fAngle = iParticle*4.0f*180.0f/iParticlesLiving;
       FLOAT3D vPos = Lerp(*pvPos1, *pvPos2, iInter*1.0f/LAVA_TRAIL_INTERPOSITIONS);
       FLOAT fRatio = FLOAT(iParticle)/iParticlesLiving+fSeconds;
       FLOAT fSize = iParticle*3.0f/iParticlesLiving+0.5f;
       vPos(2) += iParticle*1.0f/iParticlesLiving;
-      vPos(1) += FLOAT(sin(fRatio*1.264*PI))*0.05f;
-      vPos(2) += FLOAT(sin(fRatio*0.704*PI))*0.05f;
-      vPos(3) += FLOAT(sin(fRatio*0.964*PI))*0.05f;
+      vPos(1) += FLOAT(sin(fRatio*1.264f*PI))*0.05f;
+      vPos(2) += FLOAT(sin(fRatio*0.704f*PI))*0.05f;
+      vPos(3) += FLOAT(sin(fRatio*0.964f*PI))*0.05f;
       COLOR col = pTD->GetTexel(PIX(FLOAT(iParticle)/iParticlesLiving*8*1024), 0);
       Particle_RenderSquare( vPos, fSize, fAngle, col);
       iParticle++;
@@ -939,15 +939,15 @@ void Particles_LavaBombTrail(CEntity *pen, FLOAT fSizeMultiplier)
     if( *pvPos1 == *pvPos2) continue;
     for (INDEX iInter=0; iInter<LAVA_BOMB_TRAIL_INTERPOSITIONS; iInter++)
     {
-      FLOAT fAngle = iParticle*4.0f*180/iParticlesLiving;
+      FLOAT fAngle = iParticle*4.0f*180.0f/iParticlesLiving;
       FLOAT3D vPos = Lerp(*pvPos1, *pvPos2, iInter*1.0f/LAVA_BOMB_TRAIL_INTERPOSITIONS);
       FLOAT fRatio = FLOAT(iParticle)/iParticlesLiving+fSeconds;
       FLOAT fSize = (iParticle*1.0f/iParticlesLiving+1.0f) * fSizeMultiplier;
       fSize += afStarsPositions[iRnd][0]*0.75f*fSizeMultiplier;
       vPos(2) += iParticle*1.0f/iParticlesLiving;
-      vPos(1) += FLOAT(sin(fRatio*1.264*PI))*0.05f;
-      vPos(2) += FLOAT(sin(fRatio*0.704*PI))*0.05f;
-      vPos(3) += FLOAT(sin(fRatio*0.964*PI))*0.05f;
+      vPos(1) += FLOAT(sin(fRatio*1.264f*PI))*0.05f;
+      vPos(2) += FLOAT(sin(fRatio*0.704f*PI))*0.05f;
+      vPos(3) += FLOAT(sin(fRatio*0.964f*PI))*0.05f;
       COLOR col = pTD->GetTexel(PIX(FLOAT(iParticle)/iParticlesLiving*8*1024), 0);
       Particle_RenderSquare( vPos, fSize, fAngle, col);
       iParticle++;
@@ -983,14 +983,14 @@ void Particles_BeastProjectileDebrisTrail(CEntity *pen, FLOAT fSizeMultiplier)
     pvPos2 = &plp->GetPosition(iPos);
     for (INDEX iInter=0; iInter<BEAST_PROJECTILE_DEBRIS_TRAIL_INTERPOSITIONS; iInter++)
     {
-      FLOAT fAngle = iParticle*4.0f*180/iParticlesLiving;
+      FLOAT fAngle = iParticle*4.0f*180.0f/iParticlesLiving;
       FLOAT3D vPos = Lerp(*pvPos1, *pvPos2, iInter*1.0f/BEAST_PROJECTILE_DEBRIS_TRAIL_INTERPOSITIONS);
       FLOAT fRatio = FLOAT(iParticle)/iParticlesLiving+fSeconds;
       FLOAT fSize = ((iParticle*iParticle+1.0f)/iParticlesLiving+2.0f) * fSizeMultiplier;
       vPos(2) += iParticle*1.0f/iParticlesLiving;
-      vPos(1) += FLOAT(sin(fRatio*1.264*PI))*0.05f;
-      vPos(2) += FLOAT(sin(fRatio*0.704*PI))*0.05f;
-      vPos(3) += FLOAT(sin(fRatio*0.964*PI))*0.05f;
+      vPos(1) += FLOAT(sin(fRatio*1.264f*PI))*0.05f;
+      vPos(2) += FLOAT(sin(fRatio*0.704f*PI))*0.05f;
+      vPos(3) += FLOAT(sin(fRatio*0.964f*PI))*0.05f;
       COLOR col = pTD->GetTexel(PIX(FLOAT(iParticle)/iParticlesLiving*8*1024), 0);
       Particle_RenderSquare( vPos, fSize, fAngle, col);
       iParticle++;
@@ -1645,15 +1645,15 @@ void Particles_FlameThrower(const CPlacement3D &plLeader, const CPlacement3D &pl
 
   // calculate parameters of hermit spline
   FLOAT ft3x=dx1+dx2+2.0f*x1-2.0f*x2;
-  FLOAT ft2x=-2.0f*dx1-dx2-3.0*(x1-x2);
+  FLOAT ft2x=-2.0f*dx1-dx2-3.0f*(x1-x2);
   FLOAT ft1x=dx1;
   FLOAT ft0x=x1;
   FLOAT ft3y=dy1+dy2+2.0f*y1-2.0f*y2;
-  FLOAT ft2y=-2.0f*dy1-dy2-3.0*(y1-y2);
+  FLOAT ft2y=-2.0f*dy1-dy2-3.0f*(y1-y2);
   FLOAT ft1y=dy1;
   FLOAT ft0y=y1;
   FLOAT ft3z=dz1+dz2+2.0f*z1-2.0f*z2;
-  FLOAT ft2z=-2.0f*dz1-dz2-3.0*(z1-z2);
+  FLOAT ft2z=-2.0f*dz1-dz2-3.0f*(z1-z2);
   FLOAT ft1z=dz1;
   FLOAT ft0z=z1;
 
@@ -1799,20 +1799,20 @@ void Particles_ShooterFlame(const CPlacement3D &plEnd, const CPlacement3D &plSta
     INDEX iRndFact = 2*i*FloatToInt(fTime*8.0f)+2;
 
     // size
-    FLOAT fSize = 0.05 + 1.0*fTime;
+    FLOAT fSize = 0.05f + 1.0f*fTime;
     // angle
     FLOAT fAngle = fTime*180.0f*afStarsPositions[iRndFact][0];
     // transparency
     UBYTE ub = 255;
     if (fTime>1.0f) ub = 0;
-    else if(fTime>0.6f) ub = (UBYTE) ((1.0-fTime)*(1.0/0.4)*255);
+    else if(fTime>0.6f) ub = (UBYTE) ((1.0-fTime)*(1.0f/0.4f)*255);
     // color with a bit of red tint before the burnout
     COLOR col = RGBToColor(192, 192, 192);
     if (fTime>0.95f) col = RGBToColor(192, 0, 0);
-    else if (fTime>0.4) col = RGBToColor(192, (UBYTE) ((1.0-fTime)*(1.0/0.6)*100+92), (UBYTE) ((1.0-fTime)*(1.0/0.6)*112+80));
+    else if (fTime>0.4f) col = RGBToColor(192, (UBYTE) ((1.0-fTime)*(1.0f/0.6f)*100+92), (UBYTE) ((1.0f-fTime)*(1.0f/0.6f)*112+80));
     
     vPos(1) += afStarsPositions[iRndFact][0]*fTime;
-    vPos(2) += afStarsPositions[iRndFact][1]*fTime + 0.25*fTime*fTime;
+    vPos(2) += afStarsPositions[iRndFact][1]*fTime + 0.25f*fTime*fTime;
     vPos(3) += afStarsPositions[iRndFact][2]*fTime;
 
     Particle_RenderSquare( vPos, fSize, fAngle, col|ub);
@@ -2147,10 +2147,10 @@ void Particles_DamageSmoke( CEntity *pen, FLOAT tmStarted, FLOATaabbox3D boxOwne
     vPos(2) += ((afStarsPositions[iRnd2+4][1]+0.5f)*2.0f+1.5f)*fT+boxOwner.Size()(2)*0.0025f; 
 
     COLOR col = C_dGRAY|UBYTE(64.0f*fRatio);
-    FLOAT fRotation = afStarsPositions[iRnd2+5][0]*360+fT*200.0f*afStarsPositions[iRnd2+3][0];
+    FLOAT fRotation = afStarsPositions[iRnd2+5][0]*360.0f+fT*200.0f*afStarsPositions[iRnd2+3][0];
     FLOAT fSize = 
        0.025f*fDamage+
-      (afStarsPositions[iRnd2+6][2]+0.5f)*0.075 +
+      (afStarsPositions[iRnd2+6][2]+0.5f)*0.075f +
       (0.15f+(afStarsPositions[iRnd2+2][1]+0.5f)*0.075f*fBoxSize)*fT;
     Particle_RenderSquare( vPos, fSize, fRotation, col);
   }
@@ -2253,7 +2253,7 @@ void Particles_DustFall(CEntity *pen, FLOAT tmStarted, FLOAT3D vStretch)
     COLOR col = HSVToColor(ubRndH,ubRndS,ubRndV)|UBYTE(fRndBlend*fPower);
     FLOAT fRotation = afStarsPositions[iRnd][0]*360+fT*360.0f*afStarsPositions[iRnd][0]*fSpeed;
     FLOAT fSize = 
-       0.75f+(afStarsPositions[iRnd][2]+0.5f)*0.25 +         // static size
+       0.75f+(afStarsPositions[iRnd][2]+0.5f)*0.25f +         // static size
       (0.4f+(afStarsPositions[iRnd][1]+0.5f)*0.4f)*fT;    // dinamic size
     fSize*=fSizeRatio;
     Particle_RenderSquare( vPos, fSize*fStretch*0.2f, fRotation, col);
@@ -3380,13 +3380,13 @@ void Particles_SandFlow( CEntity *pen, FLOAT fStretchAll, FLOAT fSize, FLOAT fHe
       FLOAT fBirthTime = fNow-(fT*SANDFLOW_TOTAL_TIME);
       if( (fBirthTime<fStartTime) || (fBirthTime>fStopTime+2.0f) ) continue;
       FLOAT fFade;
-      if (fT>(1.0f-SANDFLOW_FADE_OUT)) fFade=(1-fT)*(1/SANDFLOW_FADE_OUT);
+      if (fT>(1.0f-SANDFLOW_FADE_OUT)) fFade=(1.0f-fT)*(1.0f/SANDFLOW_FADE_OUT);
       else fFade=1.0f;
       fFade *= (CT_SANDFLOW_TRAIL-iTrail)*(1.0f/CT_SANDFLOW_TRAIL);
 
       FLOAT3D vPos = vCenter +
         vX*(afStarsPositions[iStar][0]*fStretchAll*fPowerFactor+fHeight*fT) +
-        vY*(fT*fT*-5.0f+(afStarsPositions[iStar][1]*fPowerFactor*0.1)) +
+        vY*(fT*fT*-5.0f+(afStarsPositions[iStar][1]*fPowerFactor*0.1f)) +
         vZ*(afStarsPositions[iStar][2]*fPowerFactor*fT*fStretchAll);
     
       COLOR colSand = pTD->GetTexel( FloatToInt(fT*2048), 0);
@@ -3684,7 +3684,7 @@ void Particles_BulletSpray(INDEX iRndBase, FLOAT3D vSource, FLOAT3D vGDir, enum 
 void MakeBaseFromVector(const FLOAT3D &vY, FLOAT3D &vX, FLOAT3D &vZ)
 {
   // if the plane is mostly horizontal
-  if (Abs(vY(2))>0.5) {
+  if (Abs(vY(2))>0.5f) {
     // use cross product of +x axis and plane normal as +s axis
     vX = FLOAT3D(1.0f, 0.0f, 0.0f)*vY;
   // if the plane is mostly vertical
@@ -5653,10 +5653,10 @@ void Particles_Leaves(CEntity *penTree, FLOATaabbox3D boxSize, FLOAT3D vSource, 
     Particle_SetTexturePart( 256, 256, iFrame, 0);
 
     FLOAT fFade=CalculateRatio( fRatio, 0, 1, 0, 0.2f);
-    INDEX iRnd1=(INDEX(iSpray+tmStarted*12356.789))%CT_MAX_PARTICLES_TABLE;
-    INDEX iRnd2=(INDEX(iSpray+tmStarted*21341.789))%CT_MAX_PARTICLES_TABLE;
-    INDEX iRnd3=(INDEX(iSpray+tmStarted*52672.789))%CT_MAX_PARTICLES_TABLE;
-    INDEX iRnd4=(INDEX(iSpray+tmStarted*83652.458))%CT_MAX_PARTICLES_TABLE;
+    INDEX iRnd1=(INDEX(iSpray+tmStarted*12356.789f))%CT_MAX_PARTICLES_TABLE;
+    INDEX iRnd2=(INDEX(iSpray+tmStarted*21341.789f))%CT_MAX_PARTICLES_TABLE;
+    INDEX iRnd3=(INDEX(iSpray+tmStarted*52672.789f))%CT_MAX_PARTICLES_TABLE;
+    INDEX iRnd4=(INDEX(iSpray+tmStarted*83652.458f))%CT_MAX_PARTICLES_TABLE;
     FLOAT3D vLaunchSpeed= FLOAT3D(
       afStarsPositions[iRnd1][0]*2.0f,
       (afStarsPositions[iRnd1][1]+1.0f)*3.0f,
