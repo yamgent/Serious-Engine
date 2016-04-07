@@ -17,17 +17,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Math/Float.h>
 
-#if (defined __GNU_INLINE__)
-#define MCW_PC		0x0300
+#define MCW_PC    0x0300
 #define _MCW_PC     MCW_PC
-#define _PC_24		0x0000
-#define _PC_53		0x0200
-#define _PC_64		0x0300
+#define _PC_24    0x0000
+#define _PC_53    0x0200
+#define _PC_64    0x0300
 
+// !!! FIXME: I'd like to remove any dependency on the FPU control word from the game, asap.  --ryan.
+#ifdef USE_PORTABLE_C
+// Fake control87 for USE_PORTABLE_C version
 inline ULONG _control87(WORD newcw, WORD mask)
 {
-// !!! FIXME: I'd like to remove any dependency on the FPU control word from the game, asap.  --ryan.
-#if defined(__x86_64__) || defined(__POWERPC__) || defined(__arm__)
     static WORD fpw=_PC_64;
     if (mask != 0)
     {
@@ -35,7 +35,12 @@ inline ULONG _control87(WORD newcw, WORD mask)
         fpw |= (newcw & mask);
     }
     return(fpw);
-#else
+}
+
+#elif (defined __GNU_INLINE__)
+
+inline ULONG _control87(WORD newcw, WORD mask)
+{
     WORD fpw = 0;
 
     // get the current FPU control word...
@@ -48,16 +53,10 @@ inline ULONG _control87(WORD newcw, WORD mask)
         __asm__ __volatile__ (" fldcw %0" : : "m" (fpw) : "memory");
     }
     return(fpw);
-#endif
 }
 
 // (for intel compiler...)
 #elif ((defined __MSVC_INLINE__) && (!defined _MSC_VER))
-#define MCW_PC		0x0300
-#define _MCW_PC     MCW_PC
-#define _PC_24		0x0000
-#define _PC_53		0x0200
-#define _PC_64		0x0300
 
 inline ULONG _control87(WORD newcw, WORD mask)
 {

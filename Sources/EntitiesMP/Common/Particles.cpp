@@ -1731,7 +1731,7 @@ void Particles_FlameThrowerStart(const CPlacement3D &plPipe, FLOAT fStartTime, F
   FLOAT3D vCenter = plPipe.pl_PositionVector;
 
   FLOAT fPowerFactor = Clamp((fNow - fStartTime)/2.0f,0.0f,1.0f);
-  fPowerFactor *= Clamp(1+(fStopTime-fNow)/2.0f,0.0f,1.0f);
+  fPowerFactor *= Clamp(1.0f+(fStopTime-fNow)/2.0f,0.0f,1.0f);
   INDEX ctParticles = (INDEX) (FLOAT(CT_FTSPARKS) * fPowerFactor);
   ASSERT( ctParticles<=CT_MAX_PARTICLES_TABLE);
   FLOAT fHeight = 1.0f*fPowerFactor;
