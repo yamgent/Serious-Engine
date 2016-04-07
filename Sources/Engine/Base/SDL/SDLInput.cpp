@@ -328,13 +328,13 @@ static void sdl_event_handler(const SDL_Event *event)
         case SDL_MOUSEBUTTONDOWN:
             switch (event->button.button)
             {
-                case 1:
+                case SDL_BUTTON_LEFT:
                     _abKeysPressed[KID_MOUSE1] = TRUE;
                     break;
-                case 2:
+                case SDL_BUTTON_RIGHT:
                     _abKeysPressed[KID_MOUSE2] = TRUE;
                     break;
-                case 3:
+                case SDL_BUTTON_MIDDLE:
                     _abKeysPressed[KID_MOUSE3] = TRUE;
                     break;
 
@@ -351,13 +351,13 @@ static void sdl_event_handler(const SDL_Event *event)
         case SDL_MOUSEBUTTONUP:
             switch (event->button.button)
             {
-                case 1:
+                case SDL_BUTTON_LEFT:
                     _abKeysPressed[KID_MOUSE1] = FALSE;
                     break;
-                case 2:
+                case SDL_BUTTON_RIGHT:
                     _abKeysPressed[KID_MOUSE2] = FALSE;
                     break;
-                case 3:
+                case SDL_BUTTON_MIDDLE:
                     _abKeysPressed[KID_MOUSE3] = FALSE;
                     break;
 

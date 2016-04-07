@@ -59,7 +59,7 @@ BOOL PeekMessage(MSG *msg, void *hwnd, UINT wMsgFilterMin,
             break;
 
         case SDL_MOUSEBUTTONDOWN:
-            if (sdlevent.button.button == 2)  // right button...
+            if (sdlevent.button.button == SDL_BUTTON_RIGHT)  // right button...
             {
                 msg->message = WM_RBUTTONDOWN;
             } // if
@@ -78,7 +78,7 @@ BOOL PeekMessage(MSG *msg, void *hwnd, UINT wMsgFilterMin,
             break;
 
         case SDL_MOUSEBUTTONUP:
-            if (sdlevent.button.button == 2)  // right button...
+            if (sdlevent.button.button == SDL_BUTTON_RIGHT)  // right button...
             {
                 msg->message = WM_RBUTTONUP;
             } // if
