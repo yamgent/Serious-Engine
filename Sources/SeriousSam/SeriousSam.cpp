@@ -123,7 +123,7 @@ CTextureObject *_ptoLogoCT  = NULL;
 CTextureObject *_ptoLogoODI = NULL;
 CTextureObject *_ptoLogoEAX = NULL;
 
-#if 0  // First Encounter (not working for now)
+#ifdef FIRST_ENCOUNTER  // First Encounter
 CTString sam_strVersion = "1.10";
 CTString sam_strModName = TRANS("-   O P E N   S O U R C E   -");
 #if _SE_DEMO
