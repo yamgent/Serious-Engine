@@ -1568,7 +1568,7 @@ procedures:
     }
     InflictHoofDamage( DEVIL_HIT_HOOF_OFFSET);
 
-    autowait(GetModelObject()->GetAnimLength(DEVIL_ANIM_ATTACKCLOSE-1.4f)-_pTimer->TickQuantum);
+    autowait(GetModelObject()->GetAnimLength(DEVIL_ANIM_ATTACKCLOSE)-1.4f-_pTimer->TickQuantum);  // misplaced ) here ???
     return EReturn();
   };
 
@@ -1599,7 +1599,7 @@ procedures:
       case DAP_PLAYER_HUNT:
         if( _pTimer->CurrentTick()-m_tmLastAngry > 10.0f)
         {
-          m_fAttackFireTime = 7.5+FRnd()*5;
+          m_fAttackFireTime = 7.5f+FRnd()*5.0f;
           m_tmLastAngry = _pTimer->CurrentTick();
           SelectRandomAnger();
           jump Angry();
@@ -1715,7 +1715,7 @@ procedures:
       FLOAT3D vShooting = GetPlacement().pl_PositionVector;
       FLOAT3D vTarget = m_penEnemy->GetPlacement().pl_PositionVector;
       FLOAT fDistanceFactor = 1.0f-ClampUp( (vShooting-vTarget).Length()/250.0f, 1.0f);
-      fWantedPitch = 20-fDistanceFactor*50.0f;
+      fWantedPitch = 20.0f-fDistanceFactor*50.0f;
     }
 
     CAttachmentModelObject &amo = *GetModelObject()->GetAttachmentModel(m_iAttID);
@@ -2028,7 +2028,7 @@ procedures:
       autowait( m_tmLastPause);
       // fire one guided projectile
       ShootProjectile(PRT_DEVIL_GUIDED_PROJECTILE, MAGIC_PROJECTILE_EXIT, 
-        ANGLE3D( AngleDeg(10.0f*Cos(m_iFiredProjectiles*360.0/6.0f)), -AngleDeg(20.0f*Sin(m_iFiredProjectiles*180.0/6.0f)), 0));
+        ANGLE3D( AngleDeg(10.0f*Cos(m_iFiredProjectiles*360.0f/6.0f)), -AngleDeg(20.0f*Sin(m_iFiredProjectiles*180.0f/6.0f)), 0));
       PlayWeaponSound( SOUND_ATTACK_BREATH_FIRE);
 
       autowait(0.8f-m_tmLastPause);
@@ -2244,9 +2244,9 @@ procedures:
       SetHealth(5000);
     }
     m_fMaxHealth = BOSS_HEALTH;
-    m_fBlowUpAmount = 1e6;
-    m_fBodyParts = 6;
-    m_fDamageWounded = 1e9;
+    m_fBlowUpAmount = 1e6f;
+    m_fBodyParts = 6.0f;
+    m_fDamageWounded = 1e9f;
     en_fDensity = 2500.0f;
     m_bHasUpperWeapons = FALSE;
     m_bRenderElectricity = FALSE;
