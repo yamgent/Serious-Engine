@@ -133,8 +133,11 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
   PIX pixOffset=0;
   while( pixSizeU>0 && pixSizeV>0)
   { 
+    #if 0  // trust me, you'll know if it's not readable.  :)  This assert will read one past the start of the array if U or V is zero, so turning it off.  --ryan.
     // check that memory is readable
     ASSERT( pulTexture[pixOffset +pixSizeU*pixSizeV -1] != 0xDEADBEEF);
+    #endif
+
     // upload mipmap as fast as possible
     if( bUseSubImage) {
       pglTexSubImage2D( GL_TEXTURE_2D, iMip, 0, 0, pixSizeU, pixSizeV,
