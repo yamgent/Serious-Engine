@@ -1094,7 +1094,7 @@ DWORD WINAPI _MS_Thread(LPVOID lpParam) {
 void*        _MS_Thread(void *arg) {
 #endif
 
-    SOCKET _sockudp = NULL;
+    SOCKET _sockudp = INVALID_SOCKET;
     struct _sIPPort {
         UBYTE bFirst;
         UBYTE bSecond;
@@ -1107,7 +1107,7 @@ void*        _MS_Thread(void *arg) {
     _sockudp = socket(AF_INET, SOCK_DGRAM, 0);
     if (_sockudp == INVALID_SOCKET){
         WSACleanup();
-        return -1;
+        return 0;
     }
 
     _sIPPort* pServerIP = (_sIPPort*)(_szIPPortBuffer);
@@ -1137,7 +1137,7 @@ void*        _MS_Thread(void *arg) {
             (sockaddr *) &sinServer, sizeof(sinServer));
 
         sockaddr_in _sinClient;
-        int _iClientLength = sizeof(_sinClient);
+        socklen_t _iClientLength = sizeof(_sinClient);
 
         fd_set readfds_udp;                         // declare a read set
         struct timeval timeout_udp;                 // declare a timeval for our timer
@@ -1159,7 +1159,7 @@ void*        _MS_Thread(void *arg) {
             sPch = strstr(_szBuffer, "\\gamename\\serioussamse\\");
             if(!sPch) {
                 CPrintF("Unknown query server response!\n");
-                return -1;
+                return 0;
             } else {
 
                 CTString strPlayers;
@@ -1298,7 +1298,7 @@ DWORD WINAPI _LocalNet_Thread(LPVOID lpParam) {
 void*        _LocalNet_Thread(void *arg) {
 #endif
 
-    SOCKET _sockudp = NULL;
+    SOCKET _sockudp = INVALID_SOCKET;
     struct _sIPPort {
         UBYTE bFirst;
         UBYTE bSecond;
@@ -1315,7 +1315,7 @@ void*        _LocalNet_Thread(void *arg) {
 			delete[] _szIPPortBufferLocal;
 		}
 		_szIPPortBufferLocal = NULL;		
-		return -1;
+		return 0;
     }
 
     _sIPPort* pServerIP = (_sIPPort*)(_szIPPortBufferLocal);
@@ -1345,7 +1345,7 @@ void*        _LocalNet_Thread(void *arg) {
             (sockaddr *) &sinServer, sizeof(sinServer));
 
         sockaddr_in _sinClient;
-        int _iClientLength = sizeof(_sinClient);
+        socklen_t _iClientLength = sizeof(_sinClient);
 
         fd_set readfds_udp;                         // declare a read set
         struct timeval timeout_udp;                 // declare a timeval for our timer
@@ -1372,7 +1372,7 @@ void*        _LocalNet_Thread(void *arg) {
 				}
 				_szIPPortBufferLocal = NULL;               
 				WSACleanup();
-				return -1;
+				return 0;
             } else {
 
                 CTString strPlayers;
