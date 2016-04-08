@@ -2,7 +2,7 @@
 #include "Entities/Reminder.h"
 //#include "Entities/Flame.h"
 #include "Entities/Debris.h"
-#include "Game/PlayerSettings.h"
+#include "GameMP/PlayerSettings.h"
 #include "Models/Player/SeriousSam/Player.h"
 #include "Models/Player/SeriousSam/Body.h"
 #include "Models/Player/SeriousSam/Head.h"
