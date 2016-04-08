@@ -64,6 +64,8 @@ Sources/EntitiesMP/*.cpp
 !Sources/EntitiesMP/StdH/*
 Sources/Engine/Classes/*.h
 Sources/Engine/Classes/*.cpp
+Sources/Entities/*.h
+Sources/Entities/*.cpp
 
 # Other generated files:
 Sources/Engine/Ska/smcScan.cpp
