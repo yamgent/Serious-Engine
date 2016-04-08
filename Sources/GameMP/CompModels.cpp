@@ -118,7 +118,11 @@ extern void SetupCompModel_t(const CTString &strName)
   _colLight = C_GRAY;
   _colAmbient = C_vdGRAY;
   _iParticleType = PARTICLES_NONE;
+#ifdef FIRST_ENCOUNTER
+  _moFloor.SetData_t(CTFILENAME("Models\\Computer\\Floor.mdl"));
+#else
   _moFloor.SetData_t(CTFILENAME("ModelsMP\\Computer\\Floor.mdl"));
+#endif
   _moFloor.mo_toTexture.SetData_t(CTFILENAME("Models\\Computer\\Floor.tex"));
   pmo->mo_colBlendColor = 0xFFFFFFFF;
   if (strName=="Rocketman") {
