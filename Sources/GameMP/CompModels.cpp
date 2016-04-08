@@ -20,7 +20,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #undef DECL_DLL
 #endif
 #define DECL_DLL
+#ifdef FIRST_ENCOUNTER
+#include "Entities/Common/Particles.h"
+#else
 #include "EntitiesMP/Common/Particles.h"
+#endif
 
 #include "Models/Enemies/Headman/headman.h"
 #include "Models/Enemies/Eyeman/Eyeman.h"
@@ -1007,6 +1011,7 @@ void RenderMessageModel(CDrawPort *pdp, const CTString &strModel)
     _moModel.RenderModel(rm);
 
     // render particles
+#ifndef FIRST_ENCOUNTER
     if (_iParticleType!=PARTICLES_NONE) {
       Particle_PrepareSystem(pdp, apr);
       Particle_PrepareEntity( 1, 0, 0, NULL);
@@ -1020,7 +1025,7 @@ void RenderMessageModel(CDrawPort *pdp, const CTString &strModel)
       }
       Particle_EndSystem();
     }
-
+#endif
     EndModelRenderingView();
   }
   Stereo_SetBuffer(STEREO_BOTH);
