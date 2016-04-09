@@ -64,7 +64,7 @@ static void GetGUID(UBYTE aub[16])
 #else
 
     // !!! FIXME : rcg10112001 Is this sufficient for these purposes?
-    for (int i = 0; i < sizeof (aub) / sizeof (aub[0]); i++)
+    for (int i = 0; i < 16; i++)
         aub[i] = (UBYTE) (255.0 * rand() / (RAND_MAX + 1.0));
 
 #endif
