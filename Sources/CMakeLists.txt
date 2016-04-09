@@ -117,7 +117,7 @@ add_definitions(-DSINGLE_THREADED=1)
 
 include_directories(
     .
-    External/SDL12
+    External/SDL2
     External/libogg/include
 )
 if(USE_TREMOR)
@@ -639,12 +639,10 @@ endif()
 if(MACOSX)
     find_library(COCOA_FRAMEWORK Cocoa)
     target_link_libraries(ssam "${COCOA_FRAMEWORK}")
-    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL-1.2.0.dylib")
-    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDLmain.a")
+    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
     if(BUILD_DEDICATED_SERVER)
         target_link_libraries(SeriousSamDedicated "${COCOA_FRAMEWORK}")
-        target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL-1.2.0.dylib")
-        target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDLmain.a")
+        target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
     endif()
 endif()
 

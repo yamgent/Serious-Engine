@@ -201,8 +201,7 @@ void CViewPort::OpenCanvas(void)
 #endif // SE1_D3D
 
 #else  // !PLATFORM_WIN32
-   STUBBED("Move this to another directory.");
-   vp_hWnd = vp_hWndParent = (void *) 0x0001;
+   vp_hWnd = vp_hWndParent;
 #endif
 }
 
@@ -224,8 +223,6 @@ void CViewPort::CloseCanvas( BOOL bRelease/*=FALSE*/)
     BOOL bRes = DestroyWindow(vp_hWnd);
     ASSERT(bRes);
   }
-#else
-  STUBBED("do something here when ported to SDL2");
 #endif
 
   // mark

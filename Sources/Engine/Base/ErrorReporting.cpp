@@ -26,6 +26,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Engine/Graphics/Adapter.h>
 
+#ifndef PLATFORM_WIN32
+#include "SDL.h"
+#endif
+
 INDEX con_bNoWarnings = 0;
 
 // global handle for application window in full-screen mode
@@ -54,6 +58,9 @@ void FatalError(const char *strFormat, ...)
     ShowWindow( _hwndMain, SW_MINIMIZE);
     ShowWindow( _hwndMain, SW_HIDE);
   }
+#else
+  SDL_DestroyWindow((SDL_Window *) _hwndMain);  // just get rid of it, it's all burning down anyhow.
+  _hwndMain = NULL;
 #endif
 
   // format the message in buffer
@@ -79,9 +86,8 @@ void FatalError(const char *strFormat, ...)
   extern void EnableWindowsKeys(void);
   EnableWindowsKeys();
 #else
-  // !!! FIXME : Use SDL2's SDL_ShowSimpleMessageBox().
-  // !!! FIXME : We should really SDL_Quit() here.
-  fprintf(stderr, "FATAL ERROR:\n  \"%s\"\n\n", (const char *) strBuffer);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, TRANSV("Fatal Error"), strBuffer, NULL);
+  SDL_Quit();
 #endif
 
   _bInFatalError = FALSE;
@@ -108,8 +114,8 @@ void WarningMessage(const char *strFormat, ...)
     // create message box
     #ifdef PLATFORM_WIN32
     MessageBoxA(NULL, (const char *) strBuffer, TRANS("Warning"), MB_OK|MB_ICONEXCLAMATION|MB_SETFOREGROUND|MB_TASKMODAL);
-    #else  // !!! FIXME: SDL_ShowSimpleMessageBox() in SDL2.
-    fprintf(stderr, "WARNING: \"%s\"\n", (const char *) strBuffer);
+    #else
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, TRANSV("Warning"), strBuffer, (SDL_Window *) _hwndMain);
     #endif
   }
 }
@@ -129,8 +135,8 @@ void InfoMessage(const char *strFormat, ...)
   // create message box
   #ifdef PLATFORM_WIN32
   MessageBoxA(NULL, (const char *) strBuffer, TRANS("Information"), MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TASKMODAL);
-  #else  // !!! FIXME: SDL_ShowSimpleMessageBox() in SDL2.
-  fprintf(stderr, "INFO: \"%s\"\n", (const char *) strBuffer);
+  #else
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, TRANSV("Information"), strBuffer, (SDL_Window *) _hwndMain);
   #endif
 }
 
@@ -151,17 +157,23 @@ BOOL YesNoMessage(const char *strFormat, ...)
   #ifdef PLATFORM_WIN32
   return MessageBoxA(NULL, strBuffer, TRANS("Question"), MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND|MB_TASKMODAL)==IDYES;
   #else
-  // !!! FIXME: SDL_messagebox
-  fprintf(stderr, "QUESTION: \"%s\" [y/n] : ", (const char *) strBuffer);
-  while (true)
-  {
-    int ch = fgetc(stdin);
-    if (ch == 'y')
-        return 1;
-    else if (ch == 'n')
-        return 0;
-  }
-  return 0;
+  const SDL_MessageBoxButtonData ynbuttons[] = {
+    { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 0, TRANSV("No") },
+    { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, TRANSV("Yes") },
+  };
+
+  const SDL_MessageBoxData ynbox = {
+    SDL_MESSAGEBOX_INFORMATION,  // !!! FIXME: no SDL_MESSAGEBOX_QUESTION
+    (SDL_Window *) _hwndMain,
+    TRANSV("Question"),
+    strBuffer,
+    SDL_arraysize(ynbuttons),
+    ynbuttons,
+    NULL
+  };
+
+  int button = 0;
+  return ((SDL_ShowMessageBox(&ynbox, &button) != -1) && (button == 1));
   #endif
 }
 
@@ -215,7 +227,7 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
 /*
  * Get the description string for windows error code.
  */
- extern const CTString GetWindowsError(DWORD dwWindowsErrorCode)
+extern const CTString GetWindowsError(DWORD dwWindowsErrorCode)
 {
 #ifdef PLATFORM_WIN32
   // buffer to recieve error description
@@ -230,22 +242,17 @@ void ThrowF_t(const char *strFormat, ...)  // throws char *
   LocalFree( lpMsgBuf );
   return strResultMessage;
 #else
-  CTString retval = "This isn't Windows, so calling this function is probably a portability bug.";
-  return(retval);
+  return CTString("This isn't Windows, so calling this function is probably a portability bug.");
 #endif
 }
 
 // must be in separate function to disable stupid optimizer
 extern void Breakpoint(void)
 {
-#if (defined USE_PORTABLE_C)
-  raise(SIGTRAP);  // This may not work everywhere. Good luck.
-#elif (defined __MSVC_INLINE__)
+#ifdef PLATFORM_WIN32
   __asm int 0x03;
-#elif (defined __GNU_INLINE__)
-  __asm__ __volatile__ ("int $3\n\t");
 #else
-  #error Please define something for your platform.
+  SDL_TriggerBreakpoint();
 #endif
 }
 

@@ -10,8 +10,6 @@
 #include <Engine/Base/Types.h>
 #include "SDL.h"
 
-#define IsIconic(x) (FALSE)
-
 typedef struct SSAM_SDL_MSG {
   UINT   message;
   WPARAM wParam; 
@@ -21,34 +19,35 @@ typedef struct SSAM_SDL_MSG {
 
 #define PM_REMOVE         37337   // super l33t.  :)
 
-#define WM_CHAR           (SDL_USEREVENT + 0)
-#define WM_NULL           (SDL_USEREVENT + 1)
-#define WM_SYSKEYDOWN     (SDL_USEREVENT + 2)
-#define WM_LBUTTONDOWN    (SDL_MOUSEBUTTONDOWN)
-#define WM_LBUTTONUP      (SDL_MOUSEBUTTONUP)
-#define WM_RBUTTONDOWN    (SDL_USEREVENT + 3)
-#define WM_RBUTTONUP      (SDL_USEREVENT + 4)
-#define WM_MOUSEWHEEL     (SDL_USEREVENT + 5)
-
+#define WM_CHAR           (SDL_TEXTINPUT)
+#define WM_MOUSEWHEEL     (SDL_MOUSEWHEEL)
 #define WM_KEYDOWN        (SDL_KEYDOWN)
 #define WM_KEYUP          (SDL_KEYUP)
 #define WM_MOUSEMOVE      (SDL_MOUSEMOTION)
-#define WM_PAINT          (SDL_VIDEOEXPOSE)
 #define WM_QUIT           (SDL_QUIT)
 
-#define WM_CLOSE          (SDL_NOEVENT)
-#define WM_COMMAND        (SDL_NOEVENT)
-#define WM_ERASEBKGND     (SDL_NOEVENT)
-#define WM_KILLFOCUS      (SDL_NOEVENT)
-#define WM_MOUSEFIRST     (SDL_NOEVENT)
-#define WM_MOUSELAST      (SDL_NOEVENT)
-#define WM_LBUTTONDBLCLK  (SDL_NOEVENT)
-#define WM_RBUTTONDBLCLK  (SDL_NOEVENT)
-#define WM_SYSCOMMAND     (SDL_NOEVENT)
-#define WM_SETFOCUS       (SDL_NOEVENT)
-#define WM_ACTIVATE       (SDL_NOEVENT)
-#define WM_ACTIVATEAPP    (SDL_NOEVENT)
-#define WM_CANCELMODE     (SDL_NOEVENT)
+extern SDL_EventType WM_SYSKEYDOWN;
+extern SDL_EventType WM_LBUTTONDOWN;
+extern SDL_EventType WM_LBUTTONUP;
+extern SDL_EventType WM_RBUTTONDOWN;
+extern SDL_EventType WM_RBUTTONUP;
+extern SDL_EventType WM_PAINT;
+
+// !!! FIXME: are these not used? Because we can deal with some of these in SDL2.
+#define WM_NULL           (SDL_FIRSTEVENT)
+#define WM_CLOSE          (SDL_FIRSTEVENT)
+#define WM_COMMAND        (SDL_FIRSTEVENT)
+#define WM_ERASEBKGND     (SDL_FIRSTEVENT)
+#define WM_KILLFOCUS      (SDL_FIRSTEVENT)
+#define WM_MOUSEFIRST     (SDL_FIRSTEVENT)
+#define WM_MOUSELAST      (SDL_FIRSTEVENT)
+#define WM_LBUTTONDBLCLK  (SDL_FIRSTEVENT)
+#define WM_RBUTTONDBLCLK  (SDL_FIRSTEVENT)
+#define WM_SYSCOMMAND     (SDL_FIRSTEVENT)
+#define WM_SETFOCUS       (SDL_FIRSTEVENT)
+#define WM_ACTIVATE       (SDL_FIRSTEVENT)
+#define WM_ACTIVATEAPP    (SDL_FIRSTEVENT)
+#define WM_CANCELMODE     (SDL_FIRSTEVENT)
 
 BOOL PeekMessage(MSG *msg, void *hwnd, UINT wMsgFilterMin,
                  UINT wMsgFilterMax, UINT wRemoveMsg);
@@ -118,6 +117,7 @@ void DispatchMessage(MSG *msg);
 #define VK_RBUTTON        2
 #define VK_MBUTTON        3
 
+BOOL IsIconic(void *hWnd);
 SHORT GetKeyState(int vk);
 SHORT GetAsyncKeyState(int vk);
 BOOL GetCursorPos(LPPOINT lpPoint);

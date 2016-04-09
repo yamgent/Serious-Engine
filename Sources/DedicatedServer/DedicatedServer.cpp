@@ -208,6 +208,7 @@ void ExecScript(const CTFileName &fnmScript)
     #define DelayBeforeExit() fgetc(stdin);
 #else
     #define DelayBeforeExit()
+    static void atexit_sdlquit(void) { static bool firsttime = true; if (firsttime) { firsttime = false; SDL_Quit(); } }
 #endif
 
 BOOL Init(int argc, char* argv[])
@@ -225,6 +226,12 @@ BOOL Init(int argc, char* argv[])
 
   #ifdef PLATFORM_WIN32
     SetConsoleTitle(argv[1]);
+  #else
+    if (SDL_Init(0) == -1) {  // just get the basics up and running, like timers. No video, audio, input.
+      fprintf(stderr, "SDL_Init(0) failed! Aborting.\n");
+      _exit(1);
+    }
+    atexit(atexit_sdlquit);
   #endif
 
   ded_strConfig = CTString("Scripts\\Dedicated\\")+argv[1]+"\\";

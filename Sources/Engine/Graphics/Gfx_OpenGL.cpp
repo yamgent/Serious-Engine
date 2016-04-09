@@ -90,19 +90,21 @@ BOOL  glbUsingVARs = FALSE;   // vertex_array_range
 void (__stdcall *pglLockArraysEXT)(GLint first, GLsizei count) = NULL;
 void (__stdcall *pglUnlockArraysEXT)(void) = NULL;
 
+#if PLATFORM_WIN32  // SDL handles this elsewhere.
 GLboolean (__stdcall *pwglSwapIntervalEXT)(GLint interval) = NULL;
 GLint     (__stdcall *pwglGetSwapIntervalEXT)(void) = NULL;
+#endif
 
 void (__stdcall *pglActiveTextureARB)(GLenum texunit) = NULL;
 void (__stdcall *pglClientActiveTextureARB)(GLenum texunit) = NULL;
 
-// t-buffer support
 #ifdef PLATFORM_WIN32
 char *(__stdcall *pwglGetExtensionsStringARB)(HDC hdc);
 BOOL  (__stdcall *pwglChoosePixelFormatARB)(HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
 BOOL  (__stdcall *pwglGetPixelFormatAttribivARB)(HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, int *piAttributes, int *piValues);
 #endif
 
+// t-buffer support
 void  (__stdcall *pglTBufferMask3DFX)(GLuint mask);
 
 // NV occlusion query
@@ -314,6 +316,7 @@ void CGfxLibrary::InitContext_OGL(void)
   }
 
   // check support for swap interval
+  #ifdef PLATFORM_WIN32  // SDL handles this elsewhere.
   pwglSwapIntervalEXT    = NULL;
   pwglGetSwapIntervalEXT = NULL;
   if( HasExtension( go_strExtensions, "WGL_EXT_swap_control")) {
@@ -322,6 +325,7 @@ void CGfxLibrary::InitContext_OGL(void)
     pwglGetSwapIntervalEXT = (GLint     (__stdcall*)(void) )OGL_GetProcAddress( "wglGetSwapIntervalEXT");
     ASSERT( pwglSwapIntervalEXT!=NULL && pwglGetSwapIntervalEXT!=NULL);
   }
+  #endif
 
   // determine support for ATI Truform technology
   extern INDEX truform_iLevel;

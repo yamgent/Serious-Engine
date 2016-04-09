@@ -81,6 +81,7 @@ static CTFileName CallFileRequester(char *achrTitle, char *achrSelectedFile, con
 #else
 
     STUBBED("wtf?!");
+    return CTString("");
 
 #endif
 

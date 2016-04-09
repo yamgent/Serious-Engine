@@ -1,21 +1,20 @@
 /* Copyright (c) 2002-2012 Croteam Ltd. All rights reserved. */
 
 #include <stdio.h>
-#include <assert.h>
 
 #include "SDL.h"
 #include <Engine/Base/Types.h>
+#include <Engine/Base/Assert.h>
+
+// !!! FIXME: can we move this one function somewhere else?
 
 ULONG DetermineDesktopWidth(void)
 {
-    SDL_Rect **modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
-
-    assert(modes != NULL);
-
-    if ((modes == NULL) || (modes == (SDL_Rect **) -1))
-        return(600);  // (*shrug*)
-
-    return(modes[0]->w);
+    const int dpy = 0;   // !!! FIXME: add a cvar for this?
+    SDL_DisplayMode mode;
+    const int rc = SDL_GetDesktopDisplayMode(dpy, &mode);
+    ASSERT(rc == 0);
+    return(mode.w);
 } // DetermineDesktopWidth
 
 // end of SDLAdapter.cpp ...

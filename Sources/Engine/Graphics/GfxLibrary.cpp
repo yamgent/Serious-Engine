@@ -512,7 +512,6 @@ static void GAPInfo(void)
 
   ASSERT( GfxValidApi(eAPI) );
 
-#ifdef PLATFORM_WIN32
   // in case of driver hasn't been initialized yet
   if( (_pGfx->go_hglRC==NULL
 #ifdef SE1_D3D
@@ -523,14 +522,6 @@ static void GAPInfo(void)
     CPrintF( TRANS("Display driver hasn't been initialized.\n\n"));
     return;
   }
-#else
-  // in case of driver hasn't been initialized yet
-  if (_pGfx->go_hglRC==NULL || eAPI==GAT_NONE) {
-    // be brief, be quick
-    CPrintF( TRANS("Display driver hasn't been initialized.\n\n"));
-    return;
-  }
-#endif
 
   // report API
   CPrintF( "- Graphics API: ");
@@ -602,15 +593,25 @@ static void GAPInfo(void)
     } else CPrintF( "not supported\n");
 
     // report current swap interval (only if fullscreen)
+    STUBBED("Swap interval shouldn't just be for fullscreen");  // !!! FIXME  --ryan.
     if( _pGfx->gl_ulFlags&GLF_FULLSCREEN) {
       // report current swap interval
+      STUBBED("I don't think the non-D3D path sets GLF_VSYNC anywhere. Mismerge?");  // !!! FIXME  --ryan.
       CPrintF( "- Swap interval: ");
       if( _pGfx->gl_ulFlags&GLF_VSYNC) {
-        GLint gliWaits = pwglGetSwapIntervalEXT();
+        #if PLATFORM_WIN32
+        const int gliWaits = (int) pwglGetSwapIntervalEXT();
         if( gliWaits>=0) {
           ASSERT( gliWaits==_pGfx->gl_iSwapInterval);
           CPrintF( "%d frame(s)\n", gliWaits);
         } else CPrintF( "not readable\n");
+        #else
+        const int gliWaits = SDL_GL_GetSwapInterval();
+        if( gliWaits>=0) {
+          ASSERT( gliWaits==_pGfx->gl_iSwapInterval);
+          CPrintF( "%d frame(s)\n", gliWaits);
+        } else CPrintF( "adaptive vsync\n");
+        #endif
       } else CPrintF( "not adjustable\n");
     }
     // report T-Buffer support
@@ -685,7 +686,7 @@ static void GAPInfo(void)
     CPrintF("\n- Supported extensions: %s\n", (const char *) ReformatExtensionsString(_pGfx->go_strSupportedExtensions));
   }
 
-#ifdef PLATFORM_WIN32
+#ifdef SE1_D3D
   // Direct3D only stuff
   if( eAPI==GAT_D3D)
   {
@@ -1424,27 +1425,6 @@ BOOL CGfxLibrary::StartDisplayMode( enum GfxAPIType eAPI, INDEX iAdapter, PIX pi
     }
     // startup OpenGL
 
-// !!! FIXME : Do something with this.
-#ifdef PLATFORM_UNIX
-  gl_dmCurrentDisplayMode.dm_pixSizeI = pixSizeI;
-  gl_dmCurrentDisplayMode.dm_pixSizeJ = pixSizeJ;
-  Uint8 bpp;
-  switch(eColorDepth) {
-  case DD_DEFAULT:
-    gl_iCurrentDepth = 0;
-    break;
-  case DD_16BIT:
-    gl_iCurrentDepth = 16;
-    break;
-  case DD_32BIT:
-    gl_iCurrentDepth = 32;
-    break;
-  default:
-    ASSERT(FALSE);
-    NOTHING;
-  }
-#endif
-
     bSuccess = InitDriver_OGL(iAdapter!=0);
     // try to setup sub-driver
     if( !bSuccess) {
@@ -1510,7 +1490,7 @@ void CGfxLibrary::StopDisplayMode(void)
     CDS_ResetMode();
   }
 
-#ifdef PLATFORM_WIN32
+#ifdef SE1_D3D
   else if( gl_eCurrentAPI==GAT_D3D)
   { // Direct3D
     EndDriver_D3D();
@@ -1635,12 +1615,13 @@ void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort 
 // !!! FIXME : rcg11052001 Abstract this.
 #ifdef PLATFORM_WIN32
   GetClientRect( (HWND)hWnd, &rectWindow);
-  PIX pixWidth  = rectWindow.right  - rectWindow.left;
-  PIX pixHeight = rectWindow.bottom - rectWindow.top;
+  const PIX pixWidth  = rectWindow.right  - rectWindow.left;
+  const PIX pixHeight = rectWindow.bottom - rectWindow.top;
 #else
-  SDL_Surface *screen = SDL_GetVideoSurface();
-  PIX pixWidth  = screen->w;
-  PIX pixHeight = screen->h;
+  int w, h;
+  SDL_GL_GetDrawableSize((SDL_Window *) hWnd, &w, &h);
+  const PIX pixWidth  = (PIX) w;
+  const PIX pixHeight = (PIX) h;
 #endif
 
   *ppvpNew = NULL;
@@ -1869,7 +1850,11 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     if( gl_ulFlags & GLF_VSYNC) {
       if( gl_iSwapInterval != gap_iSwapInterval) {
         gl_iSwapInterval = gap_iSwapInterval;
+#ifdef PLATFORM_WIN32
         pwglSwapIntervalEXT( gl_iSwapInterval);
+#else
+        SDL_GL_SetSwapInterval( gl_iSwapInterval);
+#endif
       }
     }
     // swap buffers
@@ -1879,7 +1864,7 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     CTempDC tdc(pvp->vp_hWnd);
     pwglSwapBuffers(tdc.hdc);
 #else
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow((SDL_Window *) pvp->vp_hWnd);
 #endif
 
     // force finishing of all rendering operations (if required)

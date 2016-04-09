@@ -99,6 +99,8 @@ static FLOAT _fLastNormalizeValue = 1;
 extern HWND  _hwndMain; // global handle for application window
 static HWND  _hwndCurrent = NULL;
 static HINSTANCE _hInstDS = NULL;
+#else
+static CTString snd_strDeviceName;
 #endif
 
 static INDEX _iWriteOffset  = 0;
@@ -134,6 +136,7 @@ static volatile SLONG sdl_backbuffer_allocation = 0;
 static Uint8 *sdl_backbuffer = NULL;
 static volatile SLONG sdl_backbuffer_pos = 0;
 static volatile SLONG sdl_backbuffer_remain = 0;
+static SDL_AudioDeviceID sdl_audio_device = 0;
 
 static void sdl_audio_callback(void *userdata, Uint8 *stream, int len)
 {
@@ -202,7 +205,6 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
   sl.sl_bUsingDirectSound = FALSE;
   sl.sl_bUsingEAX = FALSE;
   snd_iDevice = 0;
-  if( bReport) CPrintF(TRANSV("SDL audio initialization ...\n"));
 
   ASSERT(!_bDedicatedServer);
   if (_bDedicatedServer) {
@@ -210,13 +212,19 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
     return FALSE;
   }
 
-  SDL_AudioSpec desired;
-  memset(&desired, '\0', sizeof (SDL_AudioSpec));
+  if( bReport) CPrintF(TRANSV("SDL audio initialization ...\n"));
+
+  SDL_AudioSpec desired, obtained;
+  SDL_zero(desired);
+  SDL_zero(obtained);
+
   Sint16 bps = sl.sl_SwfeFormat.wBitsPerSample;
   if (bps <= 8)
     desired.format = AUDIO_U8;
   else if (bps <= 16)
     desired.format = AUDIO_S16LSB;
+  else if (bps <= 32)
+    desired.format = AUDIO_S32LSB;
   else {
     CPrintF(TRANSV("Unsupported bits-per-sample: %d\n"), bps);
     return FALSE;
@@ -238,37 +246,31 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
   desired.userdata = &sl;
   desired.callback = sdl_audio_callback;
 
-  if (SDL_Init(SDL_INIT_AUDIO) == -1) {
-    CPrintF( TRANS("SDL_Init(SDL_INIT_AUDIO) error: %s\n"), SDL_GetError());
-    return FALSE;
-  }
-
   // !!! FIXME rcg12162001 We force SDL to convert the audio stream on the
   // !!! FIXME rcg12162001  fly to match sl.sl_SwfeFormat, but I'm curious
   // !!! FIXME rcg12162001  if the Serious Engine can handle it if we changed
   // !!! FIXME rcg12162001  sl.sl_SwfeFormat to match what the audio hardware
   // !!! FIXME rcg12162001  can handle. I'll have to check later.
-  if (SDL_OpenAudio(&desired, NULL) != 0) {
-    CPrintF( TRANS("SDL_OpenAudio() error: %s\n"), SDL_GetError());
-    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+  sdl_audio_device = SDL_OpenAudioDevice(snd_strDeviceName.IsEmpty() ? NULL : (const char *) snd_strDeviceName, 0, &desired, &obtained, 0);
+  if (!sdl_audio_device) {
+    CPrintF( TRANSV("SDL_OpenAudioDevice() error: %s\n"), SDL_GetError());
     return FALSE;
   }
 
-  sdl_silence = desired.silence;
-  sdl_backbuffer_allocation = (desired.size * 2);
+  sdl_silence = obtained.silence;
+  sdl_backbuffer_allocation = (obtained.size * 2);
   sdl_backbuffer = (Uint8 *)AllocMemory(sdl_backbuffer_allocation);
   sdl_backbuffer_remain = 0;
   sdl_backbuffer_pos = 0;
 
   // report success
   if( bReport) {
-    char achDriverName[128];
-    SDL_AudioDriverName(achDriverName, sizeof (achDriverName));
-    CPrintF( TRANS("  opened device: %s\n"), "SDL audio stream");
-    CPrintF( TRANS("  %dHz, %dbit, %s\n"), 
+    STUBBED("Report actual SDL device name?");
+    CPrintF( TRANSV("  opened device: %s\n"), "SDL audio stream");
+    CPrintF( TRANSV("  %dHz, %dbit, %s\n"),
              sl.sl_SwfeFormat.nSamplesPerSec,
              sl.sl_SwfeFormat.wBitsPerSample,
-             achDriverName);
+             SDL_GetCurrentAudioDriver());
   }
 
   // determine whole mixer buffer size from mixahead console variable
@@ -282,7 +284,7 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
   if( bReport) {
     CPrintF(TRANSV("  parameters: %d Hz, %d bit, stereo, mix-ahead: %gs\n"),
             sl.sl_SwfeFormat.nSamplesPerSec, sl.sl_SwfeFormat.wBitsPerSample, snd_tmMixAhead);
-    CPrintF(TRANSV("  output buffers: %d x %d bytes\n"), 2, desired.size);
+    CPrintF(TRANSV("  output buffers: %d x %d bytes\n"), 2, obtained.size);
     CPrintF(TRANSV("  mpx decode: %d bytes\n"), sl.sl_slDecodeBufferSize);
   }
 
@@ -292,7 +294,7 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
 
   // the audio callback can now safely fill the audio stream with silence
   //  until there is actual audio data to mix...
-  SDL_PauseAudio(0);
+  SDL_PauseAudioDevice(sdl_audio_device, 0);
 
   // done
   return TRUE;
@@ -302,10 +304,7 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
 // SDL audio shutdown procedure
 static void ShutDown_SDLaudio( CSoundLibrary &sl)
 {
-  if (!SDL_WasInit(SDL_INIT_AUDIO))
-    return;
-
-  SDL_PauseAudio(1);
+  SDL_PauseAudioDevice(sdl_audio_device, 1);
 
   if (sdl_backbuffer != NULL) {
     FreeMemory(sdl_backbuffer);
@@ -322,8 +321,8 @@ static void ShutDown_SDLaudio( CSoundLibrary &sl)
     sl.sl_pswDecodeBuffer = NULL;
   }
 
-  SDL_CloseAudio();
-  SDL_QuitSubSystem(SDL_INIT_AUDIO);
+  SDL_CloseAudioDevice(sdl_audio_device);
+  sdl_audio_device = 0;
 } // ShutDown_SDLaudio
 
 
@@ -1049,6 +1048,10 @@ void CSoundLibrary::Init(void)
   _pShell->DeclareSymbol( "persistent user FLOAT snd_tmOpenFailDelay;",   (void *) &snd_tmOpenFailDelay);
   _pShell->DeclareSymbol( "persistent user FLOAT snd_fEAXPanning;", (void *) &snd_fEAXPanning);
 
+#ifdef PLATFORM_UNIX
+  _pShell->DeclareSymbol( "persistent user CTString snd_strDeviceName;", (void *) &snd_strDeviceName);
+#endif
+
 // !!! FIXME : rcg12162001 This should probably be done everywhere, honestly.
 #ifdef PLATFORM_UNIX
   if (_bDedicatedServer) {
@@ -1071,7 +1074,7 @@ void CSoundLibrary::Init(void)
 
 #ifdef PLATFORM_WIN32
   // get number of devices
-  INDEX ctDevices = waveOutGetNumDevs();
+  const INDEX ctDevices = waveOutGetNumDevs();
   CPrintF(TRANSV("  Detected devices: %d\n"), ctDevices);
   sl_ctWaveDevices = ctDevices;
   
@@ -1089,6 +1092,14 @@ void CSoundLibrary::Init(void)
       woc.dwFormats, woc.wChannels, woc.dwSupport);
   }
   // done
+#else
+  const int ctDevices = SDL_GetNumAudioDevices(0);
+  CPrintF(TRANSV("  Detected devices: %d\n"), ctDevices);
+  sl_ctWaveDevices = ctDevices;
+  for (int iDevice = 0; iDevice < ctDevices; iDevice++) {
+    CPrintF(TRANSV("    device %d: %s\n"), 
+      iDevice, SDL_GetAudioDeviceName(iDevice, 0));
+  }
 #endif
 
   CPrintF("\n");
@@ -1255,11 +1266,11 @@ void CSoundLibrary::Mute(void)
   } 
 
 #else
-  SDL_LockAudio();
+  SDL_LockAudioDevice(sdl_audio_device);
   _bMuted = TRUE;
   sdl_backbuffer_remain = 0;  // ditch pending audio data...
   sdl_backbuffer_pos = 0;
-  SDL_UnlockAudio();
+  SDL_UnlockAudioDevice(sdl_audio_device);
 #endif
 }
 
@@ -1630,7 +1641,7 @@ void CSoundLibrary::MixSounds(void)
     slDataToMix = PrepareSoundBuffer_waveout(*this);
   }
 #else
-  SDL_LockAudio();
+  SDL_LockAudioDevice(sdl_audio_device);
   slDataToMix = PrepareSoundBuffer_SDLaudio(*this);
 #endif
 
@@ -1638,7 +1649,7 @@ void CSoundLibrary::MixSounds(void)
   ASSERT( slDataToMix>=0);
   if( slDataToMix<=0) {
     #ifdef PLATFORM_UNIX
-      SDL_UnlockAudio();
+      SDL_UnlockAudioDevice(sdl_audio_device);
     #endif
     _pfSoundProfile.StopTimer(CSoundProfile::PTI_MIXSOUNDS);
     _sfStats.StopTimer(CStatForm::STI_SOUNDMIXING);
@@ -1688,7 +1699,7 @@ void CSoundLibrary::MixSounds(void)
   }
 #else
   CopyMixerBuffer_SDLaudio(*this, slDataToMix);
-  SDL_UnlockAudio();
+  SDL_UnlockAudioDevice(sdl_audio_device);
 #endif
 
   // all done

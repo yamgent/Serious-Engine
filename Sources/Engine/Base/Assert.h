@@ -36,9 +36,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 #ifdef PLATFORM_UNIX  /* rcg10042001 */
-#include <assert.h>
-#include <signal.h>
-#define _assert(x, y, z) assert(0)
+#include "SDL_assert.h"
+#define _assert(x, y, z) SDL_assert(0)
 #endif
 
 
@@ -94,11 +93,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
   /* CT assertion macros */
   #ifndef ASSERT
+    #ifdef PLATFORM_WIN32
     #define ASSERT(expr) 				            \
       if(!(expr)) {				                  \
         /*SAFEBREAKPOINT;*/                     \
         _assert(#expr,__FILE__,__LINE__);		\
       } else NOTHING
+    #else
+    #define ASSERT(expr) SDL_assert(expr)
+    #endif
   #endif
 
   #define ASSERTALWAYS(msg)			                \
@@ -114,8 +117,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     } else NOTHING
   #define DEBUGSTRING(str) (str)
 #endif
-
-
 
 #endif  /* include-once check. */
 

@@ -716,8 +716,8 @@ static void ogl_DepthRange( FLOAT fMin, FLOAT fMax)
   // check consistency
   ASSERT( _pGfx->gl_eCurrentAPI==GAT_OGL);
 #ifndef NDEBUG
-  FLOAT fDepths[2]; 
-  pglGetFloatv( GL_DEPTH_RANGE,(GLfloat*)&fDepths);
+  GLfloat fDepths[2];
+  pglGetFloatv( GL_DEPTH_RANGE, fDepths);
   OGL_CHECKERROR;
   ASSERT( fDepths[0]==GFX_fMinDepthRange && fDepths[1]==GFX_fMaxDepthRange);
 #endif

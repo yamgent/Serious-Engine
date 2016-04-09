@@ -37,6 +37,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <winsock2.h>
 #include <windows.h>
 #include <mmsystem.h> // for timers
+#else
+#include "SDL.h"
+#endif
+
+#if PLATFORM_MACOSX
+#ifdef MACOS
+#undef MACOS
+#endif
+#ifdef TARGET_OS_MAC
+#undef TARGET_OS_MAC
+#endif
 #endif
 
 #include <Engine/Base/Types.h>
