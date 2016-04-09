@@ -122,7 +122,7 @@ public:
   // add the intensity to the pixel
   inline void AddToCluster( UBYTE *pub);
   inline void AddAmbientToCluster( UBYTE *pub);
-  inline void AddToCluster( UBYTE *pub, FLOAT fIntensity);
+  inline void AddToCluster( UBYTE *pub, SLONG slIntensity);
 
   // additional functions
   __forceinline void CopyShadowLayer(void);
@@ -160,11 +160,11 @@ inline void CLayerMixer::AddAmbientToCluster( UBYTE *pub)
   IncrementByteWithClip(pub[1], ((UBYTE*)&lm_colAmbient)[2]);
   IncrementByteWithClip(pub[2], ((UBYTE*)&lm_colAmbient)[1]);
 }
-inline void CLayerMixer::AddToCluster( UBYTE *pub, FLOAT fIntensity)
+inline void CLayerMixer::AddToCluster( UBYTE *pub, SLONG slIntensity)
 {
-  IncrementByteWithClip(pub[0], (long) (((UBYTE*)&lm_colLight)[3] *fIntensity));
-  IncrementByteWithClip(pub[1], (long) (((UBYTE*)&lm_colLight)[2] *fIntensity));
-  IncrementByteWithClip(pub[2], (long) (((UBYTE*)&lm_colLight)[1] *fIntensity));
+  IncrementByteWithClip(pub[0], (long) (((UBYTE*)&lm_colLight)[3] *slIntensity)>>16);
+  IncrementByteWithClip(pub[1], (long) (((UBYTE*)&lm_colLight)[2] *slIntensity)>>16);
+  IncrementByteWithClip(pub[2], (long) (((UBYTE*)&lm_colLight)[1] *slIntensity)>>16);
 }
 
   
@@ -465,7 +465,7 @@ skipPixel:
         slL = aubSqrt[slL];
         if( slL>_slHotSpot) slIntensity = ((255-slL)*_slLightStep);
         // add the intensity to the pixel
-        AddToCluster( pubLayer, (slIntensity>>8)/255.0f);
+        AddToCluster( pubLayer, slIntensity);
       } 
       // go to the next pixel
       pubLayer+=4;
@@ -683,7 +683,7 @@ skipPixel:
         slL = aubSqrt[slL];
         if( slL>_slHotSpot) slIntensity = ((255-slL)*_slLightStep);
         // add the intensity to the pixel
-        AddToCluster( pubLayer, (slIntensity>>8)/255.0f);
+        AddToCluster( pubLayer, slIntensity);
       } 
       // go to the next pixel
       pubLayer+=4;
@@ -901,7 +901,7 @@ skipPixel:
         if( sl1oL<256) slIntensity = 0;
         else if( sl1oL<slMax1oL) slIntensity = ((sl1oL-256)*_slLightStep)/*>>16*/;
         // add the intensity to the pixel
-        AddToCluster( pubLayer, (slIntensity>>8)/255.0f);
+        AddToCluster( pubLayer, slIntensity);
       } 
       // advance to next pixel
       pubLayer+=4;
@@ -1122,7 +1122,7 @@ skipPixel:
         if( sl1oL<256) slIntensity = 0;
         else if( sl1oL<slMax1oL) slIntensity = ((sl1oL-256)*_slLightStep)/*>>16*/;
         // add the intensity to the pixel
-        AddToCluster( pubLayer, (slIntensity>>8)/255.0f);
+        AddToCluster( pubLayer, slIntensity);
       } 
       // advance to next pixel
       pubLayer+=4;
