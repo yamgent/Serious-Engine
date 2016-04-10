@@ -4,8 +4,8 @@ project(SeriousEngine)
 # Set @rpath for Mac OS X shared library install names.
 #cmake_policy(SET CMP0042 NEW)
 
-# Needed to find the SDL1.2 library files
-find_package(SDL REQUIRED)
+# Needed to find the SDL2 library files
+find_package(SDL2 REQUIRED)
 
 # Set up some sanity stuff...
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME MATCHES "GNU|kFreeBSD")
@@ -654,13 +654,13 @@ if(LINUX)
     target_link_libraries(ssam "rt")
     endif()
     target_link_libraries(ssam "pthread")
-    target_link_libraries(ssam ${SDL_LIBRARY})
+    target_link_libraries(ssam ${SDL2_LIBRARY})
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
         target_link_libraries(SeriousSamDedicated "dl")
         target_link_libraries(SeriousSamDedicated "pthread")
-	target_link_libraries(SeriousSamDedicated ${SDL_LIBRARY})
+	target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
     endif()
 endif()
 
