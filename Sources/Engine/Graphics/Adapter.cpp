@@ -231,39 +231,6 @@ void CGfxLibrary::InitAPIs(void)
 
 #else
 
-static void sdl_addmodes(CDisplayAdapter *pda, Uint32 flags)
-{
-    const int dpy = 0;  // !!! FIXME: hook up a cvar?
-
-    const int total = SDL_GetNumDisplayModes(dpy);
-    for (int i = 0; i < total; i++)
-    {
-        if (pda->da_ctDisplayModes >= ARRAYCOUNT(pda->da_admDisplayModes))
-            break;
-
-        SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(dpy, i, &mode) == 0)
-        {
-            const int bpp = (int) SDL_BITSPERPIXEL(mode.format);
-            if (bpp < 16) continue;
-            DisplayDepth bits = DD_DEFAULT;
-            switch (bpp)
-            {
-                case 16: bits = DD_16BIT; break;
-                case 32: bits = DD_32BIT; break;
-                case 24: bits = DD_24BIT; break;
-                default: break;
-            }
-
-            CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
-            dm.dm_pixSizeI = mode.w;
-            dm.dm_pixSizeJ = mode.h;
-            dm.dm_ddDepth  = bits;
-            pda->da_ctDisplayModes++;
-        }
-    }
-}
-
 
 // initialize CDS support (enumerate modes at startup)
 void CGfxLibrary::InitAPIs(void)
@@ -286,6 +253,35 @@ void CGfxLibrary::InitAPIs(void)
   // detect modes for OpenGL ICD
   pda->da_ctDisplayModes = 0;
   pda->da_iCurrentDisplayMode = -1;
+
+  const int dpy = 0;  // !!! FIXME: hook up a cvar?
+  const int total = SDL_GetNumDisplayModes(dpy);
+  for (int i = 0; i < total; i++)
+  {
+    if (pda->da_ctDisplayModes >= ARRAYCOUNT(pda->da_admDisplayModes))
+      break;
+
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(dpy, i, &mode) == 0)
+    {
+      const int bpp = (int) SDL_BITSPERPIXEL(mode.format);
+      if (bpp < 16) continue;
+      DisplayDepth bits = DD_DEFAULT;
+      switch (bpp)
+      {
+        case 16: bits = DD_16BIT; break;
+        case 32: bits = DD_32BIT; break;
+        case 24: bits = DD_24BIT; break;
+        default: break;
+      }
+
+      CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
+      dm.dm_pixSizeI = mode.w;
+      dm.dm_pixSizeJ = mode.h;
+      dm.dm_ddDepth  = bits;
+      pda->da_ctDisplayModes++;
+    }
+  }
 }
 
 #endif
