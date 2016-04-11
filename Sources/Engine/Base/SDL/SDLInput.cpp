@@ -759,8 +759,11 @@ void CInput::GetInput(BOOL bPreScan)
     return;
   }
 
+#if 0
+  // should not be usefull
   SDL_Event event;
   while (SE_SDL_InputEventPoll(&event)) { /* do nothing... */ }
+#endif
 
   // if not pre-scanning
   if (!bPreScan) {
