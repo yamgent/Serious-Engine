@@ -163,6 +163,14 @@ void _initializeWinsock(void)
     return;
   }
 
+  // start WSA
+  if(WSAStartup(MAKEWORD(2, 2), _wsaData) != 0) {
+    CPrintF("Error initializing winsock!\n");
+    _uninitWinsock();
+    return;
+  }
+#endif
+
   _wsaData = new WSADATA;
   _socket = INVALID_SOCKET;
 
@@ -171,14 +179,6 @@ void _initializeWinsock(void)
     delete[] _szBuffer;
   }
   _szBuffer = new char[2050];
-
-  // start WSA
-  if(WSAStartup(MAKEWORD(2, 2), _wsaData) != 0) {
-    CPrintF("Error initializing winsock!\n");
-    _uninitWinsock();
-    return;
-  }
-#endif
 
   // get the host IP
   hostent* phe;
