@@ -41,8 +41,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 extern void (__stdcall *pglLockArraysEXT)(GLint first, GLsizei count);
 extern void (__stdcall *pglUnlockArraysEXT)(void);
 
+#ifdef PLATFORM_WIN32  // SDL handles this elsewhere.
 extern GLboolean (__stdcall *pwglSwapIntervalEXT)(GLint interval);
 extern GLint     (__stdcall *pwglGetSwapIntervalEXT)(void);
+#endif
 
 extern void (__stdcall *pglActiveTextureARB)(GLenum texunit);
 extern void (__stdcall *pglClientActiveTextureARB)(GLenum texunit);

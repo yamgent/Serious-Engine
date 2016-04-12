@@ -417,9 +417,7 @@ void LoadAndForceTexture(CTextureObject &to, CTextureObject *&pto, const CTFileN
   }
 }
 
-#if (!defined PLATFORM_WIN32)
 static char *argv0 = NULL;
-#endif
 
 void InitializeGame(void)
 {
@@ -459,17 +457,21 @@ void InitializeGame(void)
   _pGame->Initialize(CTString("Data\\SeriousSam.gms"));
 }
 
+#ifdef PLATFORM_UNIX
+static void atexit_sdlquit(void) { static bool firsttime = true; if (firsttime) { firsttime = false; SDL_Quit(); } }
+#endif
+
 BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 {
+#ifdef PLATFORM_UNIX
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)
+    FatalError("SDL_Init(VIDEO|AUDIO) failed. Reason: [%s].", SDL_GetError());
+  atexit(atexit_sdlquit);
+  SDL_Init(SDL_INIT_JOYSTICK);  // don't care if this fails.
+#endif
+
   _hInstance = hInstance;
   ShowSplashScreen(hInstance);
-
-// !!! FIXME: This needs to be done before DetermineDesktopWidth(), but I
-// !!! FIXME:  don't really want this here.
-#ifdef PLATFORM_UNIX
-  if (SDL_Init(SDL_INIT_VIDEO) == -1)
-    FatalError("SDL_Init(SDL_INIT_VIDEO) failed. Reason: [%s].", SDL_GetError());
-#endif
 
   // remember desktop width
   _pixDesktopWidth = DetermineDesktopWidth();
@@ -480,12 +482,6 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 
   // parse command line before initializing engine
   ParseCommandLine(strCmdLine);
-
-#ifdef PLATFORM_WIN32
-  char argv0[MAX_PATH];
-  memset(argv0, '\0', sizeof (argv0));
-  GetModuleFileName(NULL, argv0, sizeof (argv0) - 1);
-#endif
 
   // initialize engine
   SE_InitEngine(argv0, sam_strGameName);
@@ -686,6 +682,10 @@ void End(void)
   // unlock the directory
   DirectoryLockOff();
   SE_EndEngine();
+
+#if PLATFORM_UNIX
+  SDL_Quit();
+#endif
 }
 
 
@@ -1005,13 +1005,14 @@ int SubMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int 
           break;
         }
       }
+#else
+      STUBBED("SDL2 can handle these events");
 #endif
 
       // toggle full-screen on alt-enter
       if( msg.message==WM_SYSKEYDOWN && msg.wParam==VK_RETURN && !IsIconic(_hwndMain)) {
-// !!! FIXME: This can be more efficient under Linux with
-// !!! FIXME:  SDL_WM_ToggleFullScreen(), since the GL context is just
-// !!! FIXME:  reused there...  --ryan.
+        // !!! FIXME: SDL doesn't need to rebuild the GL context here to toggle fullscreen.
+        STUBBED("SDL doesn't need to rebuild the GL context here...");
         StartNewMode( (GfxAPIType)sam_iGfxAPI, sam_iDisplayAdapter, sam_iScreenSizeI, sam_iScreenSizeJ,
                       (enum DisplayDepth)sam_iDisplayDepth, !sam_bFullScreenActive);
 
@@ -1389,7 +1390,13 @@ int CommonMainline( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			LPSTR lpCmdLine, int nCmdShow)
 {
-  return(CommonMainline(hInstance, hPrevInstance, lpCmdLine, nCmdShow));
+  argv0 = new char[MAX_PATH];
+  memset(argv0, '\0', sizeof (argv0));
+  GetModuleFileName(NULL, argv0, MAX_PATH-1);
+  const int rc = CommonMainline(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+  delete[] argv0;
+  argv0 = NULL;
+  return rc;
 }
 
 #else

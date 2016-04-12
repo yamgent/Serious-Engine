@@ -183,70 +183,17 @@ void MainWindow_End(void)
 // close the main application window
 void CloseMainWindow(void)
 {
-#ifdef PLATFORM_WIN32
   // if window exists
   if( _hwndMain!=NULL) {
     // destroy it
+    #ifdef PLATFORM_WIN32
     DestroyWindow(_hwndMain);
+    #else
+    SDL_DestroyWindow((SDL_Window *) _hwndMain);
+    #endif
     _hwndMain = NULL;
   }
-#else
-  _hwndMain = NULL;
-#endif
 }
-
-#ifdef PLATFORM_UNIX
-static void CreateSDLWindow(PIX pixSizeI, PIX pixSizeJ,
-                            const char *title, const char *icon,
-                            Uint32 flags)
-{
-  flags |= SDL_OPENGL;
-
-  SDL_WM_SetCaption(title, icon);
-
-  SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-  // ShowCursor(0) and input grabbing need to be done here to prevent a
-  //  Voodoo 3 bug. Was this ever fixed?
-  SDL_ShowCursor(0);
-  SDL_WM_GrabInput(SDL_GRAB_ON);
-
-  int color_depth[] = {32, 24, 16, 15, -1};
-  int i;
-
-  if (_pGfx->gl_iCurrentDepth != 0)
-  {
-    color_depth[0] = _pGfx->gl_iCurrentDepth;
-    color_depth[1] = -1;
-  } // if
-
-  for (i = 0; color_depth[i] > 0; i++)
-  {
-    int bits = (color_depth[i] >= 24) ? 8 : 5;
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, bits);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, bits);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, bits);
-    if (SDL_SetVideoMode(pixSizeI, pixSizeJ, color_depth[i], flags) != NULL)
-      break;
-    CPrintF("SDL_SetVideoMode() failed at %d-bit color! Reason: %s\n", color_depth[i], SDL_GetError());
-  } // for
-
-  SDL_WM_GrabInput(SDL_GRAB_OFF);
-
-  if (color_depth[i] > 0)
-    _pGfx->gl_iCurrentDepth = color_depth[i];
-  else
-  {
-    SDL_Quit();
-    FatalError("Failed to create GL context.\n");
-  } // else
-
-  _hwndMain = (void *) 0x0001;
-  SE_UpdateWindowHandle( _hwndMain);
-} // CreateSDLWindow
-#endif
-
 
 void ResetMainWindowNormal(void)
 {
@@ -297,11 +244,12 @@ void OpenMainWindowNormal( PIX pixSizeI, PIX pixSizeJ)
   ResetMainWindowNormal();
 
 #else
+  SDL_snprintf( achWindowTitle, sizeof (achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ, SDL_WINDOW_OPENGL);
+  if( _hwndMain==NULL) FatalError(TRANS("Cannot open main window!"));
+  SE_UpdateWindowHandle( _hwndMain);
   _pixLastSizeI = pixSizeI;
   _pixLastSizeJ = pixSizeJ;
-  // set window title
-  sprintf( achWindowTitle, TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
-  CreateSDLWindow(pixSizeI, pixSizeJ, achWindowTitle, "ssam", 0);
 #endif
 }
 
@@ -333,9 +281,12 @@ void OpenMainWindowFullScreen( PIX pixSizeI, PIX pixSizeJ)
   ShowWindow(    _hwndMain, SW_SHOWNORMAL);
 
 #else
-  // set window title
-  sprintf( achWindowTitle, TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
-  CreateSDLWindow(pixSizeI, pixSizeJ, achWindowTitle, "ssam", SDL_FULLSCREEN);
+  SDL_snprintf( achWindowTitle, sizeof (achWindowTitle), TRANS("Serious Sam (FullScreen %dx%d)"), pixSizeI, pixSizeJ);
+  _hwndMain = SDL_CreateWindow(achWindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pixSizeI, pixSizeJ, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+  if( _hwndMain==NULL) FatalError(TRANS("Cannot open main window!"));
+  SE_UpdateWindowHandle( _hwndMain);
+  _pixLastSizeI = pixSizeI;
+  _pixLastSizeJ = pixSizeJ;
 #endif
 }
 

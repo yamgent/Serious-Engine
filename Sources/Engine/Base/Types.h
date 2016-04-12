@@ -142,7 +142,7 @@ typedef unsigned int        UINT;
     #define _vsnprintf vsnprintf
     #define _snprintf snprintf
     #define _set_new_handler std::set_new_handler
-    #define _finite finite
+    #define _finite isfinite
 
     inline void _RPT_do(const char *type, const char *fmt, ...)
     {
@@ -232,6 +232,7 @@ typedef unsigned int        UINT;
 
     typedef void *HWND;  /* !!! FIXME this sucks. */
     typedef void *HINSTANCE;  /* !!! FIXME this sucks. */
+    typedef void *HDC;  /* !!! FIXME this sucks. */
     typedef void *HGLRC;  /* !!! FIXME this sucks. */
     typedef void *HGLOBAL;  /* !!! FIXME this sucks. */
     typedef ULONG COLORREF;  /* !!! FIXME this sucks. */

@@ -297,7 +297,7 @@ inline ULONG NormFloatToByte( const FLOAT f)
   }
   return ulRet;
 #else
-  assert((f >= 0.0f) && (f <= 1.0f));
+  ASSERT((f >= 0.0f) && (f <= 1.0f));
   return( (ULONG) (f * 255.0f) );
 #endif
 }

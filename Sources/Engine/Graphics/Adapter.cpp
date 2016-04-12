@@ -231,61 +231,6 @@ void CGfxLibrary::InitAPIs(void)
 
 #else
 
-/*
-static SDL_Rect sdl_stdmode512x384  = { 0, 0,  512, 384 };
-static SDL_Rect sdl_stdmode640x480  = { 0, 0,  640, 480 };
-static SDL_Rect sdl_stdmode800x600  = { 0, 0,  800, 600 };
-static SDL_Rect sdl_stdmode1024x768 = { 0, 0, 1024, 768 };
-
-static SDL_Rect *stdmodes[] =
-{
-    &sdl_stdmode512x384,
-    &sdl_stdmode640x480,
-    &sdl_stdmode800x600,
-    &sdl_stdmode1024x768,
-    NULL
-};
-*/
-
-static void sdl_addmodes(CDisplayAdapter *pda, Uint32 flags)
-{
-  Uint8 bpp = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
-  DisplayDepth bits;
-
-  if (bpp < 16)
-    return;
-
-  switch (bpp)
-  {
-    case 16:
-      bits = DD_16BIT;
-      break;
-    case 32:
-      bits = DD_32BIT;
-      break;
-    case 24:
-      bits = DD_24BIT;
-      break;
-    default:
-      ASSERT(false);
-  }
-
-  SDL_Rect **modes = SDL_ListModes(NULL, flags);
-  if ((modes == NULL) || (modes == (SDL_Rect **) -1))
-    return;
-
-  CDisplayMode *adm = &pda->da_admDisplayModes[0];
-  size_t x = pda->da_ctDisplayModes;
-  size_t maxmodes = sizeof (pda->da_admDisplayModes) / sizeof (pda->da_admDisplayModes[0]);
-  for (int i = 0; ((modes[i] != NULL) && (x < maxmodes)); i++, x++)
-  {
-    adm[x].dm_pixSizeI = modes[i]->w;
-    adm[x].dm_pixSizeJ = modes[i]->h;
-    adm[x].dm_ddDepth = bits;
-    pda->da_ctDisplayModes++;
-  }
-}
-
 
 // initialize CDS support (enumerate modes at startup)
 void CGfxLibrary::InitAPIs(void)
@@ -309,14 +254,34 @@ void CGfxLibrary::InitAPIs(void)
   pda->da_ctDisplayModes = 0;
   pda->da_iCurrentDisplayMode = -1;
 
-  if (SDL_Init(SDL_INIT_VIDEO) == -1)
+  const int dpy = 0;  // !!! FIXME: hook up a cvar?
+  const int total = SDL_GetNumDisplayModes(dpy);
+  for (int i = 0; i < total; i++)
   {
-    CPrintF(TRANSV("SDL_Init failed! Reason: %s\n"), SDL_GetError());
-    return;
-  }
+    if (pda->da_ctDisplayModes >= ARRAYCOUNT(pda->da_admDisplayModes))
+      break;
 
-  sdl_addmodes(pda, SDL_OPENGL | SDL_FULLSCREEN);
-  sdl_addmodes(pda, SDL_OPENGL);
+    SDL_DisplayMode mode;
+    if (SDL_GetDisplayMode(dpy, i, &mode) == 0)
+    {
+      const int bpp = (int) SDL_BITSPERPIXEL(mode.format);
+      if (bpp < 16) continue;
+      DisplayDepth bits = DD_DEFAULT;
+      switch (bpp)
+      {
+        case 16: bits = DD_16BIT; break;
+        case 32: bits = DD_32BIT; break;
+        case 24: bits = DD_24BIT; break;
+        default: break;
+      }
+
+      CDisplayMode &dm = pda->da_admDisplayModes[pda->da_ctDisplayModes];
+      dm.dm_pixSizeI = mode.w;
+      dm.dm_pixSizeJ = mode.h;
+      dm.dm_ddDepth  = bits;
+      pda->da_ctDisplayModes++;
+    }
+  }
 }
 
 #endif

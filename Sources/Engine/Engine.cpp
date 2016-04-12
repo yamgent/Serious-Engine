@@ -45,6 +45,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Templates/StaticArray.cpp>
 #include <Engine/Base/IFeel.h>
 
+#if PLATFORM_UNIX
+#include "SDL.h"
+#endif
+
 // this version string can be referenced from outside the engine
 ENGINE_API CTString _strEngineBuild  = "";
 ENGINE_API ULONG _ulEngineBuildMajor = _SE_BUILD_MAJOR;
@@ -321,6 +325,21 @@ static void SanityCheckTypes(void)
 ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 {
   SanityCheckTypes();
+
+  #if PLATFORM_UNIX
+  extern SDL_EventType WM_SYSKEYDOWN;
+  extern SDL_EventType WM_LBUTTONDOWN;
+  extern SDL_EventType WM_LBUTTONUP;
+  extern SDL_EventType WM_RBUTTONDOWN;
+  extern SDL_EventType WM_RBUTTONUP;
+  extern SDL_EventType WM_PAINT;
+  WM_SYSKEYDOWN = (SDL_EventType) SDL_RegisterEvents(1);
+  WM_LBUTTONDOWN = (SDL_EventType) SDL_RegisterEvents(1);
+  WM_LBUTTONUP = (SDL_EventType) SDL_RegisterEvents(1);
+  WM_RBUTTONDOWN = (SDL_EventType) SDL_RegisterEvents(1);
+  WM_RBUTTONUP = (SDL_EventType) SDL_RegisterEvents(1);
+  WM_PAINT = (SDL_EventType) SDL_RegisterEvents(1);
+  #endif
 
   const char *gamename = "UnknownGame";
   if (strGameID != "")

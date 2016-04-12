@@ -55,6 +55,9 @@ public:
   inline INDEX Length(void) const { return strlen(str_String); };
   INDEX LengthNaked(void) const;
 
+  // report if string is empty
+  inline BOOL IsEmpty(void) const { return *str_String == 0; };
+
   // strip decorations from the string
   CTString Undecorated(void) const;
 
