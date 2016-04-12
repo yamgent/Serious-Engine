@@ -166,12 +166,6 @@ void _initializeWinsock(void)
   _wsaData = new WSADATA;
   _socket = INVALID_SOCKET;
 
-  // make the buffer that we'll use for packet reading
-  if(_szBuffer != NULL) {
-    delete[] _szBuffer;
-  }
-  _szBuffer = new char[2050];
-
   // start WSA
   if(WSAStartup(MAKEWORD(2, 2), _wsaData) != 0) {
     CPrintF("Error initializing winsock!\n");
@@ -179,6 +173,12 @@ void _initializeWinsock(void)
     return;
   }
 #endif
+
+  // make the buffer that we'll use for packet reading
+  if(_szBuffer != NULL) {
+    delete[] _szBuffer;
+  }
+  _szBuffer = new char[2050];
 
   // get the host IP
   hostent* phe;
