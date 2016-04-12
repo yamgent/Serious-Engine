@@ -4,8 +4,25 @@ project(SeriousEngine)
 # Set @rpath for Mac OS X shared library install names.
 #cmake_policy(SET CMP0042 NEW)
 
-# Needed to find the SDL2 library files
-find_package(SDL2 REQUIRED)
+# Use system SDL2 is on by default
+option(USE_SYSTEM_SDL2 "Use system wide sdl2 libraries/includes" On)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+# Use systemwide SDL2 or custom build
+# RAKE!: Find a way to use their custom built library if
+# they want to use that instead or if their system only
+# allows for a setup like this.
+if(NOT USE_SYSTEM_SDL2)
+    include_directories(${CMAKE_SOURCE_DIR}/External/SDL2)
+else()
+    find_package(SDL2 REQUIRED)
+    if(SDL2_FOUND)
+	include_directories(${SDL2_INCLUDE_DIR})
+    else()
+	message(FATAL_ERROR "Error USE_SYSTEM_SDL2 is set but neccessary developer files not found")
+    endif()
+endif()
 
 # Set up some sanity stuff...
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME MATCHES "GNU|kFreeBSD")
@@ -117,8 +134,7 @@ add_definitions(-DSINGLE_THREADED=1)
 
 include_directories(
     .
-    External/SDL2
-    External/libogg/include
+    ${CMAKE_SOURCE_DIR}/External/libogg/include
 )
 if(USE_TREMOR)
 if(PANDORA)
@@ -397,7 +413,6 @@ if(MACOSX)
 endif()
 add_dependencies(${SHADERSLIB} ParseEntities)
 
-
 add_parser_and_scanner("Engine/Base/Parser" "Engine/Base/Scanner")
 add_parser_and_scanner("Engine/Ska/smcPars" "Engine/Ska/smcScan")
 
@@ -652,6 +667,7 @@ if(LINUX)
     target_link_libraries(ssam "dl")
     if(PANDORA)
     target_link_libraries(ssam "rt")
+    target_link_libraries(ssam ${SDL2_LIBRARY}) # RAKE!: I don't know if this will work yet.
     endif()
     target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
