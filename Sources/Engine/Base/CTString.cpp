@@ -638,8 +638,10 @@ BOOL CTString::Matches(const char *strOther) const
     } else {
       q = 0;
     }
-    
-    if ((tolower(*m) != tolower(*n)) && ((*m != '?') || q)) {
+
+    // also, '\\' in mask should match '/' in name, for unix compatibility
+    if (((tolower(*m) != tolower(*n)) && ((*m!='\\') && (*n!='/')))
+        && ((*m != '?') || q)) {
       if (!wild) {
         return FALSE;
       }

@@ -49,7 +49,7 @@ void CallProgressHook_t(FLOAT fCompleted)
       bTimeInitialized = TRUE;
     }
     CTimerValue tvNow = _pTimer->GetHighPrecisionTimer();
-    if ((tvNow-tvLastUpdate) > CTimerValue(net_fSendRetryWait*1.1)) {
+    if ((tvNow-tvLastUpdate) > CTimerValue(net_fSendRetryWait*1.1f)) {
 		  if (_pNetwork->ga_IsServer) {
         // handle server messages
         _cmiComm.Server_Update();
