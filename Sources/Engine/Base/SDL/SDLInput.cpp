@@ -49,6 +49,8 @@ INDEX inp_bMsgDebugger = FALSE;
 INDEX inp_bForceJoystickPolling = 0;
 INDEX inp_bAutoDisableJoysticks = 0;
 
+static CTCriticalSection sl_csInput;
+
 extern INDEX inp_ctJoysticksAllowed;
 
 /*
@@ -281,6 +283,16 @@ static void SetKeyFromEvent(const SDL_Event *event, const BOOL bDown)
     return;
   } // if
 
+  #ifdef PLATFORM_PANDORA
+  if(event->key.keysym.sym==SDLK_RSHIFT) {
+    _abKeysPressed[KID_MOUSE1] = bDown;
+    return;
+  } else if(event->key.keysym.sym==SDLK_RCTRL) {
+    _abKeysPressed[KID_MOUSE2] = bDown;
+    return;
+  }
+  #endif
+
     // convert virtualkey to kid
   const INDEX iKID = _aiScancodeToKid[event->key.keysym.scancode];
 
@@ -333,10 +345,14 @@ static void sdl_event_handler(const SDL_Event *event)
 int SE_SDL_InputEventPoll(SDL_Event *sdlevent)
 {
     ASSERT(sdlevent != NULL);
-    const int retval = SDL_PollEvent(sdlevent);
-    if (retval)
-        sdl_event_handler(sdlevent);
-    return retval;
+    CTSingleLock slInput(&sl_csInput, FALSE);
+    if(slInput.TryToLock()) {
+      const int retval = SDL_PollEvent(sdlevent);
+      if (retval)
+          sdl_event_handler(sdlevent);
+      return retval;
+    }
+    return 0;
 } // SE_SDL_InputEventPoll
 
 
@@ -495,6 +511,9 @@ BOOL CInput::PlatformInit(void)
   _pShell->DeclareSymbol("persistent user INDEX inp_bSDLPermitCtrlG;", (void*)&inp_bSDLPermitCtrlG);
   _pShell->DeclareSymbol("persistent user INDEX inp_bSDLGrabInput;", (void*)&inp_bSDLGrabInput);
   MakeConversionTables();
+
+  sl_csInput.cs_iIndex = 3000;
+
   return(TRUE);
 }
 
@@ -697,12 +716,25 @@ void CInput::GetInput(BOOL bPreScan)
       // get codes
       INDEX iKID  = kc.kc_iKID;
       //INDEX iScan = kc.kc_iScanCode;
-      //INDEX iVirt = kc.kc_iVirtKey;
-
-      // if snooped that key is pressed
-      if (_abKeysPressed[iKID]) {
-        // mark it as pressed
-        inp_ubButtonsBuffer[iKID] = 0xFF;
+      INDEX iVirt = kc.kc_iVirtKey;
+      // if reading async keystate
+      if (inp_iKeyboardReadingMethod==0) {
+        // if there is a valid virtkey
+        if (iVirt>=0) {
+          // is state is pressed
+          if (SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey((SDL_Keycode)iVirt)]) {
+            // mark it as pressed
+            inp_ubButtonsBuffer[iKID] = 0xFF;
+          }
+        }
+      }
+      else
+      {
+        // if snooped that key is pressed
+        if (_abKeysPressed[iKID]) {
+          // mark it as pressed
+          inp_ubButtonsBuffer[iKID] = 0xFF;
+        }
       }
     }
   }
@@ -712,7 +744,16 @@ void CInput::GetInput(BOOL bPreScan)
   _abKeysPressed[KID_MOUSEWHEELDOWN] = FALSE;
 
   // read mouse position
-  if ((mouse_relative_x != 0) || (mouse_relative_y != 0)) {
+  //#define USE_MOUSEWARP 1
+  #ifdef USE_MOUSEWARP
+  int iMx, iMy;
+  SDL_GetRelativeMouseState(&iMx, &iMy);
+  mouse_relative_x = iMx;
+  mouse_relative_y = iMy;
+  #else
+  if ((mouse_relative_x != 0) || (mouse_relative_y != 0)) 
+  #endif
+  {
     FLOAT fDX = FLOAT( mouse_relative_x );
     FLOAT fDY = FLOAT( mouse_relative_y );
 
@@ -762,11 +803,14 @@ void CInput::GetInput(BOOL bPreScan)
     inp_caiAllAxisInfo[1].cai_fReading = fMouseRelX;
     inp_caiAllAxisInfo[2].cai_fReading = fMouseRelY;
     inp_caiAllAxisInfo[3].cai_fReading = fMouseRelZ;
-  } else {
+  } 
+  #ifndef USE_MOUSEWARP
+  else {
     inp_caiAllAxisInfo[1].cai_fReading = 0.0;
     inp_caiAllAxisInfo[2].cai_fReading = 0.0;
     inp_caiAllAxisInfo[3].cai_fReading = 0.0;
   }
+  #endif
 
 /*
   // if not pre-scanning

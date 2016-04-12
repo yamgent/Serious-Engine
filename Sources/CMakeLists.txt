@@ -139,7 +139,10 @@ endif()
 
 
 # !!! FIXME: I currently force this, but you shouldn't _have_ to.
-add_definitions(-DSINGLE_THREADED=1)
+option(USE_SINGLE_THREAD "Use Single Threaded version" TRUE)
+if(USE_SINGLE_THREAD)
+ add_definitions(-DSINGLE_THREADED=1)
+endif()
 
 
 include_directories(
@@ -572,6 +575,22 @@ if (USE_I386_ASM)
     list(APPEND ADDITIONAL_ENGINE_SRCS SoundMixer386.o)
 endif()
 
+if(USE_SINGLE_THREAD)
+ set(SYNCHRO_SRCS
+    Engine/Base/NullSynchronization.cpp  # single threaded.
+ )
+else()
+ #!! TODO Win32/Linux case
+ set(SYNCHRO_SRCS
+    Engine/Base/Unix/UnixSynchronization.cpp  # multithreaded Unix.
+    #Engine/Base/SDL/SDLSynchronization.cpp
+    #Engine/Base/SDL/SDLThreadLocalStorage.cpp  # multithreaded Unix.
+ )
+    #Engine/Base/Registry.cpp  # Windows only.
+    #Engine/Base/StackDump.cpp  # Windows only.
+    #Engine/Base/Win32/Win32Synchronization.cpp # Windows only.
+endif()
+
 set(ENGINE_SRCS
     ${ENGINE_ENTITIES_CPP}
     Engine/Engine.cpp
@@ -610,12 +629,7 @@ set(ENGINE_SRCS
     Engine/Base/SDL/SDLTimer.cpp
     Engine/Base/SDL/SDLInput.cpp
     Engine/Base/SDL/SDLEvents.cpp
-    Engine/Base/NullSynchronization.cpp  # single threaded.
-    #Engine/Base/Unix/UnixSynchronization.cpp  # multithreaded Unix.
-    #Engine/Base/SDL/SDLThreadLocalStorage.cpp  # multithreaded Unix.
-    #Engine/Base/Registry.cpp  # Windows only.
-    #Engine/Base/StackDump.cpp  # Windows only.
-    #Engine/Base/Win32/Win32Synchronization.cpp # Windows only.
+    ${SYNCHRO_SRCS}
     Engine/Brushes/Brush.cpp
     Engine/Brushes/BrushIO.cpp
     Engine/Brushes/BrushShadows.cpp

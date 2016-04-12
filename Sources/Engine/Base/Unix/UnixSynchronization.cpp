@@ -6,7 +6,7 @@
 
 #include "Engine/StdH.h"
 #include <Engine/Base/Synchronization.h>
-
+//#pragma GCC optimize 0
 CTCriticalSection::CTCriticalSection(void)
 {
     cs_pvObject = (void *) new pthread_mutex_t;
@@ -25,7 +25,14 @@ INDEX CTCriticalSection::Lock(void)
 {
     if (owner == pthread_self())
         return(++LockCounter);
-
+    if(owner==0 && LockCounter) {
+        //printf("Warning, suspicious mutex state, force unlocking...\n");
+        pthread_mutex_unlock((pthread_mutex_t *) cs_pvObject);
+        LockCounter=0;
+    }
+    if(owner!=0) {
+      // do something???
+    }
     pthread_mutex_lock((pthread_mutex_t *) cs_pvObject);
     owner = pthread_self();
     return(++LockCounter);
@@ -51,7 +58,7 @@ INDEX CTCriticalSection::Unlock(void)
         {
             if (--LockCounter == 0)
             {
-                pthread_mutex_unlock((pthread_mutex_t *) cs_pvObject);
+                int ret = pthread_mutex_unlock((pthread_mutex_t *) cs_pvObject);
                 owner = 0;
             }
         }

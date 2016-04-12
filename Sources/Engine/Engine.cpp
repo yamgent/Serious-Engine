@@ -648,7 +648,12 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   ReleaseDC( NULL, hdc);
 #else
   // !!! FIXME : rcg01072002 This CAN be done with SDL, actually. Move this somewhere.
+  #ifdef PLATFORM_PANDORA
+  // hacked gamma support
+  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+  #else
   CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+  #endif
 #endif
 
 // !!! FIXME : rcg12072001 Move this somewhere else.
@@ -688,6 +693,9 @@ ENGINE_API void SE_EndEngine(void)
     //ASSERT(bOK);
     ReleaseDC( NULL, hdc);
   }
+#elif defined(PLATFORM_PANDORA)
+  // restore default gamma
+  system("sudo /usr/pandora/scripts/op_gamma.sh 0");
 #endif
 
   // free stocks

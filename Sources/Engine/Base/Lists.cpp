@@ -234,7 +234,8 @@ void CListNode::Remove(void)
   ASSERT(next.IsTailMarker() || next.IsLinked());
   ASSERT(prev.IsHeadMarker() || prev.IsLinked());
 
-  next.ln_Pred = &prev;
+  if(ln_Succ)
+    next.ln_Pred = &prev;
   prev.ln_Succ = &next;
   // make a non-linked node
   ln_Succ = NULL;
