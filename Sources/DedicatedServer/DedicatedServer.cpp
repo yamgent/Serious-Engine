@@ -39,6 +39,10 @@ CTString sam_strGameName = "serioussam";
 
 CTimerValue _tvLastLevelEnd((__int64) -1);
 
+// Not used; dummy declaration only needed by
+// Engine/Base/ErrorReporting.o
+HWND _hwndMain = NULL;
+
 void InitializeGame(void)
 {
   #ifdef STATICALLY_LINKED
