@@ -101,7 +101,7 @@ void LimitFrameRate(void)
   TIME tmCurrentDelta = (tvNow-tvLast).GetSeconds();
 
   // limit maximum frame rate
-  ded_iMaxFPS = ClampDn( ded_iMaxFPS,   1L);
+  ded_iMaxFPS = ClampDn( ded_iMaxFPS, 1);
   TIME tmWantedDelta  = 1.0f / ded_iMaxFPS;
   if( tmCurrentDelta<tmWantedDelta)
     _pTimer->Sleep( (DWORD) ((tmWantedDelta-tmCurrentDelta)*1000.0f) );
