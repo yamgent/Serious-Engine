@@ -675,11 +675,16 @@ void CInput::DisableInput( void)
   inp_bPollJoysticks = FALSE;
 }
 
+#define USE_MOUSEWARP 1
+// Define this to use GetMouse instead of using Message to read mouse coordinates
 
 // blank any queued mousemove events...SDLInput.cpp needs this when
 //  returning from the menus/console to game or the viewport will jump...
 void CInput::ClearRelativeMouseMotion(void)
 {
+    #if USE_MOUSEWARP
+    SDL_GetRelativeMouseState(NULL, NULL);
+    #endif
     mouse_relative_x = mouse_relative_y = 0;
 }
 
@@ -744,7 +749,6 @@ void CInput::GetInput(BOOL bPreScan)
   _abKeysPressed[KID_MOUSEWHEELDOWN] = FALSE;
 
   // read mouse position
-  //#define USE_MOUSEWARP 1
   #ifdef USE_MOUSEWARP
   int iMx, iMy;
   SDL_GetRelativeMouseState(&iMx, &iMy);
