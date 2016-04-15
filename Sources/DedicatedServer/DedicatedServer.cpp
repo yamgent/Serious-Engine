@@ -39,6 +39,10 @@ CTString sam_strGameName = "serioussam";
 
 CTimerValue _tvLastLevelEnd((__int64) -1);
 
+// Not used; dummy declaration only needed by
+// Engine/Base/ErrorReporting.o
+HWND _hwndMain = NULL;
+
 void InitializeGame(void)
 {
   #ifdef STATICALLY_LINKED
@@ -101,7 +105,7 @@ void LimitFrameRate(void)
   TIME tmCurrentDelta = (tvNow-tvLast).GetSeconds();
 
   // limit maximum frame rate
-  ded_iMaxFPS = ClampDn( ded_iMaxFPS,   1L);
+  ded_iMaxFPS = ClampDn( ded_iMaxFPS, 1);
   TIME tmWantedDelta  = 1.0f / ded_iMaxFPS;
   if( tmCurrentDelta<tmWantedDelta)
     _pTimer->Sleep( (DWORD) ((tmWantedDelta-tmCurrentDelta)*1000.0f) );
