@@ -787,6 +787,8 @@ add_executable(ssam
     SeriousSam/MenuPrinting.cpp
 )
 add_dependencies(ssam ParseEntities)
+# Make symbols in the main executable available to dynamic objects
+set_target_properties(ssam PROPERTIES ENABLE_EXPORTS ON)
 
 # !!! FIXME: this is an option because you have to recompile the entire engine twice.
 # !!! FIXME:  If we can put the engine in a static library and not lose symbols,
@@ -795,6 +797,8 @@ option(BUILD_DEDICATED_SERVER "Compile the dedicated server, too" FALSE)
 if(BUILD_DEDICATED_SERVER)
     add_executable(SeriousSamDedicated ${ENGINE_SRCS} DedicatedServer/DedicatedServer.cpp)
     add_dependencies(SeriousSamDedicated ParseEntities)
+    # Make symbols in the main executable available to dynamic objects
+    set_target_properties(SeriousSamDedicated PROPERTIES ENABLE_EXPORTS ON)
 endif()
 
 if(MACOSX)
