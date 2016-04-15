@@ -7,7 +7,18 @@ project(SeriousEngine)
 # Use system SDL2 is on by default
 option(USE_SYSTEM_SDL2 "Use system wide sdl2 libraries/includes" On)
 
+# fallback for cmake versions without add_compile_options # RAKE! Borrowed from dhewm3 project
+if(NOT COMMAND add_compile_options)
+	function(add_compile_options)
+		foreach(arg ${ARGN})
+			set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${arg}" PARENT_SCOPE)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${arg}" PARENT_SCOPE)
+		endforeach()
+	endfunction()
+endif()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+include(CheckCXXCompilerFlag)
 
 # ssam expects the libs to be in Debug/
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Debug)
@@ -49,72 +60,136 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     SET(DEBUG TRUE)
 endif()
 
-add_definitions(-D_REENTRANT=1)
-add_definitions(-D_MT=1)
+## ** RAKE! start compiler specific flags section **
+## ** RAKE! Borrowed from dhewm3 project, need to **
+## ** RAKE! clean up for SeriousEngine use. Also  **
+## ** RAKE! need to make this pandora safe.	  **
+# compiler specific flags
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	add_compile_options(-Wall)
+	add_compile_options(-pipe)
+	add_compile_options(-fPIC)
+	add_compile_options(-march=native)
+	add_definitions(-D_REENTRANT=1)
+	add_definitions(-D_MT=1)
+
+	## Add your custom C and CXX flags here.
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+	## For C flags
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+	set(CMAKE_C_FLAGS_DEBUGALL "${CMAKE_C_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0")
+	set(CMAKE_C_FLAGS_PROFILE "${CMAKE_C_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0 -fno-omit-frame-pointer")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+
+	## For C++ flags
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+	set(CMAKE_CXX_FLAGS_DEBUGALL "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0")
+	set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0 -fno-omit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with the profiling?
+	set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+
+
+	add_compile_options(-fno-strict-aliasing)
+
+	CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" cxx_has_fvisibility)
+	if(NOT cxx_has_fvisibility)
+		message(FATAL_ERROR "Compiler does not support -fvisibility")
+	endif()
+	#add_compile_options(-fvisibility=hidden) ## RAKE! This causes some issues with undefined symbols.
+
+	CHECK_CXX_COMPILER_FLAG("-Woverloaded-virtual" cxx_has_Woverload_virtual)
+	if(cxx_has_Woverload_virtual)
+		add_compile_options(-Woverloaded-virtual)
+	endif()
+
+	# TODO fix these warnings
+	add_compile_options(-Wno-sign-compare)
+	add_compile_options(-Wno-switch)
+	add_compile_options(-Wno-format-security)
+
+	if(MACOSX)
+		add_definitions(-DMACOS_X=1)
+
+		add_compile_options(-arch x86_64 -mmacosx-version-min=10.6)
+		set(ldflags "${ldflags} -arch x86_64 -mmacosx-version-min=10.6")
+
+		set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework IOKit")
+		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-DPLATFORM_MACOSX=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+	elseif(WINDOWS)
+		set(ldflags "${ldflags} -static-libgcc -static-libstdc++")
+		add_definitions(-DPLATFORM_WIN32=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+    		add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+    		add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
+	elseif(LINUX)
+		set(sys_libs ${sys_libs} dl)
+	    	set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
+    		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-D_FILE_OFFSET_BITS=64)
+    		add_definitions(-D_LARGEFILE_SOURCE=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+	elseif(FREEBSD)
+    		set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
+    		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-DPLATFORM_FREEBSD=1)
+    		add_definitions(-D_FILE_OFFSET_BITS=64)
+    		add_definitions(-D_LARGEFILE_SOURCE=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+    		include_directories("/usr/local/include")
+	endif()
+	
+	if(MACOSX OR LINUX)
+		add_compile_options(-pthread)
+		add_compile_options(-pipe -fsigned-char)
+	endif()
+
+	if(CMAKE_COMPILER_IS_GNUCC)
+	    	# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
+    		add_compile_options(-Wno-invalid-offsetof)
+	endif()
+	
+	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    		# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
+    		add_compile_options(-Wno-unused-value)
+    		add_compile_options(-Wno-switch)
+    		add_compile_options(-Wno-tautological-undefined-compare)
+		add_compile_options(-Wno-c++11-compat-deprecated-writable-strings)
+		add_definitions(-Wno-logical-op-parentheses)
+    		MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")	
+	endif()
+
+elseif(MSVC)
+	add_compile_options(/W4)
+	add_compile_options(/wd4100) # unreferenced formal parameter
+	add_compile_options(/wd4127) # conditional expression is constant
+	add_compile_options(/wd4244) # possible loss of data
+	add_compile_options(/wd4245) # signed/unsigned mismatch
+	add_compile_options(/wd4267) # possible loss of data
+	add_compile_options(/wd4714) # 'function' marked as __forceinline not inlined
+	add_compile_options(/wd4996) # 'function': was declared deprecated
+	add_compile_options(/wd4068) # unknown pragma
+	add_definitions(-D_ALLOW_KEYWORD_MACROS) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
+	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
+	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
+	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
+else()
+	message(FATAL_ERROR "Unsupported compiler")
+endif()
+
+## ** RAKE! end compiler specific flags section **
 
 if(DEBUG)
-    add_definitions(-DDEBUG=1)
-    add_definitions(-D_DEBUG=1)
     set(DEBUGSUFFIX "D")
 else()
-    add_definitions(-DNDEBUG=1)
-    add_definitions(-D_NDEBUG=1)
     set(DEBUGSUFFIX "")
-endif()
-
-if(WINDOWS)
-    add_definitions(-DPLATFORM_WIN32=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
-endif()
-
-if(LINUX)
-    set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-D_FILE_OFFSET_BITS=64)
-    add_definitions(-D_LARGEFILE_SOURCE=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-endif()
-
-if(FREEBSD)
-    set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-DPLATFORM_FREEBSD=1)
-    add_definitions(-D_FILE_OFFSET_BITS=64)
-    add_definitions(-D_LARGEFILE_SOURCE=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-    include_directories("/usr/local/include")
-endif()
-
-if(MACOSX)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-DPLATFORM_MACOSX=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-endif()
-
-if(LINUX OR MACOSX)
-    if(DEBUG)
-        add_definitions(-O0 -ggdb3)
-    endif(DEBUG)
-    add_definitions(-pthread)
-    add_definitions(-pipe -fsigned-char)
-    #CXXFLAGS += -fexceptions -frtti
-endif()
-
-if(CMAKE_COMPILER_IS_GNUCC)
-    # !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
-    add_definitions(-Wno-invalid-offsetof)
-endif()
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    # !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
-    add_definitions(-Wno-unused-value)
-    add_definitions(-Wno-switch)
-    add_definitions(-Wno-tautological-undefined-compare)
-    add_definitions(-Wno-c++11-compat-deprecated-writable-strings)
-    add_definitions(-Wno-logical-op-parentheses)
-    MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")
 endif()
 
 # !!! FIXME: you currently need this, but I'd like to flip this to not use
@@ -847,12 +922,11 @@ if(LINUX)
     set_target_properties(ssam PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
     target_link_libraries(ssam "m")
     target_link_libraries(ssam "dl")
+    target_link_libraries(ssam ${SDL2_LIBRARY})
     if(PANDORA)
-    target_link_libraries(ssam "rt")
-    target_link_libraries(ssam ${SDL2_LIBRARY}) # RAKE!: I don't know if this will work yet.
+    	target_link_libraries(ssam "rt")
     endif()
     target_link_libraries(ssam "pthread")
-    target_link_libraries(ssam ${SDL2_LIBRARY})
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
