@@ -37,6 +37,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <sys/time.h>
 #endif
 
+#if PLATFORM_FREEBSD
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 // Read the Pentium TimeStampCounter (or something like that).
 static inline __int64 ReadTSC(void)
 {
@@ -339,6 +344,13 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
 
 #elif PLATFORM_MACOSX
   tm_llPerformanceCounterFrequency = tm_llCPUSpeedHZ = ((__int64) GetCPUSpeed()) * 1000000;
+
+#elif PLATFORM_FREEBSD
+  __int64 mhz = 0;
+  size_t len = sizeof(mhz);
+
+  sysctlbyname("hw.clockrate", &mhz, &len, NULL, 0);
+  tm_llPerformanceCounterFrequency = tm_llCPUSpeedHZ = (__int64) (mhz * 1000000);
 
 #else
   // !!! FIXME : This is an ugly hack.
