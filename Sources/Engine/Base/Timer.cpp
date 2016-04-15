@@ -195,8 +195,9 @@ void __stdcall CTimer_TimerFunc(UINT uID, UINT uMsg, ULONG dwUser, ULONG dw1, UL
 }
 #elif (defined PLATFORM_UNIX)
 #include "SDL.h"
-Uint32 CTimer_TimerFunc_SDL(Uint32 interval)
+Uint32 CTimer_TimerFunc_SDL(Uint32 interval, void* param)
 {
+  (void)param;
   // access to the list of handlers must be locked
   CTSingleLock slHooks(&_pTimer->tm_csHooks, TRUE);
   // handle all timers
@@ -433,8 +434,8 @@ CTimer::CTimer(BOOL bInterrupt /*=TRUE*/)
    #else
 
     if (SDL_Init(SDL_INIT_TIMER) == -1) FatalError(TRANS("Cannot initialize multimedia timer!"));
-    SDL_SetTimer(ULONG(TickQuantum*1000.0f), CTimer_TimerFunc_SDL);
-
+    tm_TimerID = SDL_AddTimer(ULONG(TickQuantum*1000.0f), CTimer_TimerFunc_SDL, NULL);
+    if( tm_TimerID==NULL) FatalError(TRANS("Cannot initialize multimedia timer!"));
    #endif
 
     // make sure that timer interrupt is ticking
@@ -473,7 +474,7 @@ CTimer::~CTimer(void)
   ASSERT(tm_lhHooks.IsEmpty());
 
 #else
-    SDL_SetTimer(0, NULL);
+    SDL_RemoveTimer(tm_TimerID);
 #endif
 
 #endif

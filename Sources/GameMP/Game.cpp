@@ -2224,7 +2224,12 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
       _pInput->GetInput(TRUE);
     }
     // timer must not occur during prescanning
-    { CTSingleLock csTimer(&_pTimer->tm_csHooks, TRUE);
+    { 
+#if defined(PLATFORM_UNIX) && !defined(SINGLE_THREADED)
+      #warning "This seems to cause Race Condition, so disabled"
+#else
+      CTSingleLock csTimer(&_pTimer->tm_csHooks, TRUE);
+#endif
     // for each local player
     for( INDEX i=0; i<4; i++) {
       // if local player

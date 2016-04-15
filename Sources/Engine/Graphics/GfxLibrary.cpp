@@ -1992,6 +1992,18 @@ void CGfxLibrary::SwapBuffers(CViewPort *pvp)
     }
   }
   else
+#elif defined(PLATFORM_PANDORA)
+  if( gl_ulFlags & GLF_ADJUSTABLEGAMMA) {
+    //hacky Gamma only (no Contrast/Brightness) support.
+    static float old_pandora_gamma = 0.0f;
+    if (old_pandora_gamma!=gfx_fGamma) {
+      char buf[50];
+      sprintf(buf,"sudo /usr/pandora/scripts/op_gamma.sh %.2f", gfx_fGamma);
+      system(buf);
+      old_pandora_gamma = gfx_fGamma;
+    }
+  } 
+  else
 #endif
   // if not supported
   {
