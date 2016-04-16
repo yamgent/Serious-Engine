@@ -258,7 +258,7 @@ static BOOL StartUp_SDLaudio( CSoundLibrary &sl, BOOL bReport=TRUE)
   }
 
   sdl_silence = obtained.silence;
-  sdl_backbuffer_allocation = (obtained.size * 2);
+  sdl_backbuffer_allocation = (obtained.size * 4);
   sdl_backbuffer = (Uint8 *)AllocMemory(sdl_backbuffer_allocation);
   sdl_backbuffer_remain = 0;
   sdl_backbuffer_pos = 0;
