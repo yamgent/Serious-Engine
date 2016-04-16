@@ -38,12 +38,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <search.h>   // for qsort
 #include <float.h>    // for FPU control
 
-#if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD)
-#include <malloc.h>
-#endif
-
 /* rcg10042001 !!! FIXME: Move these somewhere. */
 #if (defined PLATFORM_WIN32)
+#include <malloc.h>
 #include <conio.h>
 #include <crtdbg.h>
 #include <winsock2.h>
