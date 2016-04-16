@@ -20,9 +20,6 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(CheckCXXCompilerFlag)
 
-# ssam expects the libs to be in Debug/
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Debug)
-
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
 # they want to use that instead or if their system only
@@ -66,6 +63,8 @@ endif()
 ## ** RAKE! need to make this pandora safe.	  **
 # compiler specific flags
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	# This section and the like are for flags/defines that can be shared between 
+	# c and c++ compile options
 	add_compile_options(-Wall)
 	add_compile_options(-pipe)
 	add_compile_options(-fPIC)
@@ -90,7 +89,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	set(CMAKE_CXX_FLAGS_DEBUGALL "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0")
 	set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0 -fno-omit-frame-pointer")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with the profiling?
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with RelWithDebInfo?
 	set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
 
 
@@ -922,11 +921,11 @@ if(LINUX)
     set_target_properties(ssam PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
     target_link_libraries(ssam "m")
     target_link_libraries(ssam "dl")
+    target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
     if(PANDORA)
     	target_link_libraries(ssam "rt")
     endif()
-    target_link_libraries(ssam "pthread")
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
