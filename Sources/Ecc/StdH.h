@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <stdarg.h>
 #include <math.h>
 
-#if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD)
+#ifdef PLATFORM_WIN32
 #include <malloc.h>
 #endif
 
