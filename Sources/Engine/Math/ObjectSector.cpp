@@ -1844,8 +1844,7 @@ void CObjectSector::CreateBSP(void)
 
     // copy the plane
     (DOUBLEplane3D &)bpo = *opo.opo_Plane;
-    STUBBED("64-bit issue");
-    bpo.bpo_ulPlaneTag = (ULONG)(size_t)opo.opo_Plane;
+    bpo.bpo_ulPlaneTag = (size_t)opo.opo_Plane;
 
     // get count of edges in this polygon
     const INDEX ctEdges = opo.opo_PolygonEdges.Count();
@@ -1860,13 +1859,11 @@ void CObjectSector::CreateBSP(void)
       // if the edge is reversed
       if(ope.ope_Backward) {
         // add bsp edge with reversed vertices
-        STUBBED("64-bit issue");
-        pbed[iEdge] = DOUBLEbspedge3D(*oed.oed_Vertex1, *oed.oed_Vertex0, (ULONG)(size_t)&oed);
+        pbed[iEdge] = DOUBLEbspedge3D(*oed.oed_Vertex1, *oed.oed_Vertex0, (size_t)&oed);
       // otherwise
       } else {
         // add normal bsp edge
-        STUBBED("64-bit issue");
-        pbed[iEdge] = DOUBLEbspedge3D(*oed.oed_Vertex0, *oed.oed_Vertex1, (ULONG)(size_t)&oed);
+        pbed[iEdge] = DOUBLEbspedge3D(*oed.oed_Vertex0, *oed.oed_Vertex1, (size_t)&oed);
       }
     }
     opo.opo_PolygonEdges.Unlock();

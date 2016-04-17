@@ -60,7 +60,7 @@ public:
   TIME pe_tmTick;
   ULONG pe_ulEntityID;
   ULONG pe_ulTypeID;
-  ULONG pe_ulEventID;
+  ULONG pe_ulEventID; // FIXME: make this void* or uintptr_t/size_t
 
   CPredictedEvent(void);
   void Clear(void) {};

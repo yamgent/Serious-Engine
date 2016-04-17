@@ -84,7 +84,7 @@ void CBrushPolygon::CreateBSPPolygon(BSPPolygon<DOUBLE, 3> &bspo)
 
   // set the plane of the bsp polygon
   ((DOUBLEplane3D &)bspo) = *brpo.bpo_pbplPlane->bpl_ppldPreciseAbsolute;
-  bspo.bpo_ulPlaneTag = (ULONG)brpo.bpo_pbscSector->bsc_abplPlanes.Index(brpo.bpo_pbplPlane);
+  bspo.bpo_ulPlaneTag = (size_t)brpo.bpo_pbscSector->bsc_abplPlanes.Index(brpo.bpo_pbplPlane);
 
   // create the array of edges in the bsp polygon
   INDEX ctEdges = brpo.bpo_abpePolygonEdges.Count();
@@ -109,7 +109,7 @@ void CBrushPolygon::CreateBSPPolygonNonPrecise(BSPPolygon<DOUBLE, 3> &bspo)
 
   // set the plane of the bsp polygon
   ((DOUBLEplane3D &)bspo) = FLOATtoDOUBLE(brpo.bpo_pbplPlane->bpl_plAbsolute);
-  bspo.bpo_ulPlaneTag = (ULONG)brpo.bpo_pbscSector->bsc_abplPlanes.Index(brpo.bpo_pbplPlane);
+  bspo.bpo_ulPlaneTag = (size_t)brpo.bpo_pbscSector->bsc_abplPlanes.Index(brpo.bpo_pbplPlane);
   // calculate offset for points
   DOUBLE3D vOffset = FLOATtoDOUBLE(((FLOAT3D&)brpo.bpo_pbplPlane->bpl_plAbsolute))*-fOffset;
   // offset the plane

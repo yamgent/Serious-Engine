@@ -254,6 +254,7 @@ extern void CacheShadows(void)
 {
   // mute all sounds
   _pSound->Mute();
+  STUBBED("64-bit issue"); // GetINDEX() returns int32!
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
   if( pwo!=NULL) {
     pwo->wo_baBrushes.CacheAllShadowmaps();
@@ -522,6 +523,7 @@ static void StockInfo(void)
   INDEX ctEntities=0, ctShadowLayers=0, ctPolys=0,    ctPlanes=0,   ctEdges=0,    ctVertices=0, ctSectors=0;
   SLONG slEntBytes=0, slLyrBytes=0,     slPlyBytes=0, slPlnBytes=0, slEdgBytes=0, slVtxBytes=0, slSecBytes=0;
   SLONG slCgrBytes=0;
+  STUBBED("64-bit issue"); // GetINDEX() returns int32!
   CWorld *pwo = (CWorld*)_pShell->GetINDEX("pwoCurrentWorld");
 
   if( pwo!=NULL)

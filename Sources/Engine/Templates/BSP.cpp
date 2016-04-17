@@ -1139,11 +1139,13 @@ void BSPTree<Type, iDimensions>::MoveSubTreeToArray(BSPNode<Type, iDimensions> *
   if (pbnSubtree->bn_pbnFront==NULL) {
     bnInArray.bn_pbnFront = NULL;
   } else {
+    STUBBED("64-bit issue"); // bn_ulPlaneTag is uint32!
     bnInArray.bn_pbnFront = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnFront->bn_ulPlaneTag;
   }
   if (pbnSubtree->bn_pbnBack==NULL) {
     bnInArray.bn_pbnBack = NULL;
   } else {
+    STUBBED("64-bit issue"); // basically the same as above but for back!
     bnInArray.bn_pbnBack = (BSPNode<Type, iDimensions>*)pbnSubtree->bn_pbnBack->bn_ulPlaneTag;
   }
 }

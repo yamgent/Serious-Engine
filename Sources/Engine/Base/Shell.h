@@ -59,7 +59,7 @@ public:
   // get/set symbols
   FLOAT GetFLOAT(const CTString &strName);
   void SetFLOAT(const CTString &strName, FLOAT fValue);
-  INDEX GetINDEX(const CTString &strName);
+  INDEX GetINDEX(const CTString &strName); // FIXME DG: maybe this should return size_t or uintptr_t? return value is casted to ptr all the time!
   void SetINDEX(const CTString &strName, INDEX iValue);
   CTString GetString(const CTString &strName);
   void SetString(const CTString &strName, const CTString &strValue);

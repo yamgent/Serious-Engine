@@ -87,12 +87,12 @@ class BSPEdge {
 public:
   Vector<Type, iDimensions> bed_vVertex0;  // edge vertices
   Vector<Type, iDimensions> bed_vVertex1;
-  ULONG bed_ulEdgeTag;   // tags for BSPs with tagged edges/planes
+  size_t bed_ulEdgeTag;   // tags for BSPs with tagged edges/planes - FIXME DG: or uintprt_t?
 
   /* Default constructor. */
   inline BSPEdge(void) {};
   /* Constructor with two vectors. */
-  inline BSPEdge(const Vector<Type, iDimensions> &vVertex0, const Vector<Type, iDimensions> &vVertex1, ULONG ulTag)
+  inline BSPEdge(const Vector<Type, iDimensions> &vVertex0, const Vector<Type, iDimensions> &vVertex1, size_t ulTag)
     : bed_vVertex0(vVertex0), bed_vVertex1(vVertex1), bed_ulEdgeTag(ulTag) {}
 
   /* Clear the object. */
@@ -110,7 +110,7 @@ template<class Type, int iDimensions>
 class BSPPolygon : public Plane<Type, iDimensions> {
 public:
   CDynamicArray<BSPEdge<Type, iDimensions> > bpo_abedPolygonEdges;  // array of edges in the polygon
-  ULONG bpo_ulPlaneTag;         // tags for BSPs with tagged planes (-1 for no tag)
+  size_t bpo_ulPlaneTag;         // tags for BSPs with tagged planes (-1 for no tag)
 
   /* Add an edge to the polygon. */
   inline void AddEdge(const Vector<Type, iDimensions> &vPoint0, const Vector<Type, iDimensions> &vPoint1, ULONG ulTag);
@@ -119,7 +119,7 @@ public:
   inline BSPPolygon(void) : bpo_ulPlaneTag(-1) {};
   /* Constructor with array of edges and plane. */
   inline BSPPolygon(
-    Plane<Type, iDimensions> &plPlane, CDynamicArray<BSPEdge<Type, iDimensions> > abedPolygonEdges, ULONG ulPlaneTag)
+    Plane<Type, iDimensions> &plPlane, CDynamicArray<BSPEdge<Type, iDimensions> > abedPolygonEdges, size_t ulPlaneTag)
     : Plane<Type, iDimensions>(plPlane)
     , bpo_abedPolygonEdges(abedPolygonEdges)
     , bpo_ulPlaneTag(ulPlaneTag)
