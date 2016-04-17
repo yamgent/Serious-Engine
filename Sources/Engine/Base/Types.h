@@ -182,11 +182,8 @@ typedef unsigned int        UINT;
     inline ULONG _rotl(ULONG ul, int bits)
     {
         #if (defined USE_PORTABLE_C)
-            // This is not fast at all, but it works.
-            for (int i = 0; i < bits; i++)
-                ul = ( (ul << 1) | ((ul & 0x80000000) >> 31) );
-            return(ul);
-
+            // DG: according to http://blog.regehr.org/archives/1063 this is fast
+            return (ul<<bits) | (ul>>(-bits&31));
         #elif (defined __GNU_INLINE__)
             // This, on the other hand, is wicked fast.  :)
             __asm__ __volatile__ (

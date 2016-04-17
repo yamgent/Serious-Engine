@@ -313,7 +313,10 @@ inline FLOAT NormByteToFloat( const ULONG ul)
 inline SLONG FloatToInt( FLOAT f)
 {
 #if defined(__arm__) || defined(USE_PORTABLE_C)
-  return((SLONG) (f + 0.5f));  /* best of luck to you. */
+  // round to nearest by adding/subtracting 0.5 (depending on f pos/neg) before converting to SLONG
+  float addToRound = 0.5f;
+  copysignf(addToRound, f); // copy f's signbit to addToRound => if f<0 then addToRound = -addToRound
+  return((SLONG) (f + addToRound));
 
 #elif (defined __MSVC_INLINE__)
   SLONG slRet;
@@ -341,8 +344,7 @@ inline SLONG FloatToInt( FLOAT f)
 // log base 2 of any float numero
 inline FLOAT Log2( FLOAT f) {
 #if (defined USE_PORTABLE_C) || defined(__arm__)
-  // !!! FIXME: What's wrong with log2()?
-  return (FLOAT)(log10(f)*3.321928094887);  // log10(x)/log10(2)
+  return log2f(f);
 
 #elif (defined __MSVC_INLINE__)
   FLOAT fRet;
@@ -376,6 +378,11 @@ inline FLOAT Log2( FLOAT f) {
 inline SLONG FastLog2( SLONG x)
 {
 #if (defined USE_PORTABLE_C)
+#ifdef __GNUC__
+  if(x == 0) return 0; // __builtin_clz() is undefined for 0
+  int numLeadingZeros  = __builtin_clz(x);
+  return 31 - numLeadingZeros;
+#else
   register SLONG val = x;
   register SLONG retval = 31;
   while (retval > 0)
@@ -386,6 +393,7 @@ inline SLONG FastLog2( SLONG x)
   }
 
   return 0;
+#endif
 
 #elif (defined __MSVC_INLINE__)
   SLONG slRet;
@@ -409,6 +417,7 @@ inline SLONG FastLog2( SLONG x)
 #endif
 }
 
+/* DG: function is unused => doesn't matter that portable implementation is not optimal :)
 // returns log2 of first larger value that is a power of 2
 inline SLONG FastMaxLog2( SLONG x)
 { 
@@ -443,6 +452,7 @@ printf("CHECK THIS: %s:%d\n", __FILE__, __LINE__);
   #error Fill this in for your platform.
 #endif
 }
+*/
 
 
 
