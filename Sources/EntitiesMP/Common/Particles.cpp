@@ -1591,7 +1591,7 @@ INDEX Particles_Regeneration(CEntity *pen, FLOAT tmStart, FLOAT tmStop, FLOAT fY
     
     UBYTE ubR = (UBYTE) (192+afStarsPositions[iRnd][1]*64);
     UBYTE ubG = (UBYTE) (192+afStarsPositions[iRnd][2]*64);
-    UBYTE ubB = (UBYTE) (192+afStarsPositions[iRnd][3]*64);
+    UBYTE ubB = (UBYTE) (192+afStarsPositions[iRnd][3]*64); // FIXME DG: afStarsPositions[i][3] invalid, what's going on here?
     UBYTE ubA = (UBYTE) CalculateRatio( fT, 0.0f, 1.0f, 0.4f, 0.01f)*255;
     COLOR colLine = RGBToColor( ubR, ubG, ubB) | ubA;
     
