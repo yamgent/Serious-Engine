@@ -114,6 +114,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_definitions(-Wno-tautological-undefined-compare)
     add_definitions(-Wno-c++11-compat-deprecated-writable-strings)
     add_definitions(-Wno-logical-op-parentheses)
+    MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")
 endif()
 
 # !!! FIXME: you currently need this, but I'd like to flip this to not use
