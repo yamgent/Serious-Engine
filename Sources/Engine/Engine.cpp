@@ -320,7 +320,68 @@ static void SanityCheckTypes(void)
         ASSERT(num == 0x01);
     #endif
 }
+// don't want to export this function
+void PlatformIdentification() {
+#if (defined PLATFORM_WIN32)
+  OSVERSIONINFO osv;
+  memset(&osv, 0, sizeof(osv));
+  osv.dwOSVersionInfoSize = sizeof(osv);
+  if (GetVersionEx(&osv)) {
+    switch (osv.dwPlatformId) {
+    case VER_PLATFORM_WIN32s:         sys_strOS = "Win32s";  break;
+    case VER_PLATFORM_WIN32_WINDOWS:  sys_strOS = "Win9x"; break;
+    case VER_PLATFORM_WIN32_NT:       sys_strOS = "WinNT"; break;
+    default: sys_strOS = "Unknown\n"; break;
+    }
 
+    sys_iOSMajor = osv.dwMajorVersion;
+    sys_iOSMinor = osv.dwMinorVersion;
+    sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
+    sys_strOSMisc = osv.szCSDVersion;
+
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+    CPrintF(TRANSV("  Version: %d.%d, build %d\n"), 
+      osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
+    CPrintF(TRANSV("  Misc: %s\n"), osv.szCSDVersion);
+  } else {
+    CPrintF(TRANSV("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
+  }
+
+#elif (defined PLATFORM_MACOSX)
+    STUBBED("Use some Gestalt replacement, or whatever");
+    #if 0
+    long osver = 0x0000;
+    OSErr err = Gestalt(gestaltSystemVersion, &osver);
+    if (err != noErr)
+        osver = 0x0000;
+
+    sys_iOSMajor = ((osver & 0x0F00) >> 8) + (((osver & 0xF000) >> 12) * 10);
+    sys_iOSMinor = ((osver & 0x00F0) >> 4);
+    sys_iOSBuild = ((osver & 0x000F) >> 0);
+    #else
+    sys_iOSMajor = 10;  // !!! FIXME: just flatly false.
+    sys_iOSMinor = 6;
+    sys_iOSBuild = 0;
+    #endif
+
+    sys_strOS = "Mac OS X";
+    sys_strOSMisc = "Mac OS";
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+    CPrintF(TRANSV("  Version: %d.%d.%d\n"),
+                 (int)sys_iOSMajor, (int)sys_iOSMinor, (int)sys_iOSBuild);
+
+#elif (defined PLATFORM_UNIX)  // !!! FIXME: rcg10082001 what to do with this?
+    sys_iOSMajor = 1;
+    sys_iOSMinor = 0;
+    sys_iOSBuild = 0;
+    sys_strOS = "Unix";
+    sys_strOSMisc = "Unix";
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
 // startup engine 
 ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 {
@@ -412,67 +473,9 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 
   // report os info
   CPrintF(TRANSV("Examining underlying OS...\n"));
-
+  
+  PlatformIdentfication();
 // !!! FIXME: Abstract this somehow.
-#if (defined PLATFORM_WIN32)
-  OSVERSIONINFO osv;
-  memset(&osv, 0, sizeof(osv));
-  osv.dwOSVersionInfoSize = sizeof(osv);
-  if (GetVersionEx(&osv)) {
-    switch (osv.dwPlatformId) {
-    case VER_PLATFORM_WIN32s:         sys_strOS = "Win32s";  break;
-    case VER_PLATFORM_WIN32_WINDOWS:  sys_strOS = "Win9x"; break;
-    case VER_PLATFORM_WIN32_NT:       sys_strOS = "WinNT"; break;
-    default: sys_strOS = "Unknown\n"; break;
-    }
-
-    sys_iOSMajor = osv.dwMajorVersion;
-    sys_iOSMinor = osv.dwMinorVersion;
-    sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
-    sys_strOSMisc = osv.szCSDVersion;
-
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-    CPrintF(TRANSV("  Version: %d.%d, build %d\n"), 
-      osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
-    CPrintF(TRANSV("  Misc: %s\n"), osv.szCSDVersion);
-  } else {
-    CPrintF(TRANSV("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
-  }
-
-#elif (defined PLATFORM_MACOSX)
-    STUBBED("Use some Gestalt replacement, or whatever");
-    #if 0
-    long osver = 0x0000;
-    OSErr err = Gestalt(gestaltSystemVersion, &osver);
-    if (err != noErr)
-        osver = 0x0000;
-
-    sys_iOSMajor = ((osver & 0x0F00) >> 8) + (((osver & 0xF000) >> 12) * 10);
-    sys_iOSMinor = ((osver & 0x00F0) >> 4);
-    sys_iOSBuild = ((osver & 0x000F) >> 0);
-    #else
-    sys_iOSMajor = 10;  // !!! FIXME: just flatly false.
-    sys_iOSMinor = 6;
-    sys_iOSBuild = 0;
-    #endif
-
-    sys_strOS = "Mac OS X";
-    sys_strOSMisc = "Mac OS";
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-    CPrintF(TRANSV("  Version: %d.%d.%d\n"),
-                 (int)sys_iOSMajor, (int)sys_iOSMinor, (int)sys_iOSBuild);
-
-#elif (defined PLATFORM_UNIX)  // !!! FIXME: rcg10082001 what to do with this?
-    sys_iOSMajor = 1;
-    sys_iOSMinor = 0;
-    sys_iOSBuild = 0;
-    sys_strOS = "Unix";
-    sys_strOSMisc = "Unix";
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-
-#else
-   #error Do something with this for your platform.
-#endif
 
   CPrintF("\n");
 
