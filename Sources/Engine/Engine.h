@@ -25,15 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // set this to 1 to enable checks whether somethig is deleted while iterating some array/container
 #define CHECKARRAYLOCKING 0
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <time.h>
-#include <math.h>
-#include <search.h>   // for qsort
-#include <float.h>    // for FPU control
 
 
 #include <Engine/Base/SystemSpecificInclude.h>
