@@ -321,7 +321,8 @@ static void SanityCheckTypes(void)
     #endif
 }
 // don't want to export this function
-void PlatformIdentification() {
+static void PlatformIdentification(void) 
+{
 #if (defined PLATFORM_WIN32)
   OSVERSIONINFO osv;
   memset(&osv, 0, sizeof(osv));
