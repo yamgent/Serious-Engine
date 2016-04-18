@@ -69,7 +69,7 @@ typedef uint32_t UINT;
 #endif
 
 // TODO: add more architecture detection routines
-#if __POWERPC__  /* rcg03232004 */
+#if __POWERPC__ || (defined __ppc64__) || (defined __alpha__) || (defined __sparc__) /* rcg03232004 */
   #define PLATFORM_BIGENDIAN 1
   #define PLATFORM_LITTLEENDIAN 0
 #else
