@@ -18,7 +18,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  * rcg10042001 In case these don't get defined in the project file, try to
  *   catch them here...
  */
-#ifdef _MSC_VER
+// be a little more discerning, using these macros will ensure that if someone
+// wants to use MINGW then they can
+#if (defined _WIN32) || (defined _WIN64) 
   #ifndef PLATFORM_WIN32
     #define PLATFORM_WIN32
   #endif
@@ -51,8 +53,29 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     #endif
   #endif
 
-#endif  // defined _MSC_VER
+#elif (defined __linux__) 
+  #if (defined __ANDROID__) || (defined __android__) 
+    #error "Android current isn't supported"
+  #else
+    #define PLATFORM_LINUX
+  #endif
+#elif (defined __APPLE__)
+  #include "TargetConditionals.h"
+  #if TARGET_OS_MAC
+    #define PLATFORM_MACOSX
+  #else
+    #error "Unsupported apple platform"
+  #endif
+#else
+  #warning "UNKNOWN PLATFORM IDENTIFIED!!!!"
+  #define PLATFORM_UNKNOWN
+#endif 
 
+#if (defined PLATFORM_LINUX) || (defined PLATFORM_MACOSX)
+  #ifndef PLATFORM_UNIX
+    #define PLATFORM_UNIX
+  #endif
+#endif 
 
 #ifdef PLATFORM_UNIX  /* rcg10042001 */
   #define ENGINE_API
