@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-//#include <Engine/Base/Platform.h>
 #include <Engine/Base/Base.h>
 
 // set this to 1 to enable checks whether somethig is deleted while iterating some array/container
