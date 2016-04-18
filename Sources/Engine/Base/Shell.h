@@ -33,6 +33,8 @@ public:
   CTCriticalSection sh_csShell; // critical section for access to shell data
   CDynamicArray<CShellSymbol> sh_assSymbols;  // all defined symbols
 
+  CWorld* pwoCurrentWorld;
+
   // Get a shell symbol by its name.
   CShellSymbol *GetSymbol(const CTString &strName, BOOL bDeclaredOnly);
   // Report error in shell script processing.
@@ -59,13 +61,23 @@ public:
   // get/set symbols
   FLOAT GetFLOAT(const CTString &strName);
   void SetFLOAT(const CTString &strName, FLOAT fValue);
-  INDEX GetINDEX(const CTString &strName); // FIXME DG: maybe this should return size_t or uintptr_t? return value is casted to ptr all the time!
+  INDEX GetINDEX(const CTString &strName);
   void SetINDEX(const CTString &strName, INDEX iValue);
   CTString GetString(const CTString &strName);
   void SetString(const CTString &strName, const CTString &strValue);
 
   CTString GetValue(const CTString &strName);
   void SetValue(const CTString &strName, const CTString &strValue);
+
+  void SetCurrentWorld(CWorld* pwo)
+  {
+    pwoCurrentWorld = pwo;
+  }
+
+  CWorld* GetCurrentWorld(void)
+  {
+    return pwoCurrentWorld;
+  }
 };
 
 // pointer to global shell object

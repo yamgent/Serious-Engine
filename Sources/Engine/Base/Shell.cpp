@@ -148,6 +148,7 @@ CShell::CShell(void)
 {
   // allocate undefined symbol
   _shell_istUndeclared = _shell_ast.Allocate();
+  pwoCurrentWorld = NULL;
 };
 CShell::~CShell(void)
 {
@@ -704,7 +705,6 @@ INDEX CShell::GetINDEX(const CTString &strName)
     return -666;
   } 
   // get it
-  STUBBED("64-bit issue"); // the return value is used as a pointer a lot!
   return *(INDEX*)pss->ss_pvValue;
 }
 
