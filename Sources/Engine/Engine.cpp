@@ -433,11 +433,61 @@ static void SetupSecondaryStorage(void)
 #endif
 }
 
-// startup engine 
-ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
+static void InitIFeel(void) 
 {
-  SanityCheckTypes();
+// !!! FIXME : rcg12072001 Move this somewhere else.
+#ifdef PLATFORM_WIN32
+  // init IFeel
+  HWND hwnd = NULL;//GetDesktopWindow();
+  HINSTANCE hInstance = GetModuleHandle(NULL);
+  if(IFeel_InitDevice(hInstance,hwnd))
+  {
+    CTString strDefaultProject = "Data\\Default.ifr";
+    // get project file name for this device
+    CTString strIFeel = IFeel_GetProjectFileName();
+    // if no file name is returned use default file
+    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
+    if(!IFeel_LoadFile(strIFeel))
+    {
+      if(strIFeel!=strDefaultProject)
+      {
+        IFeel_LoadFile(strDefaultProject);
+      }
+    }
+    CPrintF("\n");
+  }
+#endif
 
+}
+
+static void InitSystemGammaSettings(void) 
+{
+// !!! FIXME: Move this into GfxLibrary...
+#ifdef PLATFORM_WIN32
+  // readout system gamma table
+  HDC  hdc = GetDC(NULL);
+  BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
+  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+  if( !bOK) {
+    _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
+    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+  } // done
+  ReleaseDC( NULL, hdc);
+#else
+  // !!! FIXME : rcg01072002 This CAN be done with SDL, actually. Move this somewhere.
+  #ifdef PLATFORM_PANDORA
+  // hacked gamma support
+  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+  #else
+  CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+  #endif
+#endif
+
+}
+
+// System specific platform init functions
+static void PlatformSpecificInit(void) 
+{
   #if PLATFORM_UNIX
   extern SDL_EventType WM_SYSKEYDOWN;
   extern SDL_EventType WM_LBUTTONDOWN;
@@ -452,6 +502,14 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   WM_RBUTTONUP = (SDL_EventType) SDL_RegisterEvents(1);
   WM_PAINT = (SDL_EventType) SDL_RegisterEvents(1);
   #endif
+}
+
+// startup engine 
+ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
+{
+  SanityCheckTypes();
+
+  PlatformSpecificInit();
 
   const char *gamename = "UnknownGame";
   if (strGameID != "")
@@ -650,50 +708,11 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   _pfdDisplayFont = NULL;
   _pfdConsoleFont = NULL;
 
-// !!! FIXME: Move this into GfxLibrary...
-#ifdef PLATFORM_WIN32
-  // readout system gamma table
-  HDC  hdc = GetDC(NULL);
-  BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
-  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
-  if( !bOK) {
-    _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
-    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
-  } // done
-  ReleaseDC( NULL, hdc);
-#else
-  // !!! FIXME : rcg01072002 This CAN be done with SDL, actually. Move this somewhere.
-  #ifdef PLATFORM_PANDORA
-  // hacked gamma support
-  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
-  #else
-  CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
-  #endif
-#endif
-
-// !!! FIXME : rcg12072001 Move this somewhere else.
-#ifdef PLATFORM_WIN32
-  // init IFeel
-  HWND hwnd = NULL;//GetDesktopWindow();
-  HINSTANCE hInstance = GetModuleHandle(NULL);
-  if(IFeel_InitDevice(hInstance,hwnd))
-  {
-    CTString strDefaultProject = "Data\\Default.ifr";
-    // get project file name for this device
-    CTString strIFeel = IFeel_GetProjectFileName();
-    // if no file name is returned use default file
-    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
-    if(!IFeel_LoadFile(strIFeel))
-    {
-      if(strIFeel!=strDefaultProject)
-      {
-        IFeel_LoadFile(strDefaultProject);
-      }
-    }
-    CPrintF("\n");
-  }
-#endif
+  InitSystemGammaSettings();
+  InitIFeel(); // on non win32 platforms this will be optimized out if we play our cards right
 }
+
+
 
 
 // shutdown entire engine
