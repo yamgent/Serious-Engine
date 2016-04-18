@@ -663,6 +663,9 @@ static inline void IncrementByteWithClip( UBYTE &ub, SLONG slAdd)
 #endif
 
 // performs dithering of a 32-bit bipmap (can be in-place)
+#ifdef __GNUC__
+__attribute__((noinline)) // because of asm labels
+#endif
 void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PIX pixHeight,
                    PIX pixCanvasWidth, PIX pixCanvasHeight)
 {
