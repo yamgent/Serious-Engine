@@ -302,12 +302,31 @@ typedef uint32_t UINT;
 #define MAX_UWORD ((UWORD)0xFFFF)
 #define MAX_UBYTE ((UBYTE)0xFF)
 
+#ifdef PLATFORM_WIN32
 typedef int BOOL;		        // this is for TRUE/FALSE
 typedef int RESULT;		// for error codes
 typedef int INDEX;     // for indexed values and quantities
-
+#else 
+#if __cplusplus <= 199711L
+typedef int32_t BOOL;		        // this is for TRUE/FALSE
+#else // c++11 and greater has nice bool support
+typedef bool BOOL;
+#endif
+typedef int32_t RESULT;		// for error codes
+typedef int32_t INDEX;     // for indexed values and quantities
+#endif 
+#ifdef PLATFORM_WIN32
 #define FALSE 0
 #define TRUE  1
+#else
+  #if __cplusplus <= 199711L
+    #define FALSE 0
+    #define TRUE  1
+  #else // use boolean types when we have access to C++11
+    #define FALSE false
+    #define TRUE true
+  #endif
+#endif
 
 #define NONE 0
 #define NOTHING ((void) 0)
