@@ -13,7 +13,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-
+#ifndef SE_INCL_ENGINE_BASE_BASE_H
+#define SE_INCL_ENGINE_BASE_BASE_H
 /*
  * rcg10042001 In case these don't get defined in the project file, try to
  *   catch them here...
@@ -83,3 +84,4 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define ENGINE_API
 #endif
 
+#endif
