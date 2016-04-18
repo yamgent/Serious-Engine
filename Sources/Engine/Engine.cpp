@@ -383,6 +383,56 @@ static void PlatformIdentification(void)
    #error Do something with this for your platform.
 #endif
 }
+
+static void SetupMemoryManager(void) 
+{
+
+#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
+  MEMORYSTATUS ms;
+  GlobalMemoryStatus(&ms);
+
+  #define MB (1024*1024)
+  sys_iRAMPhys = ms.dwTotalPhys    /MB;
+  sys_iRAMSwap = ms.dwTotalPageFile/MB;
+
+#elif (defined PLATFORM_UNIX)
+  sys_iRAMPhys = 1;  // !!! FIXME: This is bad. Bad. BAD.
+  sys_iRAMSwap = 1;
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
+
+static void SetupSecondaryStorage(void) 
+{
+#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
+  // get info on the first disk in system
+  DWORD dwSerial;
+  DWORD dwFreeClusters;
+  DWORD dwClusters;
+  DWORD dwSectors;
+  DWORD dwBytes;
+
+  char strDrive[] = "C:\\";
+  strDrive[0] = strExePath[0];
+
+  GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
+  GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
+  sys_iHDDSize = ((__int64)dwSectors)*dwBytes*dwClusters/MB;
+  sys_iHDDFree = ((__int64)dwSectors)*dwBytes*dwFreeClusters/MB;
+  sys_iHDDMisc = dwSerial;
+
+#elif (defined PLATFORM_UNIX)  // !!! FIXME: Uhh...?
+  sys_iHDDSize = 1;
+  sys_iHDDFree = 1;
+  sys_iHDDMisc = 0xDEADBEEF;
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
+
 // startup engine 
 ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 {
@@ -491,53 +541,14 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   extern void ReportGlobalMemoryStatus(void);
   ReportGlobalMemoryStatus();
 
-#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
-  MEMORYSTATUS ms;
-  GlobalMemoryStatus(&ms);
-
-  #define MB (1024*1024)
-  sys_iRAMPhys = ms.dwTotalPhys    /MB;
-  sys_iRAMSwap = ms.dwTotalPageFile/MB;
-
-#elif (defined PLATFORM_UNIX)
-  sys_iRAMPhys = 1;  // !!! FIXME: This is bad. Bad. BAD.
-  sys_iRAMSwap = 1;
-
-#else
-   #error Do something with this for your platform.
-#endif
-
+  SetupMemoryManager();
   // initialize zip semaphore
   zip_csLock.cs_iIndex = -1;  // not checked for locking order
 
 
 // rcg10082001 Honestly, all of this is meaningless in a multitasking OS.
 //  That includes Windows, too.
-#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
-  // get info on the first disk in system
-  DWORD dwSerial;
-  DWORD dwFreeClusters;
-  DWORD dwClusters;
-  DWORD dwSectors;
-  DWORD dwBytes;
-
-  char strDrive[] = "C:\\";
-  strDrive[0] = strExePath[0];
-
-  GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
-  GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
-  sys_iHDDSize = ((__int64)dwSectors)*dwBytes*dwClusters/MB;
-  sys_iHDDFree = ((__int64)dwSectors)*dwBytes*dwFreeClusters/MB;
-  sys_iHDDMisc = dwSerial;
-
-#elif (defined PLATFORM_UNIX)  // !!! FIXME: Uhh...?
-  sys_iHDDSize = 1;
-  sys_iHDDFree = 1;
-  sys_iHDDMisc = 0xDEADBEEF;
-
-#else
-   #error Do something with this for your platform.
-#endif
+  SetupSecondaryStorage(); /// FIXME: does that name make sense
  
   // add console variables
   extern INDEX con_bNoWarnings;
