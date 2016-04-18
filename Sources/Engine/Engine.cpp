@@ -323,6 +323,7 @@ static void SanityCheckTypes(void)
 // don't want to export this function
 static void PlatformIdentification(void) 
 {
+// !!! FIXME: Abstract this somehow.
 #if (defined PLATFORM_WIN32)
   OSVERSIONINFO osv;
   memset(&osv, 0, sizeof(osv));
@@ -372,6 +373,7 @@ static void PlatformIdentification(void)
                  (int)sys_iOSMajor, (int)sys_iOSMinor, (int)sys_iOSBuild);
 
 #elif (defined PLATFORM_UNIX)  // !!! FIXME: rcg10082001 what to do with this?
+	// FIXME: probably want to use uname function on Linux but it isn't totally applicable...hmm...
     sys_iOSMajor = 1;
     sys_iOSMinor = 0;
     sys_iOSBuild = 0;
@@ -584,7 +586,6 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   CPrintF(TRANSV("Examining underlying OS...\n"));
   
   PlatformIdentification();
-// !!! FIXME: Abstract this somehow.
 
   CPrintF("\n");
 
