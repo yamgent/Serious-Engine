@@ -583,7 +583,7 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   // report os info
   CPrintF(TRANSV("Examining underlying OS...\n"));
   
-  PlatformIdentfication();
+  PlatformIdentification();
 // !!! FIXME: Abstract this somehow.
 
   CPrintF("\n");
