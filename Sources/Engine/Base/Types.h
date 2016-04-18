@@ -99,6 +99,9 @@ typedef uint32_t UINT;
     #include <limits.h>    // for PAGESIZE...
     #include <math.h>
 
+	// TODO: move the compiler detect routines to a separate file to declutter
+	// things
+	
     // check for legacy defines...
     #if (defined __ICC)
       #if (!defined __INTEL_COMPILER)
