@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // wants to use MINGW then they can
 #if (defined _WIN32) || (defined _WIN64) 
   #ifndef PLATFORM_WIN32
-    #define PLATFORM_WIN32
+    #define PLATFORM_WIN32 1
   #endif
 
   #ifndef PRAGMA_ONCE
@@ -57,25 +57,25 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #if (defined __ANDROID__) || (defined __android__) 
     #error "Android current isn't supported"
   #else
-    #define PLATFORM_LINUX
+    #define PLATFORM_LINUX 1
   #endif
 #elif (defined __APPLE__)
   #include "TargetConditionals.h"
   #if TARGET_OS_MAC
-    #define PLATFORM_MACOSX
+    #define PLATFORM_MACOSX 1
   #else
     #error "Unsupported apple platform"
   #endif
 #else
   #warning "UNKNOWN PLATFORM IDENTIFIED!!!!"
-  #define PLATFORM_UNKNOWN
+  #define PLATFORM_UNKNOWN 1
   #warning "USING PORTABLE C!!!"
-  #define USE_PORTABLE_C
+  #define USE_PORTABLE_C 
 #endif 
 
-#if (defined PLATFORM_LINUX) || (defined PLATFORM_MACOSX)
+#if PLATFORM_LINUX || PLATFORM_MACOSX
   #ifndef PLATFORM_UNIX
-    #define PLATFORM_UNIX
+    #define PLATFORM_UNIX 1
   #endif
 #endif 
 
