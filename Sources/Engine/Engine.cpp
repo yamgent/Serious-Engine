@@ -714,9 +714,7 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 
 
 
-
-// shutdown entire engine
-ENGINE_API void SE_EndEngine(void)
+static void PlatformSpecificDeinit(void)
 {
 // !!! FIXME: Move this into GfxLibrary...
 #ifdef PLATFORM_WIN32
@@ -731,6 +729,12 @@ ENGINE_API void SE_EndEngine(void)
   // restore default gamma
   system("sudo /usr/pandora/scripts/op_gamma.sh 0");
 #endif
+}
+
+// shutdown entire engine
+ENGINE_API void SE_EndEngine(void)
+{
+  PlatformSpecificDeinit();
 
   // free stocks
   delete _pEntityClassStock;  _pEntityClassStock = NULL;
