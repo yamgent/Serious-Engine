@@ -36,6 +36,13 @@ else()
     endif()
 endif()
 
+# RAKE! Where to install the binaries.
+if(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" OR CMAKE_INSTALL_PREFIX STREQUAL "") # Only works for linux ATM.
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../") # set install path to project root directory since
+                                                        # since one wasn't set during config
+    set(LOCAL_INSTALL TRUE)
+endif()
+
 # Set up some sanity stuff...
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME MATCHES "GNU|kFreeBSD")
     SET(LINUX TRUE)
@@ -952,5 +959,35 @@ if(TFE)
  set_target_properties(ssam PROPERTIES OUTPUT_NAME "ssam-tfe")
 endif()
 
-# end of CMakeLists.txt ...
+# RAKE! Install Section.
+if(DEBUG) # RAKE! Will this work with TFE?
+    install(TARGETS ssam ${SHADERSLIB} ${GAMEMPLIB} ${ENTITIESMPLIB}
+            RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin/Debug"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    if(BUILD_DEDICATED_SERVER)
+        install(TARGETS SeriousSamDedicated
+                RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/Bin
+                PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    endif()
+else()
+    install(TARGETS ssam ${SHADERSLIB} ${GAMEMPLIB} ${ENTITIESMPLIB}
+            RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    if(BUILD_DEDICATED_SERVER)
+        install(TARGETS SeriousSamDedicated
+                RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+                PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    endif()
+endif()
 
+# RAKE! If CMAKE_INSTALL_PREFIX was set during config then its not a local install
+# and SE1_10.gro needs to be installed to Games root dir.
+if(NOT LOCAL_INSTALL)
+    install(FILES ${CMAKE_SOURCE_DIR}/../SE1_10.gro
+            DESTINATION ${CMAKE_INSTALL_PREFIX}
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+endif()
+
+# end of CMakeLists.txt ...
