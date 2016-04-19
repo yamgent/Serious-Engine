@@ -1312,7 +1312,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
 
   // if not already generated, generate bind number(s) and force upload
   const PIX pixTextureSize = pixWidth*pixHeight;
-  if( td_ulObject==NONE)
+  if((td_ctFrames>1 && td_pulObjects==NULL) || td_ulObject==NONE)
   {
     // check whether frames are present
     ASSERT( td_pulFrames!=NULL && td_pulFrames[0]!=0xDEADBEEF); 
@@ -1367,7 +1367,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
       for( INDEX iFr=0; iFr<td_ctFrames; iFr++)
       { // determine frame offset and upload texture frame
         ULONG *pulCurrentFrame = td_pulFrames + (iFr * td_slFrameSize/BYTES_PER_TEXEL);
-        gfxSetTexture( ((ULONG*)td_ulObject)[iFr], td_tpLocal);
+        gfxSetTexture( td_pulObjects[iFr], td_tpLocal);
         gfxUploadTexture( pulCurrentFrame, pixWidth, pixHeight, td_ulInternalFormat, bNoDiscard);
       }
     } else {
@@ -1392,7 +1392,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
       td_pulFrames = NULL;
     }
     // done uploading
-    ASSERT( td_ulObject!=NONE);
+    ASSERT((td_ctFrames>1 && td_pulObjects!=NULL) || td_ulObject!=NONE);
     return;
   }
 
@@ -1401,12 +1401,11 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
     // must reset local texture parameters for each frame of animated texture
     for( INDEX iFr=0; iFr<td_ctFrames; iFr++) {
       td_tpLocal.Clear();
-      gfxSetTexture( ((ULONG*)td_ulObject)[iFr], td_tpLocal);
+      gfxSetTexture( td_pulObjects[iFr], td_tpLocal); // FIXME DG: use that union properly or something?!
     }
   } 
   // set corresponding probe or texture frame as current
-  ULONG ulTexObject = td_ulObject; // single-frame
-  if( td_ctFrames>1) ulTexObject = ((ULONG*)td_ulObject)[iFrameNo]; // animation
+  ULONG ulTexObject = (td_ctFrames>1) ? td_pulObjects[iFrameNo] : td_ulObject; // single-frame or animation
   if( bUseProbe) {
     // set probe if burst value doesn't allow real texture
     if( _pGfx->gl_slAllowedUploadBurst<0) {  
@@ -1437,17 +1436,22 @@ void CTextureData::Unbind(void)
   // reset mark
   td_tvLastDrawn = (__int64) 0;
 
-  // only if bound
-  if( td_ulObject==NONE) {
-    ASSERT( td_ulProbeObject==NONE);
-    return;
-  }
   // free frame number(s)
   if( td_ctFrames>1) { // animation
+    // only if bound
+    if( td_pulObjects == NULL ||  td_pulObjects[0]==NONE) {
+      ASSERT( td_pulObjects == NULL || td_pulObjects[0]==NONE);
+      return;
+    }
     for( INDEX iFrame=0; iFrame<td_ctFrames; iFrame++) gfxDeleteTexture( td_pulObjects[iFrame]);
     FreeMemory( td_pulObjects);
     td_pulObjects = NULL;
   } else { // single-frame
+    // only if bound
+    if( td_ulObject==NONE) {
+      ASSERT( td_ulProbeObject==NONE);
+      return;
+    }
     gfxDeleteTexture(td_ulObject);
   }
   // delete probe texture, too
@@ -1722,8 +1726,7 @@ BOOL CTextureData::IsAutoFreed(void)
 SLONG CTextureData::GetUsedMemory(void)
 {
   // readout texture object
-  ULONG ulTexObject = td_ulObject;
-  if( td_ctFrames>1) ulTexObject = td_pulObjects[0];
+  ULONG ulTexObject = (td_ctFrames>1) ? td_pulObjects[0] : td_ulObject;
 
   // add structure size and anim block size
   SLONG slUsed = sizeof(*this) + CAnimData::GetUsedMemory()-sizeof(CAnimData);

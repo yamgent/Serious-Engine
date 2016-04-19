@@ -75,6 +75,7 @@ static __forceinline CTStream &operator>>(CTStream &strm, PCXHeader &t) {
   strm>>t.HscreenSize;
   strm>>t.VscreenSize;
   strm.Read_t(t.Filler, sizeof (t.Filler));
+  return strm;
 }
 
 static __forceinline CTStream &operator<<(CTStream &strm, const PCXHeader &t) {
@@ -96,6 +97,7 @@ static __forceinline CTStream &operator<<(CTStream &strm, const PCXHeader &t) {
   strm<<t.HscreenSize;
   strm<<t.VscreenSize;
   strm.Write_t(t.Filler, sizeof (t.Filler));
+  return strm;
 }
 
 // TARGA header structure

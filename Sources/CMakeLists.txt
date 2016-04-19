@@ -9,6 +9,9 @@ option(USE_SYSTEM_SDL2 "Use system wide sdl2 libraries/includes" On)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+# ssam expects the libs to be in Debug/
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Debug)
+
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
 # they want to use that instead or if their system only
@@ -110,6 +113,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_definitions(-Wno-switch)
     add_definitions(-Wno-tautological-undefined-compare)
     add_definitions(-Wno-c++11-compat-deprecated-writable-strings)
+    add_definitions(-Wno-logical-op-parentheses)
+    MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")
 endif()
 
 # !!! FIXME: you currently need this, but I'd like to flip this to not use

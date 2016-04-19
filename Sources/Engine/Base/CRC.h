@@ -44,6 +44,18 @@ inline void CRC_AddLONG( ULONG &ulCRC, ULONG ul)
   CRC_AddBYTE(ulCRC, UBYTE(ul>> 0));
 };
 
+inline void CRC_AddLONGLONG( ULONG &ulCRC, __uint64 x)
+{
+  CRC_AddBYTE(ulCRC, UBYTE(x>>56));
+  CRC_AddBYTE(ulCRC, UBYTE(x>>48));
+  CRC_AddBYTE(ulCRC, UBYTE(x>>40));
+  CRC_AddBYTE(ulCRC, UBYTE(x>>32));
+  CRC_AddBYTE(ulCRC, UBYTE(x>>24));
+  CRC_AddBYTE(ulCRC, UBYTE(x>>16));
+  CRC_AddBYTE(ulCRC, UBYTE(x>> 8));
+  CRC_AddBYTE(ulCRC, UBYTE(x>> 0));
+}
+
 inline void CRC_AddFLOAT(ULONG &ulCRC, FLOAT f)
 {
   CRC_AddLONG(ulCRC, *(ULONG*)&f);

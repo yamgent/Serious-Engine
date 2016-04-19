@@ -227,8 +227,10 @@ void CControls::Load_t( CTFileName fnFile)
       achrActionName[ 0] = 0;
       FLOAT fSensitivity = 50;
       FLOAT fDeadZone = 0;
+      // FIXME DG: if achrIfSmooth should be read, add another %1024s - but it seems like achrIfSmooth
+      //           is unused - below achrIfRelative is compared to "Smooth"?!
       sscanf( achrLine, "%*[^\"]\"%1024[^\"]\"%*[^\"]\"%1024[^\"]\" %g %g %1024s %1024s",
-              achrActionName, achrAxis, &fSensitivity, &fDeadZone, achrIfInverted, achrIfRelative, achrIfSmooth);
+              achrActionName, achrAxis, &fSensitivity, &fDeadZone, achrIfInverted, achrIfRelative /*, achrIfSmooth*/);
       // find action axis
       INDEX iActionAxisNo = -1;
       {for( INDEX iAxis=0; iAxis<AXIS_ACTIONS_CT; iAxis++){
