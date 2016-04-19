@@ -5,7 +5,8 @@ project(SeriousEngine)
 #cmake_policy(SET CMP0042 NEW)
 
 # Use system SDL2 is on by default
-option(USE_SYSTEM_SDL2 "Use system wide sdl2 libraries/includes" On)
+option(USE_SYSTEM_SDL2 "Use systems sdl2 development files" On)
+option(USE_SYSTEM_ZLIB "Use systems zlib development files" On)
 
 # fallback for cmake versions without add_compile_options # RAKE! Borrowed from dhewm3 project
 if(NOT COMMAND add_compile_options)
@@ -32,7 +33,16 @@ else()
     if(SDL2_FOUND)
 	include_directories(${SDL2_INCLUDE_DIR})
     else()
-	message(FATAL_ERROR "Error USE_SYSTEM_SDL2 is set but neccessary developer files not found")
+        message(FATAL_ERROR "Error USE_SYSTEM_SDL2 is set but neccessary developer files are missing")
+    endif()
+endif()
+
+if(USE_SYSTEM_ZLIB)
+    find_package(ZLIB REQUIRED)
+    if(ZLIB_FOUND)
+        include_directories(${ZLIB_INCLUDE_DIRS})
+    else()
+        message(FATAL_ERROR "Error! USE_SYSTEM_ZLIB is set but neccessary developer files are missing")
     endif()
 endif()
 
@@ -78,42 +88,23 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-pipe)
 	add_compile_options(-fPIC)
 	add_compile_options(-march=native)
+        add_compile_options(-fno-strict-aliasing)
 	add_definitions(-D_REENTRANT=1)
 	add_definitions(-D_MT=1)
 
-	## Add your custom C and CXX flags here.
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        ## Add your custom C and CXX flags on the command line aka -DCMAKE_C_FLAGS=-std=c98 or -DCMAKE_CXX_FLAGS=-std=c++11
 
 	## For C flags
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
-	set(CMAKE_C_FLAGS_DEBUGALL "${CMAKE_C_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0")
-	set(CMAKE_C_FLAGS_PROFILE "${CMAKE_C_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0 -fno-omit-frame-pointer")
-	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
+        set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -fno-unsafe-math-optimizations")
 
 	## For C++ flags
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
-	set(CMAKE_CXX_FLAGS_DEBUGALL "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0")
-	set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS} -g -ggdb3 -D_DEBUG=1 -DDEBUG=1 -O0 -fno-omit-frame-pointer")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with RelWithDebInfo?
-	set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -ffast-math -fno-unsafe-math-optimizations -fomit-frame-pointer")
-
-
-	add_compile_options(-fno-strict-aliasing)
-
-	CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" cxx_has_fvisibility)
-	if(NOT cxx_has_fvisibility)
-		message(FATAL_ERROR "Compiler does not support -fvisibility")
-	endif()
-	#add_compile_options(-fvisibility=hidden) ## RAKE! This causes some issues with undefined symbols.
-
-	CHECK_CXX_COMPILER_FLAG("-Woverloaded-virtual" cxx_has_Woverload_virtual)
-	if(cxx_has_Woverload_virtual)
-		add_compile_options(-Woverloaded-virtual)
-	endif()
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -fno-unsafe-math-optimizations") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with RelWithDebInfo?
+        set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -fno-unsafe-math-optimizations")
 
 	# TODO fix these warnings
 	add_compile_options(-Wno-sign-compare)
@@ -121,23 +112,15 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wno-format-security)
 
 	if(MACOSX)
-		add_definitions(-DMACOS_X=1)
-
-		add_compile_options(-arch x86_64 -mmacosx-version-min=10.6)
-		set(ldflags "${ldflags} -arch x86_64 -mmacosx-version-min=10.6")
-
-		set(sys_libs ${sys_libs} "-framework Carbon -framework Cocoa -framework IOKit")
 		add_definitions(-DPLATFORM_UNIX=1)
     		add_definitions(-DPLATFORM_MACOSX=1)
     		add_definitions(-DPRAGMA_ONCE=1)
 	elseif(WINDOWS)
-		set(ldflags "${ldflags} -static-libgcc -static-libstdc++")
 		add_definitions(-DPLATFORM_WIN32=1)
     		add_definitions(-DPRAGMA_ONCE=1)
-    		add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
-    		add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
+                add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+                add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
 	elseif(LINUX)
-		set(sys_libs ${sys_libs} dl)
 	    	set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
     		add_definitions(-DPLATFORM_UNIX=1)
     		add_definitions(-D_FILE_OFFSET_BITS=64)
@@ -153,9 +136,9 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
     		include_directories("/usr/local/include")
 	endif()
 	
-	if(MACOSX OR LINUX)
+        if(MACOSX OR LINUX OR FREEBSD)
 		add_compile_options(-pthread)
-		add_compile_options(-pipe -fsigned-char)
+                add_compile_options(-fsigned-char)
 	endif()
 
 	if(CMAKE_COMPILER_IS_GNUCC)
@@ -691,6 +674,23 @@ else()
     #Engine/Base/Win32/Win32Synchronization.cpp # Windows only.
 endif()
 
+set(ZLIB_SRCS "")
+if(NOT USE_SYSTEM_ZLIB)
+    set(ZLIB_SRCS
+        Engine/zlib/inflate.c
+        Engine/zlib/adler32.c
+        Engine/zlib/infblock.c
+        Engine/zlib/inffast.c
+        Engine/zlib/inftrees.c
+        Engine/zlib/trees.c
+        Engine/zlib/compress.c
+        Engine/zlib/zutil.c
+        Engine/zlib/deflate.c
+        Engine/zlib/infcodes.c
+        Engine/zlib/infutil.c
+        Engine/zlib/uncompr.c)
+endif()
+
 set(ENGINE_SRCS
     ${ENGINE_ENTITIES_CPP}
     Engine/Engine.cpp
@@ -870,19 +870,8 @@ set(ENGINE_SRCS
     Engine/World/World.cpp
     Engine/World/WorldCollisionGrid.cpp
     Engine/World/WorldEditingProfile.cpp
-    Engine/zlib/inflate.c
-    Engine/zlib/adler32.c
-    Engine/zlib/infblock.c
-    Engine/zlib/inffast.c
-    Engine/zlib/inftrees.c
-    Engine/zlib/trees.c
-    Engine/zlib/compress.c
-    Engine/zlib/zutil.c
-    Engine/zlib/deflate.c
-    Engine/zlib/infcodes.c
-    Engine/zlib/infutil.c
-    Engine/zlib/uncompr.c
     ${ADDITIONAL_ENGINE_SRCS}
+    ${ZLIB_SRCS}
 )
 
 add_executable(ssam
@@ -931,6 +920,7 @@ if(LINUX)
     target_link_libraries(ssam "dl")
     target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
+    target_link_libraries(ssam ${ZLIB_LIBRARIES})
     if(PANDORA)
     	target_link_libraries(ssam "rt")
     endif()
@@ -940,6 +930,7 @@ if(LINUX)
         target_link_libraries(SeriousSamDedicated "dl")
         target_link_libraries(SeriousSamDedicated "pthread")
 	target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
+        target_link_libraries(SeriousSamDedicated ${ZLIB_LIBRARIES})
     endif()
 endif()
 
@@ -948,11 +939,13 @@ if(FREEBSD)
     target_link_libraries(ssam "m")
     target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
+    target_link_libraries(ssam ${ZLIB_LIBRARIES})
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
         target_link_libraries(SeriousSamDedicated "pthread")
         target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
+        target_link_libraries(SeriousSamDedicated ${ZLIB_LIBRARIES})
     endif()
 endif()
 
