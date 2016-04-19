@@ -365,9 +365,9 @@ skipPixel:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
-    "pushl      %%ebx                             \n\t"
     "movd      (" ASMSYM(_slL2Row) "), %%mm0      \n\t"
     "movd      (" ASMSYM(_slDL2oDURow) "), %%mm1  \n\t"
     "psllq     $32, %%mm1                         \n\t"
@@ -378,26 +378,25 @@ skipPixel:
     "por       %%mm0, %%mm2                       \n\t" // MM2 = slDDL2oDUoDV | slDL2oDV
     // prepare color
     "pxor      %%mm0, %%mm0                       \n\t"
-    "movd      %%eax, %%mm7                       \n\t"
+    "movd      %[ulLightRGB], %%mm7               \n\t"
     "punpcklbw %%mm0, %%mm7                       \n\t"
     "psllw     $1, %%mm7                          \n\t"
     // loop thru rows
     "movl      (" ASMSYM(_pulLayer) "), %%edi     \n\t"
-    "movl      (" ASMSYM(_iRowCt) "), %%ebx       \n\t"
+    "movl      (" ASMSYM(_iRowCt) "), %[xbx]      \n\t"
     "0:                                           \n\t" // rowLoop
-    "pushl     %%ebx                              \n\t"
-    "movd      %%mm1, %%ebx                       \n\t" // EBX = slL2Point
+    "movd      %%mm1, %[slL2Point]                \n\t"
     "movq      %%mm1, %%mm3                       \n\t"
     "psrlq     $32, %%mm3                         \n\t" // MM3 = 0 | slDL2oDU
     // loop thru pixels in current row
     "movl      (" ASMSYM(_iPixCt) "), %%ecx       \n\t"
     "1:                                           \n\t" // pixLoop
     // check if pixel need to be drawn
-    "cmpl      $0x10000000, %%ebx                 \n\t"
+    "cmpl      $0x10000000, %[slL2Point]          \n\t"
     "jge       3f                                 \n\t" // skipPixel
     // calculate intensities and do actual drawing of shadow pixel ARGB
     "movd      %%ecx, %%mm4                       \n\t"
-    "movl      %%ebx, %%eax                       \n\t"
+    "movl      %[slL2Point], %%eax                \n\t"
     "sarl      $15, %%eax                         \n\t"
     "andl      $8191, %%eax                       \n\t"
     "movzbl    " ASMSYM(aubSqrt) "(%%eax), %%eax  \n\t"
@@ -424,22 +423,20 @@ skipPixel:
     // advance to next pixel
     "addl      $4, %%edi                          \n\t"
     "movd      %%mm3, %%eax                       \n\t"
-    "addl      %%eax, %%ebx                       \n\t"
+    "addl      %%eax, %[slL2Point]                \n\t"
     "paddd     (" ASMSYM(mmDDL2oDU_AddAmbientPoint) "), %%mm3 \n\t"
     "decl      %%ecx                              \n\t"
     "jnz       1b                                 \n\t" // pixLoop
     // advance to the next row
-    "popl      %%ebx                              \n\t"
     "addl      (" ASMSYM(_slModulo) "), %%edi                 \n\t"
     "paddd     %%mm2, %%mm1                       \n\t"
     "paddd     (" ASMSYM(mmDDL2oDV_AddAmbientPoint) "), %%mm2 \n\t"
-    "decl      %%ebx                              \n\t"
+    "decl      %[xbx]                             \n\t"
     "jnz       0b                                 \n\t" // rowLoop
-    "popl      %%ebx                              \n\t"
     "emms                                         \n\t"
-        : // no outputs.
-        : "a" (ulLightRGB)
-        : "ecx", "edx", "edi", "esi", "cc", "memory"
+        : [xbx] "=&r" (tmp1), [slL2Point] "=&g" (tmp2)
+        : [ulLightRGB] "g" (ulLightRGB)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edi", "cc", "memory"
   );
 
  #else
@@ -580,10 +577,9 @@ skipPixel:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
-    "pushl     %%ebx                        \n\t"
-    "movl      %%ecx, %%ebx                 \n\t"
     "movd      (" ASMSYM(_slL2Row) "), %%mm0            \n\t"
     "movd      (" ASMSYM(_slDL2oDURow) "), %%mm1        \n\t"
     "psllq     $32, %%mm1                   \n\t"
@@ -594,29 +590,30 @@ skipPixel:
     "por       %%mm0, %%mm2                 \n\t" // MM2 = slDDL2oDUoDV | slDL2oDV
     // prepare color
     "pxor      %%mm0, %%mm0                 \n\t" // MM0 = 0 | 0 (for unpacking purposes)
-    "movd      %%eax, %%mm7                 \n\t" // eax == ulLightRGB
+    "movd      %[ulLightRGB], %%mm7         \n\t"
     "punpcklbw %%mm0, %%mm7                 \n\t"
     "psllw     $1, %%mm7                    \n\t"
     // loop thru rows
+    "movl      %[pubMask], %%esi            \n\t"
     "movl      (" ASMSYM(_pulLayer) "), %%edi           \n\t"
-    "movzbl    (%%ebx), %%edx               \n\t" // ebx == &ubMask
-    "movl      (" ASMSYM(_iRowCt) "), %%ebx             \n\t"
+    "movzbl    %[ubMask], %%edx             \n\t"
+    "movl      (" ASMSYM(_iRowCt) "), %%eax \n\t"
+    "movl      %%eax, %[xbx]                \n\t"
     "0:                                     \n\t" // rowLoop
-    "pushl     %%ebx                        \n\t"
-    "movd      %%mm1, %%ebx                 \n\t" // EBX = slL2Point
+    "movd      %%mm1, %[slL2Point]          \n\t"
     "movq      %%mm1, %%mm3                 \n\t"
     "psrlq     $32, %%mm3                   \n\t" // MM3 = 0 | slDL2oDU
     // loop thru pixels in current row
     "movl      (" ASMSYM(_iPixCt) "), %%ecx             \n\t"
     "1:                                     \n\t" // pixLoop
     // check if pixel need to be drawn; i.e. draw if( [esi] & ubMask && (slL2Point<FTOX))
-    "cmpl      $0x10000000, %%ebx           \n\t"
+    "cmpl      $0x10000000, %[slL2Point]    \n\t"
     "jge       3f                           \n\t" // skipPixel
     "testb     (%%esi), %%dl                \n\t"
     "je        3f                           \n\t" // skipPixel
     // calculate intensities and do actual drawing of shadow pixel ARGB
     "movd      %%ecx, %%mm4                 \n\t"
-    "movl      %%ebx, %%eax                 \n\t"
+    "movl      %[slL2Point], %%eax          \n\t"
     "sarl      $15, %%eax                   \n\t"
     "andl      $8191, %%eax                 \n\t"
     "movzbl    " ASMSYM(aubSqrt) "(%%eax), %%eax        \n\t"
@@ -643,24 +640,24 @@ skipPixel:
     // advance to next pixel
     "addl     $4, %%edi                     \n\t"
     "movd     %%mm3, %%eax                  \n\t"
-    "addl     %%eax, %%ebx                  \n\t"
+    "addl     %%eax, %[slL2Point]           \n\t"
     "paddd    (" ASMSYM(mmDDL2oDU_addAmbientMaskPoint) "), %%mm3  \n\t"
     "rolb     $1, %%dl                      \n\t"
     "adcl     $0, %%esi                     \n\t"
     "decl     %%ecx                         \n\t"
     "jnz      1b                            \n\t" // pixLoop
     // advance to the next row
-    "popl     %%ebx                         \n\t"
     "addl     (" ASMSYM(_slModulo) "), %%edi            \n\t"
     "paddd    %%mm2, %%mm1                  \n\t"
     "paddd    (" ASMSYM(mmDDL2oDV_addAmbientMaskPoint) "), %%mm2  \n\t"
-    "decl     %%ebx                         \n\t"
+    "decl     %[xbx]                        \n\t"
     "jnz      0b                            \n\t" // rowLoop
-    "popl     %%ebx                         \n\t"
     "emms                                   \n\t"
-        : // no outputs.
-        : "a" (ulLightRGB), "S" (pubMask), "c" (&ubMask)
-        : "edx", "edi", "cc", "memory"
+        : [xbx] "=&g" (tmp1), [slL2Point] "=&g" (tmp2)
+        : [ulLightRGB] "g" (ulLightRGB), [pubMask] "g" (pubMask),
+          [ubMask] "m" (ubMask)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
   );
 
  #else
@@ -800,10 +797,8 @@ skipPixel:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp1, tmp2;
   __asm__ __volatile__ (
-    "pushl   %%ebx                                  \n\t"
-    "movl    %%ecx, %%ebx                            \n\t"
-    "pushl   %%ebx                                  \n\t"
     // prepare interpolants
     "movd    (" ASMSYM(_slL2Row) "), %%mm0                      \n\t"
     "movd    (" ASMSYM(_slDL2oDURow) "), %%mm1                  \n\t"
@@ -816,31 +811,30 @@ skipPixel:
 
     // prepare color
     "pxor      %%mm0, %%mm0                         \n\t"
-    "movd      %%eax, %%mm7                         \n\t"
+    "movd      %[ulLightRGB], %%mm7                 \n\t"
     "punpcklbw %%mm0, %%mm7                         \n\t"
     "psllw     $1, %%mm7                            \n\t"
     // loop thru rows
     "movl      (" ASMSYM(_pulLayer) "), %%edi                   \n\t"
-    "movl      (" ASMSYM(_iRowCt) "), %%ebx                     \n\t"
+    "movl      (" ASMSYM(_iRowCt) "), %[xbx]        \n\t"
     "0:                                             \n\t" // rowLoop
-    "pushl     %%ebx                                \n\t"
-    "movd      %%mm1, %%ebx                         \n\t" // EBX = slL2Point
+    "movd      %%mm1, %[slL2Point]                  \n\t"
     "movq      %%mm1, %%mm3                         \n\t"
     "psrlq     $32, %%mm3                           \n\t" // MM3 = 0 | slDL2oDU
     // loop thru pixels in current row
     "movl      (" ASMSYM(_iPixCt) "), %%ecx                     \n\t"
     "1:                                             \n\t" // pixLoop
     // check if pixel need to be drawn
-    "cmpl      $0x10000000, %%ebx                   \n\t"
+    "cmpl      $0x10000000, %[slL2Point]            \n\t"
     "jge       3f                                   \n\t" // skipPixel
     // calculate intensities and do actual drawing of shadow pixel ARGB
     "movd      %%ecx, %%mm4                         \n\t"
-    "movl      %%ebx, %%eax                         \n\t"
+    "movl      %[slL2Point], %%eax                  \n\t"
     "sarl      $15, %%eax                           \n\t"
     "andl      $8191, %%eax                         \n\t"
     "movzwl    " ASMSYM(auw1oSqrt) "(, %%eax, 2), %%eax         \n\t"
     "movl      (" ASMSYM(_slLightMax) "), %%ecx                 \n\t"
-    "cmpl      4(%%esp), %%eax                      \n\t"
+    "cmpl      %[slMax1oL], %%eax                   \n\t"
     "jge       2f                                   \n\t" // skipInterpolation
     "leal      -256(%%eax), %%ecx                   \n\t"
     "imull     (" ASMSYM(_slLightStep) "), %%ecx                \n\t"
@@ -861,23 +855,20 @@ skipPixel:
     // advance to next pixel
     "addl      $4, %%edi                            \n\t"
     "movd      %%mm3, %%eax                         \n\t"
-    "addl      %%eax, %%ebx                         \n\t"
+    "addl      %%eax, %[slL2Point]                  \n\t"
     "paddd     (" ASMSYM(mmDDL2oDU_AddDiffusionPoint) "), %%mm3 \n\t"
     "decl      %%ecx                                \n\t"
     "jnz       1b                                   \n\t" // pixLoop
     // advance to the next row
-    "popl      %%ebx                                \n\t"
     "addl      (" ASMSYM(_slModulo) "), %%edi                   \n\t"
     "paddd     %%mm2, %%mm1                         \n\t"
     "paddd     (" ASMSYM(mmDDL2oDV_AddDiffusionPoint) "), %%mm2 \n\t"
-    "decl      %%ebx                                \n\t"
+    "decl      %[xbx]                               \n\t"
     "jnz       0b                                   \n\t" // rowLoop
-    "addl      $4, %%esp                            \n\t"
-    "popl      %%ebx                                \n\t"
     "emms                                           \n\t"
-        : // no outputs.
-        : "a" (ulLightRGB), "c" (slMax1oL)
-        : "edx", "edi", "esi", "cc", "memory"
+        : [xbx] "=&r" (tmp1), [slL2Point] "=&g" (tmp2)
+        : [ulLightRGB] "g" (ulLightRGB), [slMax1oL] "g" (slMax1oL)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edi", "cc", "memory"
   );
 
  #else
@@ -1018,9 +1009,9 @@ skipPixel:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
-    "pushl     %%edx                                     \n\t" // slMax1oL
     "movd      (" ASMSYM(_slL2Row) "), %%mm0                         \n\t"
     "movd      (" ASMSYM(_slDL2oDURow) "), %%mm1                     \n\t"
     "psllq     $32, %%mm1                                \n\t"
@@ -1031,34 +1022,35 @@ skipPixel:
     "por       %%mm0, %%mm2                              \n\t" // MM2 = slDDL2oDUoDV | slDL2oDV
     // prepare color
     "pxor      %%mm0, %%mm0                              \n\t" // MM0 = 0 | 0 (for unpacking purposes)
-    "movd      %%eax, %%mm7                              \n\t" // eax == ulLightRGB
+    "movd      %[ulLightRGB], %%mm7                      \n\t"
     "punpcklbw %%mm0, %%mm7                              \n\t"
     "psllw     $1, %%mm7                                 \n\t"
     // loop thru rows
+    "movl      %[pubMask], %%esi                         \n\t"
     "movl      (" ASMSYM(_pulLayer) "), %%edi                        \n\t"
-    "movzbl    (%%ecx), %%edx                            \n\t" // ecx == &ubMask
-    "movl      (" ASMSYM(_iRowCt) "), %%ebx                          \n\t"
+    "movzbl    %[ubMask], %%edx                          \n\t"
+    "movl      (" ASMSYM(_iRowCt) "), %%eax              \n\t"
+    "movl      %%eax, %[xbx]                             \n\t"
     "0:                                                  \n\t" // rowLoop
-    "pushl     %%ebx                                     \n\t"
-    "movd      %%mm1, %%ebx                              \n\t" // EBX = slL2Point
+    "movd      %%mm1, %[slL2Point]                       \n\t"
     "movq      %%mm1, %%mm3                              \n\t"
     "psrlq     $32, %%mm3                                \n\t" // MM3 = 0 | slDL2oDU
     // loop thru pixels in current row
     "movl      (" ASMSYM(_iPixCt) "), %%ecx                          \n\t"
     "1:                                                  \n\t" // pixLoop
     // check if pixel need to be drawn; i.e. draw if( [esi] & ubMask && (slL2Point<FTOX))
-    "cmpl      $0x10000000, %%ebx                        \n\t"
+    "cmpl      $0x10000000, %[slL2Point]                 \n\t"
     "jge       3f                                        \n\t" // skipPixel
     "testb     (%%esi), %%dl                             \n\t"
     "je        3f                                        \n\t" // skipPixel
     // calculate intensities and do actual drawing of shadow pixel ARGB
     "movd      %%ecx, %%mm4                              \n\t"
-    "movl      %%ebx, %%eax                              \n\t"
+    "movl      %[slL2Point], %%eax                       \n\t"
     "sarl      $15, %%eax                                \n\t"
     "andl      $8191, %%eax                              \n\t"
     "movzwl    " ASMSYM(auw1oSqrt) "(, %%eax, 2), %%eax              \n\t"
     "movl      (" ASMSYM(_slLightMax) "), %%ecx                      \n\t"
-    "cmpl      4(%%esp), %%eax                           \n\t" // slMax1oL
+    "cmpl      %[slMax1oL], %%eax                        \n\t"
     "jge       2f                                        \n\t" // skipInterpolation
     "leal      -256(%%eax), %%ecx                        \n\t"
     "imull     (" ASMSYM(_slLightStep) "), %%ecx                     \n\t"
@@ -1079,24 +1071,24 @@ skipPixel:
     // advance to next pixel
     "addl      $4, %%edi                                 \n\t"
     "movd      %%mm3, %%eax                              \n\t"
-    "addl      %%eax, %%ebx                              \n\t"
+    "addl      %%eax, %[slL2Point]                       \n\t"
     "paddd     (" ASMSYM(mmDDL2oDU_AddDiffusionMaskPoint) "), %%mm3  \n\t"
     "rolb      $1, %%dl                                  \n\t"
     "adcl      $0, %%esi                                 \n\t"
     "decl      %%ecx                                     \n\t"
     "jnz       1b                                        \n\t" // pixLoop
     // advance to the next row
-    "popl      %%ebx                                     \n\t"
     "addl      (" ASMSYM(_slModulo) "), %%edi                        \n\t"
     "paddd     %%mm2, %%mm1                              \n\t"
     "paddd     (" ASMSYM(mmDDL2oDV_AddDiffusionMaskPoint) "), %%mm2  \n\t"
-    "decl      %%ebx                                     \n\t"
+    "decl      %[xbx]                                    \n\t"
     "jnz       0b                                        \n\t" // rowLoop
-    "addl      $4, %%esp                                 \n\t" // ditch our temporaries.
     "emms                                                \n\t"
-        : // no outputs.
-        : "a" (ulLightRGB), "S" (pubMask), "c" (&ubMask), "d" (slMax1oL)
-        : "cc", "memory"
+        : [xbx] "=&g" (tmp1), [slL2Point] "=&g" (tmp2)
+        : [ulLightRGB] "g" (ulLightRGB), [pubMask] "g" (pubMask),
+          [ubMask] "m" (ubMask), [slMax1oL] "g" (slMax1oL)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
   );
 
  #else
@@ -1574,16 +1566,16 @@ rowNext:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp;
   __asm__ __volatile__ (
     // prepare pointers and variables
-    "pushl     %%ebx                    \n\t"
-    "movl      %%ecx,%%ebx              \n\t"
-
-    "movd      (%%eax), %%mm6           \n\t"
+    "movl      (" ASMSYM(_pulLayer) "), %%edi \n\t"
+    "movl      (" ASMSYM(_iRowCt) "), %[xbx] \n\t"
+    "movd      %[ulLight], %%mm6        \n\t"
     "punpckldq %%mm6, %%mm6             \n\t"
 
     "0:                                 \n\t" // rowLoop
-    "movl      %%edx, %%ecx             \n\t"
+    "movl      (" ASMSYM(_iPixCt) "), %%ecx \n\t"
     "shrl      $1, %%ecx                \n\t"
     "jz        2f                       \n\t" // pixRest
 
@@ -1598,7 +1590,7 @@ rowNext:
     "decl     %%ecx                     \n\t"
     "jnz      1b                        \n\t" // pixLoop
     "2:                                 \n\t" // pixRest
-    "testl    $1, %%edx                 \n\t"
+    "testl    $1, (" ASMSYM(_iPixCt) ") \n\t"
     "jz       3f                        \n\t" // rowNext
     "movd     (%%edi), %%mm5            \n\t"
     "paddusb  %%mm6, %%mm5              \n\t"
@@ -1607,15 +1599,13 @@ rowNext:
 
     "3:                                 \n\t" // rowNext
     // advance to the next row
-    "addl     %%esi, %%edi              \n\t"
-    "decl     %%ebx                     \n\t"
+    "addl     (" ASMSYM(_slModulo) "), %%edi \n\t"
+    "decl     %[xbx]                    \n\t"
     "jnz      0b                        \n\t" // rowLoop
-    "popl     %%ebx                     \n\t"
     "emms                               \n\t"
-        : // no outputs.
-        : "S" (_slModulo), "D" (_pulLayer), "a" (&ulLight), "c" (_iRowCt),
-          "d" (_iPixCt)
-        : "cc", "memory"
+        : [xbx] "=&r" (tmp)
+        : [ulLight] "g" (ulLight)
+        : FPU_REGS, "mm5", "mm6", "ecx", "edi", "cc", "memory"
   );
 
  #else
@@ -1676,16 +1666,17 @@ skipLight:
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG tmp;
   __asm__ __volatile__ (
     // prepare pointers and variables
-    "pushl   %%ebx                        \n\t"  // save GCC's register.
-    "movl    (" ASMSYM(_iRowCt) "), %%ebx             \n\t"
-    "pushl   %%ecx                        \n\t"
-    "movzbl  (%%edx), %%edx               \n\t"
-    "movd    (%%eax), %%mm6               \n\t"
+    "movzbl  %[ubMask], %%edx             \n\t"
+    "movl    %[pubMask], %%esi            \n\t"
+    "movl    (" ASMSYM(_pulLayer) "), %%edi \n\t"
+    "movl    (" ASMSYM(_iRowCt) "), %[xbx]\n\t"
+    "movd    %[ulLight], %%mm6            \n\t"
 
     "0:                                   \n\t" // rowLoop
-    "movl    (%%esp), %%ecx               \n\t"
+    "movl    (" ASMSYM(_iPixCt) "), %%ecx \n\t"
 
     "1:                                   \n\t" // pixLoop
     // mix underlaying pixels with the constant light color if not shaded
@@ -1705,15 +1696,14 @@ skipLight:
 
     // advance to the next row
     "addl    (" ASMSYM(_slModulo) "), %%edi           \n\t"
-    "decl    %%ebx                        \n\t"
+    "decl    %[xbx]                       \n\t"
     "jnz     0b                           \n\t" // rowLoop
     "emms                                 \n\t"
-    "popl    %%ebx                        \n\t"  // lose _iPixCt we pushed.
-    "popl    %%ebx                        \n\t"  // restore GCC's register.
-        :
-        : "d" (&ubMask), "S" (pubMask), "D" (_pulLayer),
-          "a" (&ulLight), "c" (_iPixCt)
-        : "cc", "memory"
+        : [xbx] "=&r" (tmp)
+        : [ubMask] "m" (ubMask), [pubMask] "g" (pubMask),
+          [ulLight] "g" (ulLight)
+        : FPU_REGS, "mm5", "mm6", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
   );
 
  #else
@@ -1873,13 +1863,14 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap)
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"
     "imull   %%esi, %%ecx   \n\t"
     "bswapl  %%eax          \n\t"
     "rep                    \n\t"
     "stosl                  \n\t"
-        : // no outputs.
+        : "=a" (clob1), "=c" (clob2), "=D" (clob3)
         : "c" (this->lm_pixCanvasSizeU), "S" (this->lm_pixCanvasSizeV),
           "a" (colAmbient), "D" (this->lm_pulShadowMap)
         : "cc", "memory"
@@ -1977,12 +1968,13 @@ __forceinline void CLayerMixer::CopyShadowLayer(void)
     rep     movsd
   }
  #elif (defined __GNU_INLINE__)
+  ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"
     "imull   %%eax, %%ecx   \n\t"
     "rep                    \n\t"
     "movsl                  \n\t"
-        : // no outputs.
+        : "=c" (clob1), "=S" (clob2), "=D" (clob3)
         : "c" (this->lm_pixCanvasSizeU), "a" (this->lm_pixCanvasSizeV),
           "S" (this->lm_pulStaticShadowMap), "D" (this->lm_pulShadowMap)
         : "cc", "memory"
@@ -2015,13 +2007,14 @@ __forceinline void CLayerMixer::FillShadowLayer( COLOR col)
   }
 
  #elif (defined __GNU_INLINE__)
+  ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"
     "imull   %%edx, %%ecx   \n\t"
     "bswapl  %%eax          \n\t"  // convert to R,G,B,A memory format!
     "rep                    \n\t"
     "stosl                  \n\t"
-        : // no outputs.
+        : "=a" (clob1), "=c" (clob2), "=D" (clob3)
         : "c" (this->lm_pixCanvasSizeU), "d" (this->lm_pixCanvasSizeV),
           "a" (col), "D" (this->lm_pulShadowMap)
         : "cc", "memory"
