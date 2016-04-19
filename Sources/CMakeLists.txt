@@ -23,7 +23,8 @@ include(CheckCXXCompilerFlag)
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
 # they want to use that instead or if their system only
-# allows for a setup like this.
+# allows for a setup like this. Maybe use a SDL2_DIR var or
+# some thing set in the system enviroment.
 if(NOT USE_SYSTEM_SDL2)
     include_directories(${CMAKE_SOURCE_DIR}/External/SDL2)
 else()
@@ -164,7 +165,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
     		MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")	
 	endif()
 
-elseif(MSVC)
+elseif(MSVC) # RAKE! I don't know if this will build with MSVC
 	add_compile_options(/W4)
 	add_compile_options(/wd4100) # unreferenced formal parameter
 	add_compile_options(/wd4127) # conditional expression is constant
@@ -174,8 +175,7 @@ elseif(MSVC)
 	add_compile_options(/wd4714) # 'function' marked as __forceinline not inlined
 	add_compile_options(/wd4996) # 'function': was declared deprecated
 	add_compile_options(/wd4068) # unknown pragma
-	add_definitions(-D_ALLOW_KEYWORD_MACROS) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
-	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
+        set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
 	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
 	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
 	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
