@@ -426,7 +426,7 @@ COLOR MulColors( COLOR col1, COLOR col2)
     "orl      %%eax, %%ebx         \n\t"
     "movl     %%ebx, %%ecx         \n\t"
     "popl     %%ebx                \n\t"
-        : "=c" (colRet)
+        : "=&c" (colRet)
         : "S" (col1), "D" (col2)
         : "eax", "edx", "cc", "memory"
   );
@@ -536,18 +536,18 @@ COLOR AddColors( COLOR col1, COLOR col2)
   }
 
 #elif (defined __GNU_INLINE__)
+  ULONG tmp;
   __asm__ __volatile__ (
-    "pushl   %%ebx                \n\t"
-    "pushl   %%edi                \n\t"
-    "pushl   %%esi                \n\t"
-    "xorl    %%ebx, %%ebx         \n\t"
+    // if xbx is "r", gcc runs out of regs in -fPIC + -fno-omit-fp :(
+    //"xorl    %[xbx], %[xbx]       \n\t"
+    "movl    $0, %[xbx]           \n\t"
     "mov     $255, %%esi          \n\t"
 
     // red
-    "movl    (%%esp), %%eax       \n\t"
+    "movl    %[col1], %%eax       \n\t"
     "andl    $0xFF000000, %%eax   \n\t"
     "shrl    $24, %%eax           \n\t"
-    "movl    4(%%esp), %%edx      \n\t"
+    "movl    %[col2], %%edx       \n\t"
     "andl    $0xFF000000, %%edx   \n\t"
     "shrl    $24, %%edx           \n\t"
     "addl    %%edx, %%eax         \n\t"
@@ -556,13 +556,13 @@ COLOR AddColors( COLOR col1, COLOR col2)
     "orl     %%ecx, %%eax         \n\t"
     "shll    $24, %%eax           \n\t"
     "andl    $0xFF000000, %%eax   \n\t"
-    "orl     %%eax, %%ebx         \n\t"
+    "orl     %%eax, %[xbx]        \n\t"
 
     // green
-    "movl    (%%esp), %%eax       \n\t"
+    "movl    %[col1], %%eax       \n\t"
     "andl    $0x00FF0000, %%eax   \n\t"
     "shrl    $16, %%eax           \n\t"
-    "movl    4(%%esp), %%edx      \n\t"
+    "movl    %[col2], %%edx       \n\t"
     "andl    $0x00FF0000, %%edx   \n\t"
     "shrl    $16, %%edx           \n\t"
     "addl    %%edx, %%eax         \n\t"
@@ -571,13 +571,13 @@ COLOR AddColors( COLOR col1, COLOR col2)
     "orl     %%ecx, %%eax         \n\t"
     "shll    $16, %%eax           \n\t"
     "andl    $0x00FF0000, %%eax   \n\t"
-    "orl     %%eax, %%ebx         \n\t"
+    "orl     %%eax, %[xbx]        \n\t"
 
     // blue
-    "movl    (%%esp), %%eax       \n\t"
+    "movl    %[col1], %%eax       \n\t"
     "andl    $0x0000FF00, %%eax   \n\t"
     "shrl    $8, %%eax            \n\t"
-    "movl    4(%%esp), %%edx      \n\t"
+    "movl    %[col2], %%edx       \n\t"
     "andl    $0x0000FF00, %%edx   \n\t"
     "shrl    $8, %%edx            \n\t"
     "addl    %%edx, %%eax         \n\t"
@@ -586,13 +586,13 @@ COLOR AddColors( COLOR col1, COLOR col2)
     "orl     %%ecx, %%eax         \n\t"
     "shll    $8, %%eax            \n\t"
     "andl    $0x0000FF00, %%eax   \n\t"
-    "orl     %%eax, %%ebx         \n\t"
+    "orl     %%eax, %[xbx]        \n\t"
 
     // alpha
-    "movl    (%%esp), %%eax       \n\t"
+    "movl    %[col1], %%eax       \n\t"
     "andl    $0x000000FF, %%eax   \n\t"
     "shrl    $0, %%eax            \n\t"
-    "movl    4(%%esp), %%edx      \n\t"
+    "movl    %[col2], %%edx       \n\t"
     "andl    $0x000000FF, %%edx   \n\t"
     "shrl    $0, %%edx            \n\t"
     "addl    %%edx, %%eax         \n\t"
@@ -601,15 +601,10 @@ COLOR AddColors( COLOR col1, COLOR col2)
     "orl     %%ecx, %%eax         \n\t"
     "shll    $0, %%eax            \n\t"
     "andl    $0x000000FF, %%eax   \n\t"
-    "orl     %%eax, %%ebx         \n\t"
-    "movl     %%ebx, %%ecx        \n\t"
-
-    // done.
-    "addl    $8, %%esp            \n\t"
-    "popl     %%ebx               \n\t"
-        : "=c" (colRet)
-        : "S" (col1), "D" (col2)
-        : "eax", "edx", "cc", "memory"
+    "orl     %[xbx], %%eax        \n\t"
+        : "=&a" (colRet), [xbx] "=&g" (tmp)
+        : [col1] "g" (col1), [col2] "g" (col2)
+        : "ecx", "edx", "esi", "cc", "memory"
   );
 
 #else

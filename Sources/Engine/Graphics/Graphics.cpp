@@ -13,12 +13,6 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-// !!! FIXME: One of the GNU inline asm blocks has a bug that causes the
-// !!! FIXME:  title on the main menu to render incorrectly. (Generating an
-// !!! FIXME:  incorrect mipmap?) The intel compiler works fine with the
-// !!! FIXME:  MSVC inline asm, but GCC and Intel both have the problem when
-// !!! FIXME:  using the GNU inline asm.
-
 #include "Engine/StdH.h"
 
 #include <Engine/Base/Statistics_Internal.h>
@@ -198,9 +192,9 @@ void FlipBitmap( UBYTE *pubSrc, UBYTE *pubDst, PIX pixWidth, PIX pixHeight, INDE
 
 // makes one level lower mipmap (bilinear or nearest-neighbour with border preservance)
 #if (defined __GNUC__)
-static __int64 mmRounder = 0x0002000200020002ll;
+__int64 mmRounder = 0x0002000200020002ll;
 #else
-static __int64 mmRounder = 0x0002000200020002;
+__int64 mmRounder = 0x0002000200020002;
 #endif
 
 static void MakeOneMipmap( ULONG *pulSrcMipmap, ULONG *pulDstMipmap, PIX pixWidth, PIX pixHeight, BOOL bBilinear)
@@ -305,19 +299,19 @@ pixLoopN:
 
    #elif (defined __GNU_INLINE__)
     __asm__ __volatile__ (
-      "pushl   %%ebx                        \n\t"  // Save GCC's register.
-      "movl    %%ecx, %%ebx                 \n\t"
-
       "pxor    %%mm0, %%mm0                 \n\t"
+      "movl    %[pulSrcMipmap], %%esi       \n\t"
+      "movl    %[pulDstMipmap], %%edi       \n\t"
+      "movl    %[pixHeight], %%edx          \n\t"
 
       "0:                                   \n\t"  // rowLoop
-      "movl    %%ebx, %%ecx                 \n\t"
+      "movl    %[pixWidth], %%ecx           \n\t"
 
       "1:                                   \n\t"  // pixLoopN
       "movd      0(%%esi), %%mm1            \n\t"  // up-left
       "movd      4(%%esi), %%mm2            \n\t"  // up-right
-      "movd      0(%%esi, %%ebx, 8), %%mm3  \n\t"  // down-left
-      "movd      4(%%esi, %%ebx, 8), %%mm4  \n\t"  // down-right
+      "movd      0(%%esi, %[pixWidth], 8), %%mm3 \n\t" // down-left
+      "movd      4(%%esi, %[pixWidth], 8), %%mm4 \n\t" // down-right
       "punpcklbw %%mm0, %%mm1               \n\t"
       "punpcklbw %%mm0, %%mm2               \n\t"
       "punpcklbw %%mm0, %%mm3               \n\t"
@@ -325,7 +319,7 @@ pixLoopN:
       "paddw     %%mm2, %%mm1               \n\t"
       "paddw     %%mm3, %%mm1               \n\t"
       "paddw     %%mm4, %%mm1               \n\t"
-      "paddw     (%%eax), %%mm1             \n\t"
+      "paddw     (" ASMSYM(mmRounder) "), %%mm1 \n\t"
       "psrlw     $2, %%mm1                  \n\t"
       "packuswb  %%mm0, %%mm1               \n\t"
       "movd      %%mm1, (%%edi)             \n\t"
@@ -338,15 +332,17 @@ pixLoopN:
 
       // advance to next row
       // skip one row in source mip-map
-      "leal     0(%%esi, %%ebx, 8), %%esi   \n\t"
+      "leal     0(%%esi, %[pixWidth], 8), %%esi \n\t"
       "decl     %%edx                       \n\t"
       "jnz      0b                          \n\t"  // rowLoop
-      "popl     %%ebx                       \n\t"  // restore GCC's register.
       "emms                                 \n\t"
           : // no outputs.
-          : "a" (&mmRounder), "c" (pixWidth), "S" (pulSrcMipmap),
-            "D" (pulDstMipmap), "d" (pixHeight)
-          : "cc", "memory"
+          : [pixWidth] "r" (pixWidth),
+            [pulSrcMipmap] "g" (pulSrcMipmap),
+            [pulDstMipmap] "g" (pulDstMipmap),
+            [pixHeight] "g" (pixHeight)
+          : FPU_REGS, MMX_REGS, "ecx", "edx", "esi", "edi",
+            "cc", "memory"
     );
 
    #else
@@ -433,23 +429,22 @@ fullEnd:
     }
 
    #elif (defined __GNU_INLINE__)
+    ULONG tmp, tmp2;
     __asm__ __volatile__ (
-      "pushl   %%ebx                       \n\t"  // Save GCC's register.
-      "movl    %%ecx, %%ebx                \n\t"
-
+      "xorl     %[xbx], %[xbx]             \n\t"
+      "movl     %[pulSrcMipmap], %%esi     \n\t"
+      "movl     %[pulDstMipmap], %%edi     \n\t"
       // setup upper half
-      "pushl    %%edx                      \n\t"  // pixHeight
-      "pushl    %%eax                      \n\t"  // ulRowModulo
-      "pushl    %%ebx                      \n\t"  // pixWidth
-      "xorl     %%ebx, %%ebx               \n\t"
-      "shrl     $1, %%edx                  \n\t"
+      "movl     %[pixHeight], %%eax        \n\t"
+      "movl     %%eax, %[xdx]              \n\t"
+      "shrl     $1, %[xdx]                 \n\t"
 
       "0:                                  \n\t" // halfLoop
-      "movl     (%%esp), %%ecx             \n\t"
+      "movl     %[pixWidth], %%ecx         \n\t"
       "shrl     $1, %%ecx                  \n\t"
 
       "1:                                  \n\t" // leftLoop
-      "movl     0(%%esi, %%ebx, 8), %%eax  \n\t" // upper-left (or lower-left)
+      "movl     0(%%esi, %[xbx], 8), %%eax \n\t" // upper-left (or lower-left)
       "movl     %%eax, (%%edi)             \n\t"
 
       // advance to next pixel
@@ -459,12 +454,12 @@ fullEnd:
       "jg       1b                         \n\t" // leftLoop
 
       // do right row half
-      "movl     (%%esp), %%ecx             \n\t"
+      "movl     %[pixWidth], %%ecx         \n\t"
       "shrl     $1, %%ecx                  \n\t"
       "jz       3f                         \n\t" // halfEnd
 
       "2:                                  \n\t" // rightLoop
-      "movl     4(%%esi, %%ebx, 8), %%eax  \n\t" // upper-right (or lower-right)
+      "movl     4(%%esi, %[xbx], 8), %%eax \n\t" // upper-right (or lower-right)
       "movl     %%eax, (%%edi)             \n\t"
 
       // advance to next pixel
@@ -475,25 +470,26 @@ fullEnd:
 
       "3:                                  \n\t" // halfEnd
       // advance to next row
-      "addl     4(%%esp), %%esi            \n\t" // skip one row in source mip-map
-      "subl     $1, %%edx                  \n\t"
+      "addl     %[ulRowModulo], %%esi      \n\t" // skip one row in source mip-map
+      "subl     $1, %[xdx]                 \n\t"
       "jg       0b                         \n\t" // halfLoop
 
       // do eventual lower half loop (if not yet done)
-      "movl     8(%%esp), %%edx            \n\t"
-      "shrl     $1, %%edx                  \n\t"
+      "movl     %[pixHeight], %%eax        \n\t"
+      "movl     %%eax, %[xdx]              \n\t"
+      "shrl     $1, %[xdx]                 \n\t"
       "jz       4f                         \n\t" // fullEnd
-      "cmpl     (%%esp), %%ebx             \n\t"
-      "movl     (%%esp), %%ebx             \n\t"
+      "cmpl     %[pixWidth], %[xbx]        \n\t"
+      "movl     %[pixWidth], %[xbx]        \n\t"
       "jne      0b                         \n\t" // halfLoop
 
       "4:                                  \n\t" // fullEnd
-      "addl     $12, %%esp                 \n\t"
-      "popl     %%ebx                      \n\t" // restore GCC's register.
-          : // no outputs.
-          : "S" (pulSrcMipmap), "D" (pulDstMipmap), "d" (pixHeight),
-            "c" (pixWidth), "a" (ulRowModulo)
-          : "cc", "memory"
+          : [xbx] "=&r" (tmp), [xdx] "=&g" (tmp2)
+          : [pulSrcMipmap] "g" (pulSrcMipmap),
+            [pulDstMipmap] "g" (pulDstMipmap),
+            [pixHeight] "g" (pixHeight), [pixWidth] "g" (pixWidth),
+            [ulRowModulo] "g" (ulRowModulo)
+          : "eax", "ecx", "esi", "edi", "cc", "memory"
     );
 
    #else
@@ -857,26 +853,27 @@ nextRowO:
   }
 
 #elif (defined __GNU_INLINE__)
+  ULONG tmp;
   __asm__ __volatile__ (
+    "movl     %[pulSrc], %%esi           \n\t"
+    "movl     %[pulDst], %%edi           \n\t"
     // reset dither line offset
-    "pushl    %%ebx                      \n\t"  // save GCC's register.
-    "movl     (" ASMSYM(pulDitherTable) "), %%ebx      \n\t"
-    "pushl    %%ecx                      \n\t"  // slModulo
-    "pushl    %%eax                      \n\t"  // pixWidth
+    "movl     %[pixHeight], %%eax        \n\t"
+    "movl     %%eax, %[xdx]              \n\t"
     "xorl     %%eax, %%eax               \n\t"
 
-    "rowLoopO:                           \n\t"
+    "0:                                  \n\t" // rowLoopO
     // get horizontal dither patterns
-    "movq    0(%%ebx, %%eax, 4), %%mm4   \n\t"
-    "movq    8(%%ebx, %%eax, 4), %%mm5   \n\t"
+    "movq    0(%[pulDitherTable], %%eax, 4), %%mm4 \n\t"
+    "movq    8(%[pulDitherTable], %%eax, 4), %%mm5 \n\t"
     "psrlw   (" ASMSYM(mmShifter) "), %%mm4            \n\t"
     "psrlw   (" ASMSYM(mmShifter) "), %%mm5            \n\t"
     "pand    (" ASMSYM(mmMask) "), %%mm4             \n\t"
     "pand    (" ASMSYM(mmMask) "), %%mm5             \n\t"
 
     // process row
-    "movl     (%%esp), %%ecx             \n\t"
-    "pixLoopO:                           \n\t"
+    "movl    %[pixWidth], %%ecx          \n\t"
+    "1:                                  \n\t" // pixLoopO
     "movq    0(%%esi), %%mm1             \n\t"
     "movq    8(%%esi), %%mm2             \n\t"
     "paddusb %%mm4, %%mm1                \n\t"
@@ -888,30 +885,30 @@ nextRowO:
     "addl     $16, %%esi                 \n\t"
     "addl     $16, %%edi                 \n\t"
     "subl     $4, %%ecx                  \n\t"
-    "jg       pixLoopO                   \n\t" // !!!! possible memory leak?
-    "je       nextRowO                   \n\t"
+    "jg       1b                         \n\t" // !!!! possible memory leak?
+    "je       2f                         \n\t" // nextRowO
 
     // backup couple of pixels
     "leal     0(%%esi, %%ecx, 4), %%esi  \n\t"
     "leal     0(%%edi, %%ecx, 4), %%edi  \n\t"
 
-    "nextRowO:                           \n\t"
+    "2:                                  \n\t" // nextRowO
     // get next dither line patterns
-    "addl     4(%%esp), %%esi            \n\t"
-    "addl     4(%%esp), %%edi            \n\t"
+    "addl     %[slModulo], %%esi         \n\t"
+    "addl     %[slModulo], %%edi         \n\t"
     "addl     $4, %%eax                  \n\t"
     "andl     $15, %%eax                 \n\t"
 
     // advance to next row
-    "decl     %%edx                      \n\t"
-    "jnz      rowLoopO                   \n\t"
+    "decl     %[xdx]                     \n\t"
+    "jnz      0b                         \n\t" // rowLoopO
     "emms                                \n\t"
-    "addl     $8, %%esp                  \n\t"
-    "popl     %%ebx                      \n\t"  // restore GCC's register.
-        : // no outputs.
-        : "S" (pulSrc), "D" (pulDst), "d" (pixHeight),
-          "a" (pixWidth), "c" (slModulo)
-        : "cc", "memory"
+        : [xdx] "=&g" (tmp)
+        : [pulSrc] "g" (pulSrc), [pulDst] "g" (pulDst),
+          [pixHeight] "g" (pixHeight), [pixWidth] "g" (pixWidth),
+          [slModulo] "g" (slModulo), [pulDitherTable] "r" (pulDitherTable)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "esi", "edi",
+          "cc", "memory"
   );
 
 #else
@@ -1051,17 +1048,17 @@ allDoneE:
 
 #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
-    "pushl   %%ebx                        \n\t" // Save GCC's register.
-    "movl    %%ecx, %%ebx                 \n\t"
     "pxor    %%mm0, %%mm0                 \n\t"
+    "movl    %[pulDst], %%esi             \n\t"
+    "movl    %[pixHeight], %%edx          \n\t"
     "decl    %%edx                        \n\t" // need not to dither last row
 
-    "rowLoopE:                            \n\t"
+    "0:                                   \n\t" // rowLoopE
     // left to right
-    "movl      %%eax, %%ecx               \n\t"
+    "movl      %[pixWidth], %%ecx         \n\t"
     "decl      %%ecx                      \n\t"
 
-    "pixLoopEL:                           \n\t"
+    "1:                                   \n\t" // pixLoopEL
     "movd      (%%esi), %%mm1             \n\t"
     "punpcklbw %%mm0, %%mm1               \n\t"
     "pand      (" ASMSYM(mmErrDiffMask) "), %%mm1     \n\t"
@@ -1086,29 +1083,29 @@ allDoneE:
 
     // spread errors
     "paddusb    4(%%esi), %%mm7           \n\t"
-    "paddusb   -4(%%esi, %%ebx, 4), %%mm3 \n\t"
-    "paddusb    0(%%esi, %%ebx, 4), %%mm5 \n\t"
-    "paddusb    4(%%esi, %%ebx, 4), %%mm1 \n\t"  // !!!! possible memory leak?
+    "paddusb   -4(%%esi, %[pixCanvasWidth], 4), %%mm3 \n\t"
+    "paddusb    0(%%esi, %[pixCanvasWidth], 4), %%mm5 \n\t"
+    "paddusb    4(%%esi, %[pixCanvasWidth], 4), %%mm1 \n\t"  // !!!! possible memory leak?
     "movd      %%mm7,  4(%%esi)           \n\t"
-    "movd      %%mm3, -4(%%esi, %%ebx, 4) \n\t"
-    "movd      %%mm5,  0(%%esi, %%ebx, 4) \n\t"
-    "movd      %%mm1,  4(%%esi, %%ebx, 4) \n\t"
+    "movd      %%mm3, -4(%%esi, %[pixCanvasWidth], 4) \n\t"
+    "movd      %%mm5,  0(%%esi, %[pixCanvasWidth], 4) \n\t"
+    "movd      %%mm1,  4(%%esi, %[pixCanvasWidth], 4) \n\t"
 
     // advance to next pixel
     "addl      $4, %%esi                  \n\t"
     "decl      %%ecx                      \n\t"
-    "jnz       pixLoopEL                  \n\t"
+    "jnz       1b                         \n\t" // pixLoopEL
 
     // advance to next row
-    "addl      %%edi, %%esi               \n\t"
+    "addl      %[slWidthModulo], %%esi    \n\t"
     "decl      %%edx                      \n\t"
-    "jz        allDoneE                   \n\t"
+    "jz        3f                         \n\t" // allDoneE
 
     // right to left
-    "movl      %%eax, %%ecx               \n\t"
+    "movl      %[pixWidth], %%ecx         \n\t"
     "decl      %%ecx                      \n\t"
 
-    "pixLoopER:                           \n\t"
+    "2:                                   \n\t" // pixLoopER
     "movd      (%%esi), %%mm1             \n\t"
     "punpcklbw %%mm0, %%mm1               \n\t"
     "pand      (" ASMSYM(mmErrDiffMask) "), %%mm1     \n\t"
@@ -1133,30 +1130,30 @@ allDoneE:
 
     // spread errors
     "paddusb   -4(%%esi), %%mm7           \n\t"
-    "paddusb   -4(%%esi, %%ebx, 4), %%mm1 \n\t"
-    "paddusb    0(%%esi, %%ebx, 4), %%mm5 \n\t"
-    "paddusb    4(%%esi, %%ebx, 4), %%mm3 \n\t" // !!!! possible memory leak?
+    "paddusb   -4(%%esi, %[pixCanvasWidth], 4), %%mm1 \n\t"
+    "paddusb    0(%%esi, %[pixCanvasWidth], 4), %%mm5 \n\t"
+    "paddusb    4(%%esi, %[pixCanvasWidth], 4), %%mm3 \n\t" // !!!! possible memory leak?
     "movd      %%mm7, -4(%%esi)           \n\t"
-    "movd      %%mm1, -4(%%esi, %%ebx, 4) \n\t"
-    "movd      %%mm5,  0(%%esi, %%ebx, 4) \n\t"
-    "movd      %%mm3,  4(%%esi, %%ebx, 4) \n\t"
+    "movd      %%mm1, -4(%%esi, %[pixCanvasWidth], 4) \n\t"
+    "movd      %%mm5,  0(%%esi, %[pixCanvasWidth], 4) \n\t"
+    "movd      %%mm3,  4(%%esi, %[pixCanvasWidth], 4) \n\t"
 
     // revert to previous pixel
     "subl      $4, %%esi                  \n\t"
     "decl      %%ecx                      \n\t"
-    "jnz       pixLoopER                  \n\t"
+    "jnz       2b                         \n\t" // pixLoopER
 
     // advance to next row
-    "leal      0(%%esi, %%ebx, 4), %%esi  \n\t"
+    "leal      0(%%esi, %[pixCanvasWidth], 4), %%esi \n\t"
     "decl      %%edx                      \n\t"
-    "jnz       rowLoopE                   \n\t"
-    "allDoneE:                            \n\t"
-    "popl      %%ebx                      \n\t"
+    "jnz       0b                         \n\t" // rowLoopE
+    "3:                                   \n\t" // allDoneE
     "emms                                 \n\t"
         : // no outputs.
-        : "S" (pulDst), "c" (pixCanvasWidth), "d" (pixHeight), "a" (pixWidth),
-          "D" (slWidthModulo)
-        : "cc", "memory"
+        : [pulDst] "g" (pulDst), [pixCanvasWidth] "r" (pixCanvasWidth),
+          [pixHeight] "g" (pixHeight), [pixWidth] "g" (pixWidth),
+          [slWidthModulo] "g" (slWidthModulo)
+        : FPU_REGS, MMX_REGS, "ecx", "edx", "esi", "cc", "memory"
   );
 
 #else
@@ -1268,7 +1265,7 @@ extern "C" {
 }
 
 
-#if USE_PORTABLE_C
+#ifdef USE_PORTABLE_C
 typedef SWORD ExtPix[4];
 
 static inline void extpix_fromi64(ExtPix &pix, const __int64 i64)
@@ -2535,7 +2532,8 @@ lowerLoop:
     "popl      %%ebx                      \n\t"
         : // no outputs.
         : // inputs are all globals.
-        : "eax", "ecx", "edx", "edi", "esi", "cc", "memory"
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
   );
 
 #else

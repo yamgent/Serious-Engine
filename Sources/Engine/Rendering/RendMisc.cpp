@@ -125,6 +125,7 @@ static inline PIX PIXCoord(FLOAT f) // (f+0.9999f) or (ceil(f))
 
  #elif (defined __GNU_INLINE__)
   PIX pixRet;
+  SLONG clobber;
   __asm__ __volatile__ (
     "flds    (%%eax)              \n\t"
     "fistl   (%%edx)              \n\t"
@@ -134,7 +135,7 @@ static inline PIX PIXCoord(FLOAT f) // (f+0.9999f) or (ceil(f))
     "movl    (%%ecx), %%edx       \n\t"
     "addl    $0x7FFFFFFF, %%edx   \n\t"
     "adcl    $0, %%eax            \n\t"
-        : "=a" (pixRet)
+        : "=a" (pixRet), "=d" (clobber)
         : "a" (&f), "d" (&slTmp), "c" (&fDiff)
         : "cc", "memory"
   );
