@@ -199,6 +199,7 @@ CTextureData::CTextureData()
   td_slFrameSize = 0;
   td_ulInternalFormat = TEXFMT_NONE;
   td_ulProbeObject = NONE;
+  td_pulObjects = NULL;
   td_ulObject = NONE;
   td_pulFrames = NULL;
 
@@ -1312,7 +1313,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
 
   // if not already generated, generate bind number(s) and force upload
   const PIX pixTextureSize = pixWidth*pixHeight;
-  if((td_ctFrames>1 && td_pulObjects==NULL) || td_ulObject==NONE)
+  if((td_ctFrames>1 && td_pulObjects==NULL) || (td_ctFrames<=1 && td_ulObject==NONE))
   {
     // check whether frames are present
     ASSERT( td_pulFrames!=NULL && td_pulFrames[0]!=0xDEADBEEF); 
@@ -1392,7 +1393,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
       td_pulFrames = NULL;
     }
     // done uploading
-    ASSERT((td_ctFrames>1 && td_pulObjects!=NULL) || td_ulObject!=NONE);
+    ASSERT((td_ctFrames>1 && td_pulObjects!=NULL) || (td_ctFrames==1 && td_ulObject!=NONE));
     return;
   }
 
@@ -1401,7 +1402,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
     // must reset local texture parameters for each frame of animated texture
     for( INDEX iFr=0; iFr<td_ctFrames; iFr++) {
       td_tpLocal.Clear();
-      gfxSetTexture( td_pulObjects[iFr], td_tpLocal); // FIXME DG: use that union properly or something?!
+      gfxSetTexture( td_pulObjects[iFr], td_tpLocal);
     }
   } 
   // set corresponding probe or texture frame as current
@@ -1425,7 +1426,7 @@ void CTextureData::SetAsCurrent( INDEX iFrameNo/*=0*/, BOOL bForceUpload/*=FALSE
   MarkDrawn();
 
   // debug check
-  ASSERT( td_ulObject!=NONE);
+  ASSERT((td_ctFrames>1 && td_pulObjects!=NULL) || (td_ctFrames<=1 && td_ulObject!=NONE));
 }
 
 
@@ -1439,8 +1440,8 @@ void CTextureData::Unbind(void)
   // free frame number(s)
   if( td_ctFrames>1) { // animation
     // only if bound
-    if( td_pulObjects == NULL ||  td_pulObjects[0]==NONE) {
-      ASSERT( td_pulObjects == NULL || td_pulObjects[0]==NONE);
+    if( td_pulObjects == NULL) {
+      ASSERT( td_ulProbeObject==NONE);
       return;
     }
     for( INDEX iFrame=0; iFrame<td_ctFrames; iFrame++) gfxDeleteTexture( td_pulObjects[iFrame]);
