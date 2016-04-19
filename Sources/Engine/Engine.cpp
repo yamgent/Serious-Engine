@@ -127,6 +127,9 @@ static void DetectCPU(void)
 {
 #if (defined USE_PORTABLE_C)  // rcg10072001
   CPrintF(TRANSV("  (No CPU detection in this binary.)\n"));
+  #ifdef PLATFORM_PANDORA
+  sys_iCPUMHz = 400;    // conservative, ARM -> x86 cpu translation is not 1 to 1.
+  #endif
 
 #else
   char strVendor[12+1];
@@ -398,7 +401,19 @@ static void SetupMemoryManager(void)
   sys_iRAMSwap = ms.dwTotalPageFile/MB;
 
 #elif (defined PLATFORM_UNIX)
+  #ifdef PLATFORM_PANDORA
+  sys_iRAMPhys = 256; // conservative here, there is 256MB models and 512MB...
+  FILE* esrev = fopen("/etc/powervr-esrev", "r");
+  if (esrev) {
+    int rev = 0;
+    fscanf(esrev,"%d", &rev);
+    if (rev==3 || rev==5)
+      sys_iRAMPhys = 512;
+    fclose(esrev);
+  };
+  #else
   sys_iRAMPhys = 1;  // !!! FIXME: This is bad. Bad. BAD.
+  #endif
   sys_iRAMSwap = 1;
 
 #else

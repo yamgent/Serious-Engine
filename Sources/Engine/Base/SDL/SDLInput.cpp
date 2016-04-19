@@ -251,6 +251,10 @@ static int _iMouseZ = 0;
 static BOOL _bWheelUp = FALSE;
 static BOOL _bWheelDn = FALSE;
 
+// emulate Win32: A single mouse wheel rotation
+// is +120 (upwards) or -120 (downwards)
+#define MOUSE_SCROLL_INTERVAL 120
+
 CTCriticalSection csInput;
 
 // which keys are pressed, as recorded by message interception (by KIDs)
@@ -314,15 +318,20 @@ static void sdl_event_handler(const SDL_Event *event)
 
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
-            if (event->button.button <= 5)
-                _abKeysPressed[KID_MOUSE1 + (event->button.button-1)] = (event->button.state == SDL_PRESSED) ? TRUE : FALSE;
+            if (event->button.button <= 5) {
+              int button = KID_MOUSE1;
+              switch(event->button.button) {
+                case SDL_BUTTON_RIGHT: button = KID_MOUSE2; break;
+                case SDL_BUTTON_MIDDLE: button = KID_MOUSE3; break;
+                case 4: button = KID_MOUSE4; break;
+                case 5: button = KID_MOUSE5; break;
+              }
+              _abKeysPressed[button] = (event->button.state == SDL_PRESSED) ? TRUE : FALSE;
+            }
             break;
 
         case SDL_MOUSEWHEEL:
-            if (event->wheel.y > 0)
-                _abKeysPressed[KID_MOUSEWHEELUP] = TRUE;
-            else if (event->wheel.y < 0)
-                _abKeysPressed[KID_MOUSEWHEELDOWN] = TRUE;
+            _iMouseZ += event->wheel.y * MOUSE_SCROLL_INTERVAL;
             break;
 
         case SDL_KEYDOWN:
@@ -715,6 +724,7 @@ void CInput::GetInput(BOOL bPreScan)
     // clear button's buffer
     memset( inp_ubButtonsBuffer, 0, sizeof( inp_ubButtonsBuffer));
 
+    Uint8 *keystate = SDL_GetKeyboardState(NULL);
     // for each Key
     for (INDEX iKey=0; iKey<ARRAYCOUNT(_akcKeys); iKey++) {
       const KeyConversion &kc = _akcKeys[iKey];
@@ -723,11 +733,11 @@ void CInput::GetInput(BOOL bPreScan)
       //INDEX iScan = kc.kc_iScanCode;
       INDEX iVirt = kc.kc_iVirtKey;
       // if reading async keystate
-      if (inp_iKeyboardReadingMethod==0) {
+      if (0/*inp_iKeyboardReadingMethod==0*/) {
         // if there is a valid virtkey
         if (iVirt>=0) {
           // is state is pressed
-          if (SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey((SDL_Keycode)iVirt)]) {
+          if (keystate[SDL_GetScancodeFromKey((SDL_Keycode)iVirt)]) {
             // mark it as pressed
             inp_ubButtonsBuffer[iKID] = 0xFF;
           }
@@ -743,10 +753,6 @@ void CInput::GetInput(BOOL bPreScan)
       }
     }
   }
-
-  // reset this every frame (since we explicitly ignore the button-up events).
-  _abKeysPressed[KID_MOUSEWHEELUP] = FALSE;
-  _abKeysPressed[KID_MOUSEWHEELDOWN] = FALSE;
 
   // read mouse position
   #ifdef USE_MOUSEWARP
@@ -816,17 +822,16 @@ void CInput::GetInput(BOOL bPreScan)
   }
   #endif
 
-/*
   // if not pre-scanning
   if (!bPreScan) {
     // detect wheel up/down movement
-    _bWheelDn = FALSE;
+
     if (_iMouseZ>0) {
       if (_bWheelUp) {
         inp_ubButtonsBuffer[KID_MOUSEWHEELUP] = 0x00;
       } else {
         inp_ubButtonsBuffer[KID_MOUSEWHEELUP] = 0xFF;
-        _iMouseZ = ClampDn(_iMouseZ-120, 0);
+        _iMouseZ = ClampDn(_iMouseZ-MOUSE_SCROLL_INTERVAL, 0);
       }
     }
     _bWheelUp = inp_ubButtonsBuffer[KID_MOUSEWHEELUP];
@@ -835,12 +840,11 @@ void CInput::GetInput(BOOL bPreScan)
         inp_ubButtonsBuffer[KID_MOUSEWHEELDOWN] = 0x00;
       } else {
         inp_ubButtonsBuffer[KID_MOUSEWHEELDOWN] = 0xFF;
-        _iMouseZ = ClampUp(_iMouseZ+120, 0);
+        _iMouseZ = ClampUp(_iMouseZ+MOUSE_SCROLL_INTERVAL, 0);
       }
     }
     _bWheelDn = inp_ubButtonsBuffer[KID_MOUSEWHEELDOWN];
   }
-*/
 
   inp_bLastPrescan = bPreScan;
 
