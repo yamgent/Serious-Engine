@@ -37,7 +37,8 @@ else()
 endif()
 
 # RAKE! Where to install the binaries.
-if(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" OR CMAKE_INSTALL_PREFIX STREQUAL "") # Only works for linux ATM.
+if(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" OR CMAKE_INSTALL_PREFIX STREQUAL "") # Only works for linux since I don't
+                                                                                   # know what default is for windows/macos/freebsd.
     set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../") # set install path to project root directory since
                                                         # since one wasn't set during config
     set(LOCAL_INSTALL TRUE)
