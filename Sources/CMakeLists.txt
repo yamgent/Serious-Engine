@@ -5,17 +5,27 @@ project(SeriousEngine)
 #cmake_policy(SET CMP0042 NEW)
 
 # Use system SDL2 is on by default
-option(USE_SYSTEM_SDL2 "Use system wide sdl2 libraries/includes" On)
+option(USE_SYSTEM_SDL2 "Use systems sdl2 development files" On)
+option(USE_SYSTEM_ZLIB "Use systems zlib development files" On)
+
+# fallback for cmake versions without add_compile_options # RAKE! Borrowed from dhewm3 project
+if(NOT COMMAND add_compile_options)
+	function(add_compile_options)
+		foreach(arg ${ARGN})
+			set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${arg}" PARENT_SCOPE)
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${arg}" PARENT_SCOPE)
+		endforeach()
+	endfunction()
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-
-# ssam expects the libs to be in Debug/
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Debug)
+include(CheckCXXCompilerFlag)
 
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
 # they want to use that instead or if their system only
-# allows for a setup like this.
+# allows for a setup like this. Maybe use a SDL2_DIR var or
+# some thing set in the system enviroment.
 if(NOT USE_SYSTEM_SDL2)
     include_directories(${CMAKE_SOURCE_DIR}/External/SDL2)
 else()
@@ -23,8 +33,25 @@ else()
     if(SDL2_FOUND)
 	include_directories(${SDL2_INCLUDE_DIR})
     else()
-	message(FATAL_ERROR "Error USE_SYSTEM_SDL2 is set but neccessary developer files not found")
+        message(FATAL_ERROR "Error USE_SYSTEM_SDL2 is set but neccessary developer files are missing")
     endif()
+endif()
+
+if(USE_SYSTEM_ZLIB)
+    find_package(ZLIB REQUIRED)
+    if(ZLIB_FOUND)
+        include_directories(${ZLIB_INCLUDE_DIRS})
+    else()
+        message(FATAL_ERROR "Error! USE_SYSTEM_ZLIB is set but neccessary developer files are missing")
+    endif()
+endif()
+
+# RAKE! Where to install the binaries.
+if(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" OR CMAKE_INSTALL_PREFIX STREQUAL "") # Only works for linux since I don't
+                                                                                   # know what default is for windows/macos/freebsd.
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../") # set install path to project root directory since
+                                                        # since one wasn't set during config
+    set(LOCAL_INSTALL TRUE)
 endif()
 
 # Set up some sanity stuff...
@@ -49,72 +76,110 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     SET(DEBUG TRUE)
 endif()
 
-add_definitions(-D_REENTRANT=1)
-add_definitions(-D_MT=1)
+## ** RAKE! start compiler specific flags section **
+## ** RAKE! Borrowed from dhewm3 project, need to **
+## ** RAKE! clean up for SeriousEngine use. Also  **
+## ** RAKE! need to make this pandora safe.	  **
+# compiler specific flags
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	# This section and the like are for flags/defines that can be shared between 
+	# c and c++ compile options
+	add_compile_options(-Wall)
+	add_compile_options(-pipe)
+	add_compile_options(-fPIC)
+	add_compile_options(-march=native)
+        add_compile_options(-fno-strict-aliasing)
+	add_definitions(-D_REENTRANT=1)
+	add_definitions(-D_MT=1)
+
+        ## Add your custom C and CXX flags on the command line aka -DCMAKE_C_FLAGS=-std=c98 or -DCMAKE_CXX_FLAGS=-std=c++11
+
+	## For C flags
+        set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -fno-unsafe-math-optimizations")
+
+	## For C++ flags
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -D_DEBUG=1 -DDEBUG=1 -O0")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -O3 -fno-unsafe-math-optimizations")
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -g -O3 -fno-unsafe-math-optimizations") ## RAKE! Does -DNDEBUG=1 and -D_NDEBUG=1 mess with RelWithDebInfo?
+        set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -fno-unsafe-math-optimizations")
+
+	# TODO fix these warnings
+	add_compile_options(-Wno-sign-compare)
+	add_compile_options(-Wno-switch)
+	add_compile_options(-Wno-format-security)
+
+	if(MACOSX)
+		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-DPLATFORM_MACOSX=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+	elseif(WINDOWS)
+		add_definitions(-DPLATFORM_WIN32=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+                add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+                add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
+	elseif(LINUX)
+	    	set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
+    		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-D_FILE_OFFSET_BITS=64)
+    		add_definitions(-D_LARGEFILE_SOURCE=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+	elseif(FREEBSD)
+    		set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
+    		add_definitions(-DPLATFORM_UNIX=1)
+    		add_definitions(-DPLATFORM_FREEBSD=1)
+    		add_definitions(-D_FILE_OFFSET_BITS=64)
+    		add_definitions(-D_LARGEFILE_SOURCE=1)
+    		add_definitions(-DPRAGMA_ONCE=1)
+    		include_directories("/usr/local/include")
+	endif()
+	
+        if(MACOSX OR LINUX OR FREEBSD)
+		add_compile_options(-pthread)
+                add_compile_options(-fsigned-char)
+	endif()
+
+	if(CMAKE_COMPILER_IS_GNUCC)
+	    	# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
+    		add_compile_options(-Wno-invalid-offsetof)
+	endif()
+	
+	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    		# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
+    		add_compile_options(-Wno-unused-value)
+    		add_compile_options(-Wno-switch)
+    		add_compile_options(-Wno-tautological-undefined-compare)
+		add_compile_options(-Wno-c++11-compat-deprecated-writable-strings)
+		add_definitions(-Wno-logical-op-parentheses)
+    		MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")	
+	endif()
+
+elseif(MSVC) # RAKE! I don't know if this will build with MSVC
+	add_compile_options(/W4)
+	add_compile_options(/wd4100) # unreferenced formal parameter
+	add_compile_options(/wd4127) # conditional expression is constant
+	add_compile_options(/wd4244) # possible loss of data
+	add_compile_options(/wd4245) # signed/unsigned mismatch
+	add_compile_options(/wd4267) # possible loss of data
+	add_compile_options(/wd4714) # 'function' marked as __forceinline not inlined
+	add_compile_options(/wd4996) # 'function': was declared deprecated
+	add_compile_options(/wd4068) # unknown pragma
+        set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
+	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
+	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
+else()
+	message(FATAL_ERROR "Unsupported compiler")
+endif()
+
+## ** RAKE! end compiler specific flags section **
 
 if(DEBUG)
-    add_definitions(-DDEBUG=1)
-    add_definitions(-D_DEBUG=1)
     set(DEBUGSUFFIX "D")
 else()
-    add_definitions(-DNDEBUG=1)
-    add_definitions(-D_NDEBUG=1)
     set(DEBUGSUFFIX "")
-endif()
-
-if(WINDOWS)
-    add_definitions(-DPLATFORM_WIN32=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE=1)
-endif()
-
-if(LINUX)
-    set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-D_FILE_OFFSET_BITS=64)
-    add_definitions(-D_LARGEFILE_SOURCE=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-endif()
-
-if(FREEBSD)
-    set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-DPLATFORM_FREEBSD=1)
-    add_definitions(-D_FILE_OFFSET_BITS=64)
-    add_definitions(-D_LARGEFILE_SOURCE=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-    include_directories("/usr/local/include")
-endif()
-
-if(MACOSX)
-    add_definitions(-DPLATFORM_UNIX=1)
-    add_definitions(-DPLATFORM_MACOSX=1)
-    add_definitions(-DPRAGMA_ONCE=1)
-endif()
-
-if(LINUX OR MACOSX)
-    if(DEBUG)
-        add_definitions(-O0 -ggdb3)
-    endif(DEBUG)
-    add_definitions(-pthread)
-    add_definitions(-pipe -fsigned-char)
-    #CXXFLAGS += -fexceptions -frtti
-endif()
-
-if(CMAKE_COMPILER_IS_GNUCC)
-    # !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
-    add_definitions(-Wno-invalid-offsetof)
-endif()
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    # !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
-    add_definitions(-Wno-unused-value)
-    add_definitions(-Wno-switch)
-    add_definitions(-Wno-tautological-undefined-compare)
-    add_definitions(-Wno-c++11-compat-deprecated-writable-strings)
-    add_definitions(-Wno-logical-op-parentheses)
-    MESSAGE(WARNING "reenable -Wlogical-op-parentheses some day!")
 endif()
 
 # !!! FIXME: you currently need this, but I'd like to flip this to not use
@@ -609,6 +674,23 @@ else()
     #Engine/Base/Win32/Win32Synchronization.cpp # Windows only.
 endif()
 
+set(ZLIB_SRCS "")
+if(NOT USE_SYSTEM_ZLIB)
+    set(ZLIB_SRCS
+        Engine/zlib/inflate.c
+        Engine/zlib/adler32.c
+        Engine/zlib/infblock.c
+        Engine/zlib/inffast.c
+        Engine/zlib/inftrees.c
+        Engine/zlib/trees.c
+        Engine/zlib/compress.c
+        Engine/zlib/zutil.c
+        Engine/zlib/deflate.c
+        Engine/zlib/infcodes.c
+        Engine/zlib/infutil.c
+        Engine/zlib/uncompr.c)
+endif()
+
 set(ENGINE_SRCS
     ${ENGINE_ENTITIES_CPP}
     Engine/Engine.cpp
@@ -788,19 +870,8 @@ set(ENGINE_SRCS
     Engine/World/World.cpp
     Engine/World/WorldCollisionGrid.cpp
     Engine/World/WorldEditingProfile.cpp
-    Engine/zlib/inflate.c
-    Engine/zlib/adler32.c
-    Engine/zlib/infblock.c
-    Engine/zlib/inffast.c
-    Engine/zlib/inftrees.c
-    Engine/zlib/trees.c
-    Engine/zlib/compress.c
-    Engine/zlib/zutil.c
-    Engine/zlib/deflate.c
-    Engine/zlib/infcodes.c
-    Engine/zlib/infutil.c
-    Engine/zlib/uncompr.c
     ${ADDITIONAL_ENGINE_SRCS}
+    ${ZLIB_SRCS}
 )
 
 add_executable(ssam
@@ -847,18 +918,19 @@ if(LINUX)
     set_target_properties(ssam PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
     target_link_libraries(ssam "m")
     target_link_libraries(ssam "dl")
-    if(PANDORA)
-    target_link_libraries(ssam "rt")
-    target_link_libraries(ssam ${SDL2_LIBRARY}) # RAKE!: I don't know if this will work yet.
-    endif()
     target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
+    target_link_libraries(ssam ${ZLIB_LIBRARIES})
+    if(PANDORA)
+    	target_link_libraries(ssam "rt")
+    endif()
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
         target_link_libraries(SeriousSamDedicated "dl")
         target_link_libraries(SeriousSamDedicated "pthread")
 	target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
+        target_link_libraries(SeriousSamDedicated ${ZLIB_LIBRARIES})
     endif()
 endif()
 
@@ -867,11 +939,13 @@ if(FREEBSD)
     target_link_libraries(ssam "m")
     target_link_libraries(ssam "pthread")
     target_link_libraries(ssam ${SDL2_LIBRARY})
+    target_link_libraries(ssam ${ZLIB_LIBRARIES})
     if(BUILD_DEDICATED_SERVER)
         set_target_properties(SeriousSamDedicated PROPERTIES LINK_FLAGS "-Wl,-rpath,$ORIGIN")
         target_link_libraries(SeriousSamDedicated "m")
         target_link_libraries(SeriousSamDedicated "pthread")
         target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
+        target_link_libraries(SeriousSamDedicated ${ZLIB_LIBRARIES})
     endif()
 endif()
 
@@ -879,5 +953,35 @@ if(TFE)
  set_target_properties(ssam PROPERTIES OUTPUT_NAME "ssam-tfe")
 endif()
 
-# end of CMakeLists.txt ...
+# RAKE! Install Section.
+if(DEBUG) # RAKE! Will this work with TFE?
+    install(TARGETS ssam ${SHADERSLIB} ${GAMEMPLIB} ${ENTITIESMPLIB}
+            RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin/Debug"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    if(BUILD_DEDICATED_SERVER)
+        install(TARGETS SeriousSamDedicated
+                RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/Bin
+                PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    endif()
+else()
+    install(TARGETS ssam ${SHADERSLIB} ${GAMEMPLIB} ${ENTITIESMPLIB}
+            RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    if(BUILD_DEDICATED_SERVER)
+        install(TARGETS SeriousSamDedicated
+                RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/Bin"
+                PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    endif()
+endif()
 
+# RAKE! If CMAKE_INSTALL_PREFIX was set during config then its not a local install
+# and SE1_10.gro needs to be installed to Games root dir.
+if(NOT LOCAL_INSTALL)
+    install(FILES ${CMAKE_SOURCE_DIR}/../SE1_10.gro
+            DESTINATION ${CMAKE_INSTALL_PREFIX}
+            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+endif()
+
+# end of CMakeLists.txt ...
