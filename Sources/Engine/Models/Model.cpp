@@ -481,7 +481,7 @@ ModelTextureVertex::ModelTextureVertex(void)
 //------------------------------------------ WRITE
 void ModelPolygonVertex::Write_t( CTStream *pFile)  // throw char *
 {
-  STUBBED("64-bit issue"); // DG: probably ok, because PtrToIndices() should have been called before this
+  // DG: this looks like a 64-bit issue, but most probably isn't as PtrToIndices() should have been called before this
   (*pFile) << (INDEX) (size_t) mpv_ptvTransformedVertex;
   (*pFile) << (INDEX) (size_t) mpv_ptvTextureVertex;
 }
@@ -490,7 +490,8 @@ void ModelPolygonVertex::Read_t( CTStream *pFile) // throw char *
 {
   INDEX itmp;
 
-  STUBBED("64-bit issue"); // DG: probably ok, because IndicesToPtrs() should be called afterwards
+  // DG: this looks like a 64-bit issue, but most probably isn't as IndicesToPtrs() should be
+  //     called afterwards to restore actually valid pointers.
   (*pFile) >> itmp;
   mpv_ptvTransformedVertex = (struct TransformedVertexData *) (size_t) itmp;
   (*pFile) >> itmp;
@@ -1068,10 +1069,11 @@ void CModelData::IndicesToPtrs()
       FOREACHINSTATICARRAY(it1.Current().mp_PolygonVertices, ModelPolygonVertex, it2)
       {
         struct ModelPolygonVertex * pMPV = &it2.Current();
-        STUBBED("64-bit issue"); // DG: probably ok, the pointers really contain indices from PtrToIndices()
+        // DG: this looks like a 64-bit issue but is most probably ok, as the pointers
+        //     should contain indices from PtrToIndices()
         j = (INDEX) (size_t) it2.Current().mpv_ptvTransformedVertex;
         it2.Current().mpv_ptvTransformedVertex = &md_TransformedVertices[ j];
-        STUBBED("64-bit issue"); // DG: probably ok, the pointers really contain indices from PtrToIndices()
+        // DG: same here
         j = (INDEX) (size_t) it2.Current().mpv_ptvTextureVertex;
         it2.Current().mpv_ptvTextureVertex = &md_MipInfos[ i].mmpi_TextureVertices[ j];
       }
