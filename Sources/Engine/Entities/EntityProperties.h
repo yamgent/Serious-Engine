@@ -121,9 +121,9 @@ public:
     , ep_ulID            (ulID         )
     , ep_slOffset        (slOffset     )
     , ep_strName         (strName      )
+    , ep_ulFlags         (ulFlags      )
     , ep_chShortcut      (chShortcut   )
     , ep_colColor        (colColor     )
-    , ep_ulFlags         (ulFlags      )
   {};
   CEntityProperty(void) {};
 };
