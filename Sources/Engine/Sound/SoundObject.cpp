@@ -213,8 +213,7 @@ void CSoundObject::Play(CSoundData *pCsdLink, SLONG slFlags)
 
   //CPrintF("PLAY: '%s'", (const char*)pCsdLink->GetName().FileName());
   // get prediction tail
-  STUBBED("64-bit issue");
-  CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDPLAY, (ULONG)(size_t)pCsdLink);
+  CSoundObject *psoTail = GetPredictionTail(EVENT_SOUNDPLAY, PointerToID(pCsdLink));
   // if the event is predicted
   if (psoTail==NULL) {
     // do nothing;
@@ -350,8 +349,7 @@ void CSoundObject::Stop(void)
 
   CSoundObject *psoTail = this;
   // get prediction tail
-  STUBBED("64-bit issue");
-  psoTail = GetPredictionTail(EVENT_SOUNDSTOP, (ULONG)(size_t)so_pCsdLink);
+  psoTail = GetPredictionTail(EVENT_SOUNDSTOP, PointerToID(so_pCsdLink));
   // if the event is predicted
   if (psoTail==NULL) {
     // do nothing;
