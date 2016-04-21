@@ -314,8 +314,7 @@ inline SLONG FloatToInt( FLOAT f)
 {
 #if defined(__arm__) || defined(USE_PORTABLE_C)
   // round to nearest by adding/subtracting 0.5 (depending on f pos/neg) before converting to SLONG
-  float addToRound = 0.5f;
-  copysignf(addToRound, f); // copy f's signbit to addToRound => if f<0 then addToRound = -addToRound
+  float addToRound = copysignf(0.5f, f); // copy f's signbit to 0.5 => if f<0 then addToRound = -0.5, else 0.5
   return((SLONG) (f + addToRound));
 
 #elif (defined __MSVC_INLINE__)
