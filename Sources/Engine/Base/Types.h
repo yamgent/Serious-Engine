@@ -61,36 +61,43 @@ typedef unsigned int        UINT;
   #define PLATFORM_LITTLEENDIAN 1
 #endif
 
-#ifdef PLATFORM_WIN32
-  #ifdef _WIN64
-    #define PLATFORM_64BIT 1
-  #else
-    #define PLATFORM_32BIT 1
-  #endif
+#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(_ARCH_PPC64) \
+    || defined(_M_IA64) || defined(__IA64__)
+
+  #define PLATFORM_64BIT 1
+
+#elif defined(__i386) || defined(_M_IX86) || defined(__arm__) || defined(_M_ARM) || defined(__POWERPC__) \
+      || defined(_M_PPC) || defined(_ARCH_PPC)
+
+  #define PLATFORM_32BIT 1
+
 #else
-  // AFAIK there were versions of MSVC where UINTPTR_MAX was incorrect,
-  // so I use different code for Windows above
-  #include <stdint.h> // UINTPTR_MAX
-  #ifdef UINTPTR_MAX
-    #if UINTPTR_MAX == 0xffffffffuL
-      #define PLATFORM_32BIT 1
-    #elif UINTPTR_MAX == 0xffffffffffffffffuLL
-      #define PLATFORM_64BIT 1
-    #else
-      #error WTF, your system seems to be neither 32bit nor 64bit?!
-    #endif
-  #else
-    #error Your system does not provide UINTPRT_MAX, find another way!
-  #endif
-
-  #if UINTPTR_MAX != SIZE_MAX
-    // the code uses size_t to store pointers all over the place, so if size_t and uintptr_t
-    // don't have the same size on your system, you're in real trouble.
-    // (before panicking however make sure your headers don't just contain bullshit values for UINTPTR_MAX or SIZE_MAX)
-    #error Seems like on your system sizeof(size_t) != sizeof(uintptr_t) - that is *very* bad.
-  #endif
-
+  #error "Unknown CPU-Architecture, adapt this code to detect 32/64bitness of your system!"
 #endif
+
+
+// if the compiler complains about the typedef created by MY_STATIC_ASSERT being invalid
+// (because of array with negative size), it means the check for cond has failed
+#define MY_STATIC_ASSERT(namesuffx, cond) \
+  typedef char sesam__check_ ## namesuffx [ (cond) ? 1 : -1 ];
+
+// some sanity checks to make sure the PLATFORM_*BIT #defines match the pointer size
+// and that size_t is the size of a pointer, as expected (as we sometimes use size_t to store pointers)
+#ifdef PLATFORM_32BIT
+  MY_STATIC_ASSERT(32bit_PointerSize, sizeof(void*) == 4);
+
+  #ifdef PLATFORM_64BIT
+    #error "PLATFORM_32BIT and PLATFORM_64BIT must not be #defined at the same time!"
+  #endif
+#endif
+
+#ifdef PLATFORM_64BIT
+  MY_STATIC_ASSERT(64bit_PointerSize, sizeof(void*) == 8);
+#endif
+
+MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
+
+#undef MY_STATIC_ASSERT
 
 // Mac symbols have an underscore prepended...
 #if PLATFORM_MACOSX

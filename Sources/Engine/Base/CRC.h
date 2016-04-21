@@ -70,5 +70,35 @@ inline void CRC_AddBlock(ULONG &ulCRC, UBYTE *pubBlock, ULONG ulSize)
 // end crc calculation
 inline void CRC_Finish(ULONG &ulCRC) { ulCRC ^= 0xFFFFFFFF; };
 
+// in 32bit mode, it just returns iPtr ULONG,
+// in 64bit mode it returns the CRC hash of iPtr (or 0 if ptr == NULL)
+// so either way you should get a value that very likely uniquely identifies the pointer
+inline ULONG IntPtrToID(size_t iPtr)
+{
+#if PLATFORM_32BIT
+  return (ULONG)iPtr;
+#else
+  // in case the code relies on 0 having special meaning because of NULL-pointers...
+  if(iPtr == 0)  return 0;
+  ULONG ret;
+  CRC_Start(ret);
+  CRC_AddLONGLONG(ret, iPtr);
+  CRC_Finish(ret);
+  return ret;
+#endif
+}
+
+// in 32bit mode, it just returns the pointer's address as ULONG,
+// in 64bit mode it returns the CRC hash of the pointer's address (or 0 if ptr == NULL)
+// so either way you should get a value that very likely uniquely identifies the pointer
+inline ULONG PointerToID(void* ptr)
+{
+#if PLATFORM_32BIT
+  return (ULONG)(size_t)ptr;
+#else
+  return IntPtrToID((size_t)ptr);
+#endif
+}
+
 #endif  /* include-once check. */
 

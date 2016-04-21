@@ -21,6 +21,9 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(CheckCXXCompilerFlag)
 
+# ssam expects the libs to be in Debug/
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Debug)
+
 # Use systemwide SDL2 or custom build
 # RAKE!: Find a way to use their custom built library if
 # they want to use that instead or if their system only
@@ -110,6 +113,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wno-sign-compare)
 	add_compile_options(-Wno-switch)
 	add_compile_options(-Wno-format-security)
+	add_definitions(-Wno-logical-op-parentheses)
+	MESSAGE(WARNING, "re-enable -Wlogical-op-parentheses some day!")
 
 	if(MACOSX)
 		add_definitions(-DPLATFORM_UNIX=1)
@@ -182,9 +187,8 @@ else()
     set(DEBUGSUFFIX "")
 endif()
 
-# !!! FIXME: you currently need this, but I'd like to flip this to not use
-# !!! FIXME:  assembly language. And maybe delete the asm code too.
-option(USE_I386_ASM "Use X86 ASM" TRUE)
+# This should not be needed anymore, but might be faster on 32bit x86
+option(USE_I386_ASM "Use X86 ASM" FALSE)
 
 if (USE_I386_ASM)
     # You need the Netwide Assembler (NASM) to build this on Intel systems.
@@ -198,8 +202,10 @@ if (USE_I386_ASM)
     else()
         set(ASMOBJFMT "elf")
     endif()
+    MESSAGE(STATUS "Using i386 assembler")
 else()
     add_definitions(-DUSE_PORTABLE_C=1)
+    MESSAGE(STATUS "Using portable C instead of ASM")
 endif()
 
 option(PANDORA "Compile for Pandora" FALSE)
@@ -905,12 +911,23 @@ if(BUILD_DEDICATED_SERVER)
 endif()
 
 if(MACOSX)
-    find_library(COCOA_FRAMEWORK Cocoa)
-    target_link_libraries(ssam "${COCOA_FRAMEWORK}")
-    target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
+    target_link_libraries(ssam ${ZLIB_LIBRARIES})
+    if(USE_SYSTEM_SDL2) # use sdl2 framework on system
+      target_link_libraries(ssam ${SDL2_LIBRARY})
+    else() # use local libsdl2
+	  find_library(COCOA_FRAMEWORK Cocoa)
+      target_link_libraries(ssam "${COCOA_FRAMEWORK}")
+      target_link_libraries(ssam "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
+    endif()
+    
     if(BUILD_DEDICATED_SERVER)
-        target_link_libraries(SeriousSamDedicated "${COCOA_FRAMEWORK}")
-        target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
+		target_link_libraries(SeriousSamDedicated ${ZLIB_LIBRARIES})
+		if(USE_SYSTEM_SDL2)
+			target_link_libraries(SeriousSamDedicated ${SDL2_LIBRARY})
+		else()
+			target_link_libraries(SeriousSamDedicated "${COCOA_FRAMEWORK}")
+			target_link_libraries(SeriousSamDedicated "${CMAKE_CURRENT_SOURCE_DIR}/lib/macosx/libSDL2-2.0.0.dylib")
+		endif()
     endif()
 endif()
 

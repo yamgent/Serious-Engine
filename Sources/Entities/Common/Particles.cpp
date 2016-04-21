@@ -980,9 +980,9 @@ INDEX Particles_Regeneration(CEntity *pen, FLOAT tmStart, FLOAT tmStop, FLOAT fY
       vPos2 = Lerp( vSource, vDestination, fT2);
     }
     
-    UBYTE ubR = 192+afStarsPositions[iRnd][1]*64;
-    UBYTE ubG = 192+afStarsPositions[iRnd][2]*64;
-    UBYTE ubB = 192+afStarsPositions[iRnd][3]*64;
+    UBYTE ubR = 192+afStarsPositions[iRnd][0]*64;
+    UBYTE ubG = 192+afStarsPositions[iRnd][1]*64;
+    UBYTE ubB = 192+afStarsPositions[iRnd][2]*64;
     UBYTE ubA = CalculateRatio( fT, 0.0f, 1.0f, 0.4f, 0.01f)*255;
     COLOR colLine = RGBToColor( ubR, ubG, ubB) | ubA;
     
@@ -1567,7 +1567,7 @@ void Particles_LavaErupting(CEntity *pen, FLOAT fStretchAll, FLOAT fSize,
   vPos(2) += (fStretchY+(fStretchY*0.25f*afStarsPositions[iRnd1][1]))*fT-fGA/2.0f*fT*fT; 
   vPos(3) += fRndAppearZ+afStarsPositions[iRnd1][2]*fT*fStretchZ*10;
 
-  Particle_RenderSquare( vPos, fSize+afStarsPositions[iRnd2][3]*fSize*0.5f, fRndRotation*300*fT, C_WHITE|CT_OPAQUE);
+  Particle_RenderSquare( vPos, fSize+afStarsPositions[iRnd2][2]*fSize*0.5f, fRndRotation*300*fT, C_WHITE|CT_OPAQUE);
 
   // all done
   Particle_Flush();
@@ -1713,7 +1713,7 @@ void Particles_Rain(CEntity *pen, FLOAT fGridSize, INDEX ctGrids, FLOAT fFactor,
   for( INDEX iZ=0; iZ<ctGrids; iZ++)
   {
     INDEX iRndZ = (ULONG(vPos(3)+iZ)) % CT_MAX_PARTICLES_TABLE;
-    FLOAT fZOrg = vPos(3) + (iZ+afStarsPositions[iRndZ][3])*fGridSize;
+    FLOAT fZOrg = vPos(3) + (iZ+afStarsPositions[iRndZ][2])*fGridSize;
     for( INDEX iX=0; iX<ctGrids; iX++)
     {
 
@@ -1786,7 +1786,7 @@ void Particles_Snow( CEntity *pen, FLOAT fGridSize, INDEX ctGrids)
   for( INDEX iZ=0; iZ<ctGrids; iZ++)
   {
     INDEX iRndZ = (ULONG(vPos(3)+iZ)) % CT_MAX_PARTICLES_TABLE;
-    FLOAT fZ = vPos(3) + (iZ+afStarsPositions[iRndZ][3])*fGridSize;
+    FLOAT fZ = vPos(3) + (iZ+afStarsPositions[iRndZ][2])*fGridSize;
     for( INDEX iX=0; iX<ctGrids; iX++)
     {
       INDEX iRndX = (ULONG(vPos(1)+iX)) % CT_MAX_PARTICLES_TABLE;
@@ -2156,7 +2156,7 @@ void Particles_BulletSpray(CEntity *pen, FLOAT3D vGDir, enum EffectParticlesType
       afStarsPositions[ iSpray+iRnd][0]*3.0f* fConeMultiplier,
       (afStarsPositions[ iSpray+iRnd][1]+1.0f)*3.0f,
       afStarsPositions[ iSpray+iRnd][2]*3.0f* fConeMultiplier);
-    FLOAT fSpeedRnd = fSpeedStart+afStarsPositions[ iSpray+iRnd*2][3];
+    FLOAT fSpeedRnd = fSpeedStart+afStarsPositions[ iSpray+iRnd*2][2];
     FLOAT3D vPos = vEntity + (vDirection+vRandomAngle)*(fT*fSpeedRnd)+vGDir*(fT*fT*fGA);
 
     if( (eptType == EPT_BULLET_WATER) && (vPos(2) < vEntity(2)) )
@@ -2294,7 +2294,7 @@ void Particles_EmptyShells( CEntity *pen, ShellLaunchData *asldData)
         FLOAT fXF = cos( afStarsPositions[iRnd+2][0]*PI);
 
         FLOAT fAmpl = ClampUp( fT+afStarsPositions[iRnd+1][1]+0.5f, 2.0f)/64;
-        FLOAT fFormulae =  fAmpl * sin(afStarsPositions[iRnd][2]+fT*afStarsPositions[iRnd][3]*2);
+        FLOAT fFormulae =  fAmpl * sin(afStarsPositions[iRnd][1]+fT*afStarsPositions[iRnd][2]*2);
 
         FLOAT fColorFactor = 1.0f;
         if( fT>fLife/2)
