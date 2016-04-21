@@ -81,7 +81,9 @@ Sources/SeriousSkaStudio/Parser.cpp
 Sources/SeriousSkaStudio/Parser.h
 Sources/SeriousSkaStudio/Scanner.cpp
 
-
+# vim swap files
+*.swp
+*.swo
 
 
 

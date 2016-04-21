@@ -320,12 +320,176 @@ static void SanityCheckTypes(void)
         ASSERT(num == 0x01);
     #endif
 }
-
-// startup engine 
-ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
+// don't want to export this function
+static void PlatformIdentification(void) 
 {
-  SanityCheckTypes();
+// !!! FIXME: Abstract this somehow.
+#if (defined PLATFORM_WIN32)
+  OSVERSIONINFO osv;
+  memset(&osv, 0, sizeof(osv));
+  osv.dwOSVersionInfoSize = sizeof(osv);
+  if (GetVersionEx(&osv)) {
+    switch (osv.dwPlatformId) {
+    case VER_PLATFORM_WIN32s:         sys_strOS = "Win32s";  break;
+    case VER_PLATFORM_WIN32_WINDOWS:  sys_strOS = "Win9x"; break;
+    case VER_PLATFORM_WIN32_NT:       sys_strOS = "WinNT"; break;
+    default: sys_strOS = "Unknown\n"; break;
+    }
 
+    sys_iOSMajor = osv.dwMajorVersion;
+    sys_iOSMinor = osv.dwMinorVersion;
+    sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
+    sys_strOSMisc = osv.szCSDVersion;
+
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+    CPrintF(TRANSV("  Version: %d.%d, build %d\n"), 
+      osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
+    CPrintF(TRANSV("  Misc: %s\n"), osv.szCSDVersion);
+  } else {
+    CPrintF(TRANSV("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
+  }
+
+#elif (defined PLATFORM_MACOSX)
+    STUBBED("Use some Gestalt replacement, or whatever");
+    #if 0
+    long osver = 0x0000;
+    OSErr err = Gestalt(gestaltSystemVersion, &osver);
+    if (err != noErr)
+        osver = 0x0000;
+
+    sys_iOSMajor = ((osver & 0x0F00) >> 8) + (((osver & 0xF000) >> 12) * 10);
+    sys_iOSMinor = ((osver & 0x00F0) >> 4);
+    sys_iOSBuild = ((osver & 0x000F) >> 0);
+    #else
+    sys_iOSMajor = 10;  // !!! FIXME: just flatly false.
+    sys_iOSMinor = 6;
+    sys_iOSBuild = 0;
+    #endif
+
+    sys_strOS = "Mac OS X";
+    sys_strOSMisc = "Mac OS";
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+    CPrintF(TRANSV("  Version: %d.%d.%d\n"),
+                 (int)sys_iOSMajor, (int)sys_iOSMinor, (int)sys_iOSBuild);
+
+#elif (defined PLATFORM_UNIX)  // !!! FIXME: rcg10082001 what to do with this?
+	// FIXME: probably want to use uname function on Linux but it isn't totally applicable...hmm...
+    sys_iOSMajor = 1;
+    sys_iOSMinor = 0;
+    sys_iOSBuild = 0;
+    sys_strOS = "Unix";
+    sys_strOSMisc = "Unix";
+    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
+
+static void SetupMemoryManager(void) 
+{
+
+#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
+  MEMORYSTATUS ms;
+  GlobalMemoryStatus(&ms);
+
+  #define MB (1024*1024)
+  sys_iRAMPhys = ms.dwTotalPhys    /MB;
+  sys_iRAMSwap = ms.dwTotalPageFile/MB;
+
+#elif (defined PLATFORM_UNIX)
+  sys_iRAMPhys = 1;  // !!! FIXME: This is bad. Bad. BAD.
+  sys_iRAMSwap = 1;
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
+
+static void SetupSecondaryStorage(void) 
+{
+#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
+  // get info on the first disk in system
+  DWORD dwSerial;
+  DWORD dwFreeClusters;
+  DWORD dwClusters;
+  DWORD dwSectors;
+  DWORD dwBytes;
+
+  char strDrive[] = "C:\\";
+  strDrive[0] = strExePath[0];
+
+  GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
+  GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
+  sys_iHDDSize = ((__int64)dwSectors)*dwBytes*dwClusters/MB;
+  sys_iHDDFree = ((__int64)dwSectors)*dwBytes*dwFreeClusters/MB;
+  sys_iHDDMisc = dwSerial;
+
+#elif (defined PLATFORM_UNIX)  // !!! FIXME: Uhh...?
+  sys_iHDDSize = 1;
+  sys_iHDDFree = 1;
+  sys_iHDDMisc = 0xDEADBEEF;
+
+#else
+   #error Do something with this for your platform.
+#endif
+}
+
+static void InitIFeel(void) 
+{
+// !!! FIXME : rcg12072001 Move this somewhere else.
+#ifdef PLATFORM_WIN32
+  // init IFeel
+  HWND hwnd = NULL;//GetDesktopWindow();
+  HINSTANCE hInstance = GetModuleHandle(NULL);
+  if(IFeel_InitDevice(hInstance,hwnd))
+  {
+    CTString strDefaultProject = "Data\\Default.ifr";
+    // get project file name for this device
+    CTString strIFeel = IFeel_GetProjectFileName();
+    // if no file name is returned use default file
+    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
+    if(!IFeel_LoadFile(strIFeel))
+    {
+      if(strIFeel!=strDefaultProject)
+      {
+        IFeel_LoadFile(strDefaultProject);
+      }
+    }
+    CPrintF("\n");
+  }
+#endif
+
+}
+
+static void InitSystemGammaSettings(void) 
+{
+// !!! FIXME: Move this into GfxLibrary...
+#ifdef PLATFORM_WIN32
+  // readout system gamma table
+  HDC  hdc = GetDC(NULL);
+  BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
+  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+  if( !bOK) {
+    _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
+    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+  } // done
+  ReleaseDC( NULL, hdc);
+#else
+  // !!! FIXME : rcg01072002 This CAN be done with SDL, actually. Move this somewhere.
+  #ifdef PLATFORM_PANDORA
+  // hacked gamma support
+  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
+  #else
+  CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
+  #endif
+#endif
+
+}
+
+// System specific platform init functions
+static void PlatformSpecificInit(void) 
+{
   #if PLATFORM_UNIX
   extern SDL_EventType WM_SYSKEYDOWN;
   extern SDL_EventType WM_LBUTTONDOWN;
@@ -340,6 +504,14 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   WM_RBUTTONUP = (SDL_EventType) SDL_RegisterEvents(1);
   WM_PAINT = (SDL_EventType) SDL_RegisterEvents(1);
   #endif
+}
+
+// startup engine 
+ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
+{
+  SanityCheckTypes();
+
+  PlatformSpecificInit();
 
   const char *gamename = "UnknownGame";
   if (strGameID != "")
@@ -412,67 +584,8 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
 
   // report os info
   CPrintF(TRANSV("Examining underlying OS...\n"));
-
-// !!! FIXME: Abstract this somehow.
-#if (defined PLATFORM_WIN32)
-  OSVERSIONINFO osv;
-  memset(&osv, 0, sizeof(osv));
-  osv.dwOSVersionInfoSize = sizeof(osv);
-  if (GetVersionEx(&osv)) {
-    switch (osv.dwPlatformId) {
-    case VER_PLATFORM_WIN32s:         sys_strOS = "Win32s";  break;
-    case VER_PLATFORM_WIN32_WINDOWS:  sys_strOS = "Win9x"; break;
-    case VER_PLATFORM_WIN32_NT:       sys_strOS = "WinNT"; break;
-    default: sys_strOS = "Unknown\n"; break;
-    }
-
-    sys_iOSMajor = osv.dwMajorVersion;
-    sys_iOSMinor = osv.dwMinorVersion;
-    sys_iOSBuild = osv.dwBuildNumber & 0xFFFF;
-    sys_strOSMisc = osv.szCSDVersion;
-
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-    CPrintF(TRANSV("  Version: %d.%d, build %d\n"), 
-      osv.dwMajorVersion, osv.dwMinorVersion, osv.dwBuildNumber & 0xFFFF);
-    CPrintF(TRANSV("  Misc: %s\n"), osv.szCSDVersion);
-  } else {
-    CPrintF(TRANSV("Error getting OS info: %s\n"), GetWindowsError(GetLastError()) );
-  }
-
-#elif (defined PLATFORM_MACOSX)
-    STUBBED("Use some Gestalt replacement, or whatever");
-    #if 0
-    long osver = 0x0000;
-    OSErr err = Gestalt(gestaltSystemVersion, &osver);
-    if (err != noErr)
-        osver = 0x0000;
-
-    sys_iOSMajor = ((osver & 0x0F00) >> 8) + (((osver & 0xF000) >> 12) * 10);
-    sys_iOSMinor = ((osver & 0x00F0) >> 4);
-    sys_iOSBuild = ((osver & 0x000F) >> 0);
-    #else
-    sys_iOSMajor = 10;  // !!! FIXME: just flatly false.
-    sys_iOSMinor = 6;
-    sys_iOSBuild = 0;
-    #endif
-
-    sys_strOS = "Mac OS X";
-    sys_strOSMisc = "Mac OS";
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-    CPrintF(TRANSV("  Version: %d.%d.%d\n"),
-                 (int)sys_iOSMajor, (int)sys_iOSMinor, (int)sys_iOSBuild);
-
-#elif (defined PLATFORM_UNIX)  // !!! FIXME: rcg10082001 what to do with this?
-    sys_iOSMajor = 1;
-    sys_iOSMinor = 0;
-    sys_iOSBuild = 0;
-    sys_strOS = "Unix";
-    sys_strOSMisc = "Unix";
-    CPrintF(TRANSV("  Type: %s\n"), (const char*)sys_strOS);
-
-#else
-   #error Do something with this for your platform.
-#endif
+  
+  PlatformIdentification();
 
   CPrintF("\n");
 
@@ -487,53 +600,14 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   extern void ReportGlobalMemoryStatus(void);
   ReportGlobalMemoryStatus();
 
-#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
-  MEMORYSTATUS ms;
-  GlobalMemoryStatus(&ms);
-
-  #define MB (1024*1024)
-  sys_iRAMPhys = ms.dwTotalPhys    /MB;
-  sys_iRAMSwap = ms.dwTotalPageFile/MB;
-
-#elif (defined PLATFORM_UNIX)
-  sys_iRAMPhys = 1;  // !!! FIXME: This is bad. Bad. BAD.
-  sys_iRAMSwap = 1;
-
-#else
-   #error Do something with this for your platform.
-#endif
-
+  SetupMemoryManager();
   // initialize zip semaphore
   zip_csLock.cs_iIndex = -1;  // not checked for locking order
 
 
 // rcg10082001 Honestly, all of this is meaningless in a multitasking OS.
 //  That includes Windows, too.
-#if (defined PLATFORM_WIN32)  // !!! FIXME: Abstract this somehow.
-  // get info on the first disk in system
-  DWORD dwSerial;
-  DWORD dwFreeClusters;
-  DWORD dwClusters;
-  DWORD dwSectors;
-  DWORD dwBytes;
-
-  char strDrive[] = "C:\\";
-  strDrive[0] = strExePath[0];
-
-  GetVolumeInformationA(strDrive, NULL, 0, &dwSerial, NULL, NULL, NULL, 0);
-  GetDiskFreeSpaceA(strDrive, &dwSectors, &dwBytes, &dwFreeClusters, &dwClusters);
-  sys_iHDDSize = ((__int64)dwSectors)*dwBytes*dwClusters/MB;
-  sys_iHDDFree = ((__int64)dwSectors)*dwBytes*dwFreeClusters/MB;
-  sys_iHDDMisc = dwSerial;
-
-#elif (defined PLATFORM_UNIX)  // !!! FIXME: Uhh...?
-  sys_iHDDSize = 1;
-  sys_iHDDFree = 1;
-  sys_iHDDMisc = 0xDEADBEEF;
-
-#else
-   #error Do something with this for your platform.
-#endif
+  SetupSecondaryStorage(); /// FIXME: does that name make sense
  
   // add console variables
   extern INDEX con_bNoWarnings;
@@ -635,54 +709,13 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   _pfdDisplayFont = NULL;
   _pfdConsoleFont = NULL;
 
-// !!! FIXME: Move this into GfxLibrary...
-#ifdef PLATFORM_WIN32
-  // readout system gamma table
-  HDC  hdc = GetDC(NULL);
-  BOOL bOK = GetDeviceGammaRamp( hdc, &auwSystemGamma[0]);
-  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
-  if( !bOK) {
-    _pGfx->gl_ulFlags &= ~GLF_ADJUSTABLEGAMMA;
-    CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
-  } // done
-  ReleaseDC( NULL, hdc);
-#else
-  // !!! FIXME : rcg01072002 This CAN be done with SDL, actually. Move this somewhere.
-  #ifdef PLATFORM_PANDORA
-  // hacked gamma support
-  _pGfx->gl_ulFlags |= GLF_ADJUSTABLEGAMMA;
-  #else
-  CPrintF( TRANS("\nWARNING: Gamma, brightness and contrast are not adjustable!\n\n"));
-  #endif
-#endif
-
-// !!! FIXME : rcg12072001 Move this somewhere else.
-#ifdef PLATFORM_WIN32
-  // init IFeel
-  HWND hwnd = NULL;//GetDesktopWindow();
-  HINSTANCE hInstance = GetModuleHandle(NULL);
-  if(IFeel_InitDevice(hInstance,hwnd))
-  {
-    CTString strDefaultProject = "Data\\Default.ifr";
-    // get project file name for this device
-    CTString strIFeel = IFeel_GetProjectFileName();
-    // if no file name is returned use default file
-    if(strIFeel.Length()==0) strIFeel = strDefaultProject;
-    if(!IFeel_LoadFile(strIFeel))
-    {
-      if(strIFeel!=strDefaultProject)
-      {
-        IFeel_LoadFile(strDefaultProject);
-      }
-    }
-    CPrintF("\n");
-  }
-#endif
+  InitSystemGammaSettings();
+  InitIFeel(); // on non win32 platforms this will be optimized out if we play our cards right
 }
 
 
-// shutdown entire engine
-ENGINE_API void SE_EndEngine(void)
+
+static void PlatformSpecificDeinit(void)
 {
 // !!! FIXME: Move this into GfxLibrary...
 #ifdef PLATFORM_WIN32
@@ -697,6 +730,12 @@ ENGINE_API void SE_EndEngine(void)
   // restore default gamma
   system("sudo /usr/pandora/scripts/op_gamma.sh 0");
 #endif
+}
+
+// shutdown entire engine
+ENGINE_API void SE_EndEngine(void)
+{
+  PlatformSpecificDeinit();
 
   // free stocks
   delete _pEntityClassStock;  _pEntityClassStock = NULL;

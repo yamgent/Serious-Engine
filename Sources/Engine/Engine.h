@@ -19,36 +19,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#ifdef _WIN32
-  #ifndef PLATFORM_WIN32
-    #define PLATFORM_WIN32 1
-  #endif
-#endif
+#include <Engine/Base/Base.h>
 
 // set this to 1 to enable checks whether somethig is deleted while iterating some array/container
 #define CHECKARRAYLOCKING 0
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
-#include <time.h>
-#include <math.h>
-#include <search.h>   // for qsort
-#include <float.h>    // for FPU control
 
-/* rcg10042001 !!! FIXME: Move these somewhere. */
-#if (defined PLATFORM_WIN32)
-#include <malloc.h>
-#include <conio.h>
-#include <crtdbg.h>
-#include <winsock2.h>
-#include <windows.h>
-#include <mmsystem.h> // for timers
-#endif
 
-#include <Engine/Base/Base.h>
+#include <Engine/Base/SystemSpecificInclude.h>
+
 #include <Engine/Base/Types.h>
 
 #include <Engine/Base/Input.h>

@@ -27,6 +27,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Graphics/gl_types.h>
 
 // !!! FIXME: use stdint.h for this (and other things like INDEX, too)?
+#ifdef PLATFORM_WIN32
 typedef signed int    SLONG;
 typedef signed short int    SWORD;
 typedef signed char         SBYTE;
@@ -36,6 +37,20 @@ typedef unsigned int  ULONG;
 typedef unsigned short int  UWORD;
 typedef unsigned char       UBYTE;
 typedef unsigned int        UINT;
+#else
+#include <stdint.h>
+// use the defined typesizes from MSDN to create an equivalent translation on
+// non windows platforms
+typedef int32_t SLONG;
+typedef int16_t SWORD;
+typedef int8_t  SBYTE;
+typedef int32_t SINT;
+
+typedef uint32_t ULONG;
+typedef uint16_t UWORD;
+typedef uint8_t  UBYTE;
+typedef uint32_t UINT;
+#endif
 
 // Flip this to 1 to turn off these messages everywhere.
 // !!! FIXME: I have it forced off for Windows because fprintf.
@@ -53,7 +68,8 @@ typedef unsigned int        UINT;
     } while (0)
 #endif
 
-#if __POWERPC__  /* rcg03232004 */
+// TODO: add more architecture detection routines
+#if __POWERPC__ || (defined __ppc64__) || (defined __alpha__) || (defined __sparc__) /* rcg03232004 */
   #define PLATFORM_BIGENDIAN 1
   #define PLATFORM_LITTLEENDIAN 0
 #else
@@ -121,6 +137,9 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
     #include <limits.h>    // for PAGESIZE...
     #include <math.h>
 
+	// TODO: move the compiler detect routines to a separate file to declutter
+	// things
+	
     // check for legacy defines...
     #if (defined __ICC)
       #if (!defined __INTEL_COMPILER)
@@ -248,22 +267,22 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
         #endif
     }
 
-    typedef unsigned long long  __uint64;
+    typedef uint64_t __uint64;
     #if (!defined __INTEL_COMPILER)
-      typedef long long  __int64;
+      typedef int64_t __int64;
     #endif
 
     typedef char CHAR;
     typedef UBYTE BYTE;
-    typedef unsigned short WORD;
-    typedef unsigned int  DWORD;
-    typedef signed int    LONG;
+    typedef uint16_t WORD;
+    typedef uint32_t DWORD;
+    typedef int32_t LONG;
     typedef void *LPVOID;
     typedef char *LPSTR;
-    typedef signed long int WPARAM;
-    typedef signed long int LPARAM;
-    typedef signed short int SHORT;
-    typedef unsigned short int USHORT;
+    typedef uint32_t WPARAM;
+    typedef int32_t LPARAM;
+    typedef int16_t SHORT;
+    typedef uint16_t USHORT;
 
     typedef void *HWND;  /* !!! FIXME this sucks. */
     typedef void *HINSTANCE;  /* !!! FIXME this sucks. */
@@ -318,9 +337,15 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 #define MAX_UWORD ((UWORD)0xFFFF)
 #define MAX_UBYTE ((UBYTE)0xFF)
 
+#ifdef PLATFORM_WIN32
 typedef int BOOL;		        // this is for TRUE/FALSE
 typedef int RESULT;		// for error codes
 typedef int INDEX;     // for indexed values and quantities
+#else 
+typedef int32_t BOOL;		        // this is for TRUE/FALSE
+typedef int32_t RESULT;		// for error codes
+typedef int32_t INDEX;     // for indexed values and quantities
+#endif 
 
 #define FALSE 0
 #define TRUE  1
