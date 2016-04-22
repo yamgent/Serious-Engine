@@ -499,18 +499,27 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
   );
 
 #else
-  // emulate x86's bsr opcode...not fast.  :/
-  register DWORD val = _ctGroupsCount;
-  register INDEX bsr = 31;
-  if (val != 0)
-  {
-      while (bsr > 0)
-      {
-        if (val & (1l << bsr))
-            break;
-        bsr--;
-      }
-  }
+  // emulate x86's bsr opcode...
+
+  // GCC and clang have an architecture-independent intrinsic for this
+  // (it counts leading zeros starting at MSB and is undefined for 0)
+  #ifdef __GNUC__
+    INDEX bsr = 31;
+    if(_ctGroupsCount != 0)  bsr -= __builtin_clz(_ctGroupsCount);
+    else  bsr = 0;
+  #else // another compiler - doing it manually.. not fast.  :/
+    register DWORD val = _ctGroupsCount;
+    register INDEX bsr = 31;
+    if (val != 0)
+    {
+        while (bsr > 0)
+        {
+          if (val & (1l << bsr))
+              break;
+          bsr--;
+        }
+    }
+  #endif
 
   _ctGroupsCount = 2 << bsr;
 #endif
