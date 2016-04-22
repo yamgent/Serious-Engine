@@ -1959,7 +1959,7 @@ __forceinline void CLayerMixer::FillShadowLayer( COLOR col)
 #else
    DWORD* dst = (DWORD*)lm_pulShadowMap;
    int n = lm_pixCanvasSizeU*lm_pixCanvasSizeV;   
-   DWORD color = __builtin_bswap32(col);
+   DWORD color = BYTESWAP32_unsigned(col);
    while(n--) {*(dst++)=color;}
 #endif
 }

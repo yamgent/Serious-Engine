@@ -679,14 +679,44 @@ inline void Clear(float i) {};
 inline void Clear(double i) {};
 inline void Clear(void *pv) {};
 
-// These macros are not safe to use unless data is UNSIGNED!
-#define BYTESWAP16_unsigned(x)   ((((x)>>8)&0xff)+ (((x)<<8)&0xff00))
-#define BYTESWAP32_unsigned(x)   (((x)>>24) + (((x)>>8)&0xff00) + (((x)<<8)&0xff0000) + ((x)<<24))
+// DG: screw macros, use inline functions instead - they're even safe for signed values
+inline UWORD BYTESWAP16_unsigned(UWORD x)
+{
+#ifdef __GNUC__ // GCC and clang have a builtin that hopefully does the most efficient thing
+  return __builtin_bswap16(x);
+#else
+  return (((x)>>8)&0xff)+ (((x)<<8)&0xff00);
+#endif
+}
+
+inline ULONG BYTESWAP32_unsigned(ULONG x)
+{
+#ifdef __GNUC__ // GCC and clang have a builtin that hopefully does the most efficient thing
+  return __builtin_bswap32(x);
+#else
+  return ((x)>>24) + (((x)>>8)&0xff00) + (((x)<<8)&0xff0000) + ((x)<<24);
+#endif
+}
+
+inline __uint64 BYTESWAP64_unsigned(__uint64 x)
+{
+#ifdef __GNUC__ // GCC and clang have a builtin that hopefully does the most efficient thing
+  return __builtin_bswap64(x);
+#else
+  ULONG l = BYTESWAP32_unsigned((ULONG)(val & 0xFFFFFFFF));
+  ULONG h = BYTESWAP32_unsigned((ULONG)((val >> 32) & 0xFFFFFFFF));
+  return (((__uint64)l) << 32) | ((__uint64)h);
+#endif
+}
 
 // rcg03242004
 #if PLATFORM_LITTLEENDIAN
 	#define BYTESWAP(x)
 #else
+
+// TODO: DG: the following stuff could probably be updated to use the functions above properly,
+//       which should make lots of cases easier. As I don't have a big endian machine I can't test,
+//       so I won't touch this for now.
 
     static inline void BYTESWAP(UWORD &val)
     {

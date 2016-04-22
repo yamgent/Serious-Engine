@@ -109,8 +109,7 @@ pixLoop:
    DWORD* dst = (DWORD*)(pubTexture+pixTextureSize);
    for (int i=0; i<pixTextureSize; i++) {
     const DWORD tmp = ((DWORD)*src) | 0xFFFFFF00;
-    *dst = ((tmp << 24) & 0xff000000 ) | ((tmp <<  8) & 0x00ff0000 ) |
-      ((tmp >>  8) & 0x0000ff00 ) | ((tmp >> 24) & 0x000000ff );
+    *dst = BYTESWAP32_unsigned((ULONG)tmp);
     src++;
     dst++;
    }
