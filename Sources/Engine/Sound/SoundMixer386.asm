@@ -96,6 +96,8 @@ SEGMENT .text
 global MixMono_asm
 MixMono_asm:
     push    ebx   ; Save GCC register.
+    push    esi
+    push    edi
     ; convert from floats to fixints 32:16
     fld     D [fLeftOfs]
     fmul    D [f65536]
@@ -224,6 +226,8 @@ loopEnd_MixMono:
     shr     edx,16
     mov     D [slLastLeftSample],eax
     mov     D [slLastRightSample],edx
+    pop     edi
+    pop     esi
     pop     ebx   ; Restore GCC register.
     emms
     ret
@@ -232,6 +236,8 @@ loopEnd_MixMono:
 global MixStereo_asm
 MixStereo_asm:
     push    ebx   ; Save GCC register.
+    push    esi
+    push    edi
     ; convert from floats to fixints 32:16
     fld     D [fLeftOfs]
     fmul    D [f65536]
@@ -363,6 +369,8 @@ loopEnd_MixStereo:
     mov     D [slLastLeftSample],eax
     mov     D [slLastRightSample],edx
     emms
+    pop     edi
+    pop     esi
     pop     ebx   ; Restore GCC register.
     ret
 

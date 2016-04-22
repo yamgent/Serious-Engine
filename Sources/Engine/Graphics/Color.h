@@ -332,7 +332,7 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
     "cld    \n\t"
     "rep    \n\t"
     "movsd  \n\t"
-        : // no outputs.
+        : "=S" (pulSrc), "=D" (pulDst), "=c" (ctLongs)
         : "S" (pulSrc), "D" (pulDst), "c" (ctLongs)
         : "cc", "memory"
   );
@@ -364,7 +364,7 @@ inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
     "cld    \n\t"
     "rep    \n\t"
     "stosd  \n\t"
-        : // no outputs.
+        : "=D" (pulDst), "=c" (ctLongs)
         : "a" (ulVal), "D" (pulDst), "c" (ctLongs)
         : "cc", "memory"
   );

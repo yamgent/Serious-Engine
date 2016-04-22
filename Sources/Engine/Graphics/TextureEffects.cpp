@@ -1363,6 +1363,13 @@ pixLoop:
     _pixBaseWidth_renderWater = pixBaseWidth;
 
     __asm__ __volatile__ (
+      // this sucks :(
+      "movl   %[pixBaseHeight], %%eax       \n\t"
+      "movl   %[pswHeightMap], %%ecx        \n\t"
+      "movl   %[pulTexture], %%edx          \n\t"
+      "movl   %[pulTextureBase], %%esi      \n\t"
+      "movl   %[slHeightRowStep], %%edi     \n\t"
+
       "pushl  %%ebx                         \n\t"  // GCC needs this.
       "movl   (" ASMSYM(_pixBaseWidth_renderWater) "),%%ebx \n\t"
 
@@ -1444,9 +1451,13 @@ pixLoop:
       "popl     %%ebx                       \n\t"  // restore GCC's register.
       "emms                                 \n\t"
         :  // no outputs.
-        : "a" (pixBaseHeight), "c" (pswHeightMap),
-          "d" (pulTexture), "S" (pulTextureBase), "D" (slHeightRowStep)
-        : "cc", "memory"
+        : [pixBaseHeight] "g" (pixBaseHeight),
+          [pswHeightMap] "g" (pswHeightMap),
+          [pulTexture] "g" (pulTexture),
+          [pulTextureBase] "g" (pulTextureBase),
+          [slHeightRowStep] "g" (slHeightRowStep)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
     );
 
   #else
@@ -1617,9 +1628,7 @@ pixLoop2:
 
   #elif (defined __GNU_INLINE__)
     __asm__ __volatile__ (
-      "pushl     %%ebx                              \n\t"  // GCC's register.
-      "movl      %%ecx, %%ebx                       \n\t"
-      "bsfl      %%eax, %%eax                       \n\t"  // pixBaseWidth
+      "bsfl      %[pixBaseWidth], %%eax             \n\t"
       "movl      $32, %%edx                         \n\t"
       "subl      %%eax, %%edx                       \n\t"
       "movl      %%edx, (" ASMSYM(mmBaseWidthShift) ")         \n\t"
@@ -1631,11 +1640,11 @@ pixLoop2:
 
       "pxor      %%mm6, %%mm6                       \n\t" // MM6 = pixV|pixU
 
-      // (These registers were loaded here in the original version...)
-      //"movl      (pswHeightMap), %%ebx              \n\t"
-      //"movl      (pulTextureBase), %%esi            \n\t"
-      //"movl      (pulTexture), %%edi                \n\t"
-
+      "movl      %[pswHeightMap], %%edx             \n\t"
+      "movl      %[pulTextureBase], %%esi           \n\t"
+      "movl      %[pulTexture], %%edi               \n\t"
+      "pushl     %%ebx                              \n\t"  // GCC's register.
+      "movl      %%edx, %%ebx                       \n\t"
       "movl      (" ASMSYM(_pixBufferHeight) "), %%edx          \n\t"
 
       "0:                                           \n\t" // rowLoop2
@@ -1753,9 +1762,12 @@ pixLoop2:
       "popl      %%ebx                              \n\t"  // GCC's value.
       "emms                                         \n\t"
         : // no outputs.
-        : "a" (pixBaseWidth), "c" (pswHeightMap),
-          "S" (pulTextureBase), "D" (pulTexture)
-        : "edx", "cc", "memory"
+        : [pixBaseWidth] "g" (pixBaseWidth),
+          [pswHeightMap] "g" (pswHeightMap),
+          [pulTextureBase] "g" (pulTextureBase),
+          [pulTexture] "g" (pulTexture)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
     );
 
   #else
@@ -2136,26 +2148,24 @@ pixLoop4:
 
   #elif (defined __GNU_INLINE__)
     __asm__ __volatile__ (
-      "pushl     %%ebx                         \n\t"  // GCC's register.
-      "movl      %%ecx, %%ebx                  \n\t"
-      "bsfl      %%eax, %%eax                  \n\t"
-      "movl      $32, %%edx                    \n\t"
-      "subl      %%eax, %%edx                  \n\t"
-      "movl      %%edx, (" ASMSYM(mmBaseWidthShift) ")     \n\t"
+      "bsfl      %[pixBaseWidth], %%eax             \n\t"
+      "movl      $32, %%edx                         \n\t"
+      "subl      %%eax, %%edx                       \n\t"
+      "movl      %%edx, (" ASMSYM(mmBaseWidthShift) ")         \n\t"
 
-      "movq      (" ASMSYM(mmBaseHeightMask) "), %%mm0     \n\t"
-      "psllq     $32, %%mm0                    \n\t"
-      "por       (" ASMSYM(mmBaseWidthMask) "), %%mm0      \n\t"
-      "movq      %%mm0, (" ASMSYM(mmBaseMasks) ")          \n\t"
+      "movq      (" ASMSYM(mmBaseHeightMask) "), %%mm0          \n\t"
+      "psllq     $32, %%mm0                         \n\t"
+      "por       (" ASMSYM(mmBaseWidthMask) "), %%mm0           \n\t"
+      "movq      %%mm0, (" ASMSYM(mmBaseMasks) ")               \n\t"
 
-      "pxor      %%mm6, %%mm6                  \n\t" // MM6 = pixV|pixU
+      "pxor      %%mm6, %%mm6                       \n\t" // MM6 = pixV|pixU
 
-      // (These registers were loaded here in the original version...)
-      //"movl      (pswHeightMap), %%ebx         \n\t"
-      //"movl      (pulTextureBase), %%esi       \n\t"
-      //"movl      (pulTexture), %%edi           \n\t"
-
-      "movl      (" ASMSYM(_pixBufferHeight) "), %%edx     \n\t"
+      "movl      %[pswHeightMap], %%edx             \n\t"
+      "movl      %[pulTextureBase], %%esi           \n\t"
+      "movl      %[pulTexture], %%edi               \n\t"
+      "pushl     %%ebx                              \n\t"  // GCC's register.
+      "movl      %%edx, %%ebx                       \n\t"
+      "movl      (" ASMSYM(_pixBufferHeight) "), %%edx          \n\t"
       "0:                                      \n\t" // rowLoop4
       "pushl     %%edx                         \n\t"
       "movl      (" ASMSYM(_pixBufferWidth) "), %%ecx      \n\t"
@@ -2485,9 +2495,12 @@ pixLoop4:
       "popl      %%ebx                         \n\t"  // Restore GCC's value.
       "emms                                    \n\t"
         : // no outputs.
-        : "a" (pixBaseWidth), "c" (pswHeightMap),
-          "S" (pulTextureBase), "D" (pulTexture)
-        : "edx", "cc", "memory"
+        : [pixBaseWidth] "g" (pixBaseWidth),
+          [pswHeightMap] "g" (pswHeightMap),
+          [pulTextureBase] "g" (pulTextureBase),
+          [pulTexture] "g" (pulTexture)
+        : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
+          "cc", "memory"
     );
 
 
@@ -2965,6 +2978,11 @@ pixDone:
 
  #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
+    "movl    %[slColumnModulo], %%edx             \n\t"
+    "movl    %[slBufferMask], %%ecx               \n\t"
+    "movl    %[slDensity], %%eax                  \n\t"
+    "movl    (" ASMSYM(ulRNDSeed) "), %%edi       \n\t"
+
     "pushl   %%ebx                                \n\t"   // GCC's register.
     "xorl    %%ebx, %%ebx                         \n\t"
     "pushl   %%edx                                \n\t"   // slColumnModulo
@@ -2977,7 +2995,7 @@ pixDone:
 
     "1:                                           \n\t" // rowLoopFM
     "movl     (" ASMSYM(_pixBufferWidth) "), %%edx            \n\t"
-    "addl     %%esi, %%edx                        \n\t"
+    "addl     %[pubNew], %%edx                    \n\t"
     "movzbl   (%%ebx, %%edx), %%eax               \n\t"
     "addl     (" ASMSYM(_pixBufferWidth) "), %%edx            \n\t"
     "movzbl   (%%ebx, %%edx), %%edx               \n\t"
@@ -2985,7 +3003,7 @@ pixDone:
     "shrl     $1, %%eax                           \n\t"
     "cmpl     (%%esp), %%eax                      \n\t"
     "jg       doCalc_animateFire                  \n\t"
-    "movb     $0, (%%esi, %%ebx)                  \n\t"
+    "movb     $0, (%[pubNew], %%ebx)              \n\t"
     "jmp      pixDone_animateFire                 \n\t"
 
     "doCalc_animateFire:                          \n\t"
@@ -2996,7 +3014,7 @@ pixDone:
     "movsbl   " ASMSYM(asbMod3Sub1Table) "(%%edx), %%edx      \n\t"
     "addl     %%ebx, %%edx                        \n\t"
     "andl     4(%%esp), %%edx                     \n\t"  // slBufferMask
-    "movb     %%al, (%%esi, %%edx)                \n\t"
+    "movb     %%al, (%[pubNew], %%edx)            \n\t"
     "imull    $262147, %%edi                      \n\t"
 
     "pixDone_animateFire:                         \n\t"
@@ -3015,9 +3033,10 @@ pixDone:
     "addl     $12, %%esp                          \n\t"  // lose our locals.
     "popl     %%ebx                               \n\t"  // Restore GCC's var.
         : // no outputs.
-        : "a" (slDensity), "c" (slBufferMask),
-          "d" (slColumnModulo), "D" (ulRNDSeed), "S" (pubNew)
-        : "cc", "memory"
+        : [slBufferMask] "g" (slBufferMask),
+          [slColumnModulo] "g" (slColumnModulo),
+          [pubNew] "r" (pubNew), [slDensity] "g" (slDensity)
+        : "eax", "ecx", "edx", "edi", "cc", "memory"
   );
 
  #else
@@ -3103,6 +3122,12 @@ pixLoopF:
  #elif (defined __GNU_INLINE__)
   _pubHeat_RenderPlasmaFire = pubHeat;  // ran out of registers.  :/
   __asm__ __volatile__ (
+    "movl    %[slHeatRowStep], %%eax     \n\t"
+    "movl    %[slHeatMapStep], %%edx     \n\t"
+    "movl    %[slBaseMipShift], %%ecx    \n\t"
+    "movl    %[pulTextureBase], %%esi    \n\t"
+    "movl    %[pulTexture], %%edi        \n\t"
+
     "pushl    %%ebx                      \n\t"
     "movl     (" ASMSYM(_pubHeat_RenderPlasmaFire) "),%%ebx \n\t"
     "pushl    %%eax                      \n\t" // slHeatRowStep
@@ -3131,9 +3156,12 @@ pixLoopF:
     "addl     $12, %%esp                 \n\t" // lose our locals.
     "popl     %%ebx                      \n\t" // restore GCC's register.
         : // no outputs.
-        : "S" (pulTextureBase), "D" (pulTexture),
-          "c" (slBaseMipShift), "a" (slHeatRowStep), "d" (slHeatMapStep)
-        : "cc", "memory"
+        : [pulTextureBase] "g" (pulTextureBase),
+          [pulTexture] "g" (pulTexture),
+          [slBaseMipShift] "g" (slBaseMipShift),
+          [slHeatRowStep] "g" (slHeatRowStep),
+          [slHeatMapStep] "g" (slHeatMapStep)
+        : "eax", "ecx", "edx", "esi", "edi", "cc", "memory"
   );
 
  #else

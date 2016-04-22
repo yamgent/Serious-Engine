@@ -97,6 +97,8 @@ pixLoop:
 
  #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
+    "movl    %[pubTexture], %%esi      \n\t"
+    "movl    %[pixTextureSize], %%ecx  \n\t"
     "leal    0(%%esi, %%ecx), %%edi    \n\t"
     "0:                                \n\t" // pixLoop
     "movzbl  (%%esi), %%eax            \n\t"
@@ -108,8 +110,9 @@ pixLoop:
     "decl    %%ecx                     \n\t"
     "jnz     0b                        \n\t" // pixLoop
         : // no outputs.
-        : "S" (pubTexture), "D" (pubTexture), "c" (pixTextureSize)
-        : "eax", "cc", "memory"
+        : [pubTexture] "g" (pubTexture),
+          [pixTextureSize] "g" (pixTextureSize)
+        : "eax", "ecx", "esi", "edi", "cc", "memory"
   );
 
  #else

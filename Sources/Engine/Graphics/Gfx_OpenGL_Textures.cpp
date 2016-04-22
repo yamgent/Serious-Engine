@@ -219,6 +219,9 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
       #elif (defined __GNU_INLINE__)
       __asm__ __volatile__ (
         "pxor      %%mm0,%%mm0                \n\t"
+        "movl      %[pulSrc],%%esi            \n\t"
+        "movl      %[pulDst],%%edi            \n\t"
+        "movl      %[pixSize],%%ecx           \n\t"
         "0:                                   \n\t" // pixLoop
         "movd      0(%%esi), %%mm1            \n\t"
         "movd      4(%%esi), %%mm2            \n\t"
@@ -234,8 +237,10 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
         "jnz       0b                         \n\t" // pixLoop
         "emms                                 \n\t"
             :
-            : "S" (pulSrc), "D" (pulDst), "c" (pixSize)
-            : "memory", "cc"
+            : [pulSrc] "g" (pulSrc), [pulDst] "g" (pulDst),
+              [pixSize] "g" (pixSize)
+            : FPU_REGS, "mm0", "mm1", "mm2",
+              "ecx", "esi", "edi", "memory", "cc"
       );
 
       #else

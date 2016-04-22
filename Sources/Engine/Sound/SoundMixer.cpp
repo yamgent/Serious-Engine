@@ -96,11 +96,12 @@ void ResetMixer( const SLONG *pslBuffer, const SLONG slBufferSize)
   }
   #elif (defined __GNU_INLINE__)
   // !!! FIXME : rcg12172001 Is this REALLY any faster than memset()?
+  ULONG clob1, clob2;
   __asm__ __volatile__ (
     "cld                  \n\t"
     "rep                  \n\t"
     "stosl                \n\t"
-        : // no outputs.
+        : "=D" (clob1), "=c" (clob2)
         : "a" (0), "D" (pvMixerBuffer), "c" (slMixerBufferSize*2)
         : "cc", "memory"
   );
@@ -132,11 +133,12 @@ void CopyMixerBuffer_stereo( const SLONG slSrcOffset, void *pDstBuffer, const SL
   }
   #elif (defined __GNU_INLINE__)
   // !!! FIXME : rcg12172001 Is this REALLY any faster than memcpy()?
+  ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                 \n\t"
     "rep                 \n\t"
     "movsl               \n\t"
-      : // no outputs.
+      : "=S" (clob1), "=D" (clob2), "=c" (clob3)
       : "S" (((char *)pvMixerBuffer) + slSrcOffset),
         "D" (pDstBuffer),
         "c" (slBytes >> 2)
@@ -184,6 +186,9 @@ copyLoop:
 
   #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
+    "movl     %[pvMixerBuffer], %%esi         \n\t"
+    "movl     %[pDstBuffer], %%edi            \n\t"
+    "movl     %[slDW], %%ecx                  \n\t"
     "0:                                       \n\t" // copyLoop
     "movzwl   (%%esi), %%eax                  \n\t"
     "movw     %%ax, (%%edi)                   \n\t"
@@ -192,10 +197,10 @@ copyLoop:
     "decl     %%ecx                           \n\t"
     "jnz      0b                              \n\t" // copyLoop
       : // no outputs.
-      : "S" (((char *)pvMixerBuffer) + slSrcOffset),
-        "D" (pDstBuffer),
-        "c" (slBytes >> 2)
-      : "cc", "memory", "eax"
+      : [pvMixerBuffer] "g" (((char *)pvMixerBuffer) + slSrcOffset),
+        [pDstBuffer] "g" (pDstBuffer),
+        [slDW] "g" (slBytes >> 2)
+      : "eax", "ecx", "esi", "edi", "cc", "memory"
   );
 
   #else
@@ -247,6 +252,9 @@ copyLoop:
 
   #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
+    "movl     %[pvMixerBuffer], %%esi      \n\t"
+    "movl     %[pvMixerBuffer], %%edi      \n\t"
+    "movl     %[slDW], %%ecx               \n\t"
     "cld                                   \n\t"
     "0:                                    \n\t" // copyLoop
     "movq     (%%esi), %%mm0               \n\t"
@@ -258,8 +266,8 @@ copyLoop:
     "jnz      0b                           \n\t" // copyLoop
     "emms                                  \n\t"
       : // no outputs.
-      : "S" (pvMixerBuffer), "D" (pvMixerBuffer), "c" (slBytes >> 2)
-      : "cc", "memory"
+      : [pvMixerBuffer] "g" (pvMixerBuffer), [slDW] "g" (slBytes >> 2)
+      : FPU_REGS, "mm0", "ecx", "esi", "edi", "cc", "memory"
   );
 
   #else

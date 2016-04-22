@@ -186,10 +186,10 @@ elemDone:
   }
  #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
-    "pushl   %%ebx                  \n\t" // Save GCC's register.
-    "movl    %%eax, %%ebx           \n\t"
-
-    "movd    %%ebx, %%mm1           \n\t"
+    "movl    %[ctElems], %%ecx      \n\t"
+    "movl    %[piDst], %%edi        \n\t"
+    "movl    %[piElements], %%esi   \n\t"
+    "movd    %[iVtx0Pass], %%mm1    \n\t"
     "movq    %%mm1, %%mm0           \n\t"
     "psllq   $32, %%mm1             \n\t"
     "por     %%mm0, %%mm1           \n\t"
@@ -205,17 +205,18 @@ elemDone:
     "jnz     0b                     \n\t" // elemLoop
     "1:                             \n\t" // elemRest
     "emms                           \n\t"
-    "testl   $1, %%edx              \n\t"
+    "testl   $1, %[ctElems]         \n\t"
     "jz      2f                     \n\t" // elemDone
     "movl    (%%esi), %%eax         \n\t"
-    "addl    %%ebx, %%eax           \n\t"
+    "addl    %[iVtx0Pass], %%eax    \n\t"
     "movl    %%eax, (%%edi)         \n\t"
     "2:                             \n\t" // elemDone
-    "popl    %%ebx                  \n\t"  // restore GCC's register.
         : // no outputs.
-        : "c" (ctElems), "d" (ctElems), "D" (piDst),
-          "S" (pspo->spo_piElements), "a" (pspo->spo_iVtx0Pass)
-        : "cc", "memory"
+        : [ctElems] "g" (ctElems), [piDst] "g" (piDst),
+          [piElements] "g" (pspo->spo_piElements),
+          [iVtx0Pass] "g" (pspo->spo_iVtx0Pass)
+        : FPU_REGS, "mm0", "mm1", "eax", "ecx", "esi", "edi",
+          "cc", "memory"
   );
 
  #else
@@ -506,12 +507,13 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
 
  #elif (defined __GNU_INLINE__)
   __asm__ __volatile__ (
+    "movl     $2, %%eax          \n\t"
     "bsrl     (%%esi), %%ecx     \n\t"
     "shll     %%cl, %%eax        \n\t"
     "movl     %%eax, (%%esi)     \n\t"
         : // no outputs.
-        : "a" (2), "S" (&_ctGroupsCount)
-        : "ecx", "cc", "memory"
+        : "S" (&_ctGroupsCount)
+        : "eax", "ecx", "cc", "memory"
   );
 
  #else
