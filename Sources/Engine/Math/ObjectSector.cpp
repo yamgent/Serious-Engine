@@ -254,7 +254,7 @@ void CObjectPolygonEdge::GetVertices(CObjectVertex *&povxStart, CObjectVertex *&
  * Default constructor.
  */
 CObjectSector::CObjectSector(void) :
-  osc_colAmbient(0), osc_colColor(0), osc_strName("")
+  osc_colColor(0), osc_colAmbient(0), osc_strName("")
 {
   osc_ulFlags[0] = 0;
   osc_ulFlags[1] = 0;

@@ -687,6 +687,12 @@ void RenderMap( CDrawPort *pdp, ULONG ulLevelMask, CProgressHookInfo *pphi)
         colText = 0xc87832ff;
       }
     }
+    else // DG: make sure iPosX/Y is initialized
+    {
+      // no idea if 0 makes sense, but at least it's deterministic
+      iPosX = 0;
+      iPosY = 0;
+    }
 
     PIX pixhtcx = (PIX) (pixC1S+iPosX*fStretch);
     PIX pixhtcy = (PIX) (pixR1S+iPosY*fStretch);

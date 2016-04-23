@@ -469,6 +469,7 @@ functions:
         default: iAnim = ELEMENTALLAVA_ANIM_WOUND03; break;
       }
     } else {
+        iAnim=0; // DG: not sure this makes sense, but at least it has a deterministic value
 /*      switch (IRnd()%3) {
         case 0: iAnim = STONEMAN_ANIM_WOUND01; break;
         case 1: iAnim = STONEMAN_ANIM_WOUND02; break;
@@ -538,6 +539,7 @@ functions:
     if (m_EetType == ELT_LAVA) {
       iAnim = ELEMENTALLAVA_ANIM_DEATH03;
     } else {
+      iAnim = 0; // DG: set to deterministic value
 //      iAnim = STONEMAN_ANIM_DEATH03;
     }
     StartModelAnim(iAnim, 0);
@@ -1265,6 +1267,7 @@ procedures:
     if (m_EetType == ELT_LAVA) {
       iAnim = ELEMENTALLAVA_ANIM_MELTUP;
     } else {
+      iAnim = 0; // DG: initialize to deterministic value
 //      iAnim = STONEMAN_ANIM_MORPHPLANEUP;
     }
     StartModelAnim(iAnim, 0);

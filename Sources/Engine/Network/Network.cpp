@@ -676,11 +676,11 @@ void CNetworkTimerHandler::HandleTimer(void)
  */
 CNetworkLibrary::CNetworkLibrary(void) :
   ga_IsServer(FALSE),               // is not server
+  ga_srvServer(*new CServer),
+  ga_sesSessionState(*new CSessionState),
   ga_bDemoRec(FALSE),               // not recording demo
   ga_bDemoPlay(FALSE),              // not playing demo
-  ga_bDemoPlayFinished(FALSE),      // demo not finished
-  ga_srvServer(*new CServer),
-  ga_sesSessionState(*new CSessionState)
+  ga_bDemoPlayFinished(FALSE)      // demo not finished
 {
   ga_aplsPlayers.New(NET_MAXLOCALPLAYERS);
 

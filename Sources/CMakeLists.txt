@@ -112,11 +112,10 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	# TODO fix these warnings
 	add_compile_options(-Wno-sign-compare)
 	add_compile_options(-Wno-switch)
+	add_compile_options(-Wno-char-subscripts)
 	add_compile_options(-Wno-unknown-pragmas)
 	add_compile_options(-Wno-unused-variable)
 	add_compile_options(-Wno-unused-value)
-	add_compile_options(-Wno-reorder)
-	add_compile_options(-Wno-unused-but-set-variable)
 	add_compile_options(-Wno-parentheses)
 	MESSAGE(WARNING, "re-enable some of the warnings some day!")
 
@@ -125,6 +124,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		add_compile_options(-Wno-tautological-undefined-compare)
 		add_compile_options(-Wno-c++11-compat-deprecated-writable-strings)
 		add_compile_options(-Wno-logical-op-parentheses) # FIXME: this too should be re-enabled
+	else()
+		add_compile_options(-Wno-unused-but-set-variable) # my clang doesn't know this
 	endif()
 
 	if(MACOSX)

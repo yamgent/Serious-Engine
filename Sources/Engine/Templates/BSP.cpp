@@ -416,9 +416,9 @@ template<class Type, int iDimensions>
 BSPNode<Type, iDimensions>::BSPNode(const Plane<Type, iDimensions> &plSplitPlane, size_t ulPlaneTag,
                  BSPNode<Type, iDimensions> &bnFront, BSPNode<Type, iDimensions> &bnBack)
   : Plane<Type, iDimensions>(plSplitPlane)
+  , bn_bnlLocation(BNL_BRANCH)
   , bn_pbnFront(&bnFront)
   , bn_pbnBack(&bnBack)
-  , bn_bnlLocation(BNL_BRANCH)
   , bn_ulPlaneTag(ulPlaneTag)
 {
 }

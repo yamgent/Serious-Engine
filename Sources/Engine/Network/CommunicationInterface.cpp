@@ -629,7 +629,7 @@ void CCommunicationInterface::Broadcast_Update_t() {
 	BOOL bIsAlready;
 	BOOL bFoundEmpty;
 	ULONG iClient;
-	UBYTE ubDummy=65;
+	//UBYTE ubDummy=65;
 
 	
 	// while there is a connection request packet in the input buffer
@@ -1080,7 +1080,8 @@ void CCommunicationInterface::Client_OpenNet_t(ULONG ulServerAddress)
 		if (cm_ciLocalClient.ci_pbReliableInputBuffer.pb_ulNumOfPackets > 0) {
 			ppaReadPacket = cm_ciLocalClient.ci_pbReliableInputBuffer.GetFirstPacket();
 			// and it is a connection confirmation
-			if (ppaReadPacket->pa_ubReliable &&  UDP_PACKET_CONNECT_RESPONSE) {
+			// DG: replaced && with & as done everywhere else, hope this doesn't rely on being buggy.
+			if (ppaReadPacket->pa_ubReliable &  UDP_PACKET_CONNECT_RESPONSE) {
 				// the client has succedeed to connect, so read the uwID from the packet
 				cm_ciLocalClient.ci_adrAddress.adr_ulAddress = ulServerAddress;
 				cm_ciLocalClient.ci_adrAddress.adr_uwPort = net_iPort;

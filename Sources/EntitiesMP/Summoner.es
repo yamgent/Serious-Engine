@@ -619,6 +619,7 @@ functions:
       iCount = IRnd()%m_iGroup03Count+1;
     } else {
       ASSERT("Invalid group!");
+      iCount = 0; // DG: this should have a deterministic value in case this happens after all!
     }
     ASSERT(iCount>0);
 

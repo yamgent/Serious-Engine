@@ -84,12 +84,12 @@ CTextureBlending::CTextureBlending(void)
  * Constructor.
  */
 CWorld::CWorld(void)
-  : wo_colBackground(C_lGRAY)       // clear background color
-  , wo_pecWorldBaseClass(NULL)      // worldbase class must be obtained before using the world
-  , wo_bPortalLinksUpToDate(FALSE)  // portal-sector links must be updated
+  : wo_pecWorldBaseClass(NULL)      // worldbase class must be obtained before using the world
   , wo_baBrushes(*new CBrushArchive)
   , wo_taTerrains(*new CTerrainArchive)
+  , wo_colBackground(C_lGRAY)       // clear background color
   , wo_ulSpawnFlags(0)
+  , wo_bPortalLinksUpToDate(FALSE)  // portal-sector links must be updated
 {
   wo_baBrushes.ba_pwoWorld = this;
   wo_taTerrains.ta_pwoWorld = this;
