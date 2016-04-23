@@ -43,7 +43,7 @@ static FLOAT fZoomI, fZoomJ;
 static FLOAT fFrontClipDistance, f1oFrontClipDistance;
 static FLOAT fBackClipDistance, f1oBackClipDistance;
 static FLOAT fDepthBufferFactor;
-static BOOL  bBackFaced, bDoubleSided;
+//static BOOL  bBackFaced, bDoubleSided;
 static BOOL  bPerspective;
 static BOOL  b16BitCompression;
 static ULONG ulColorMask;

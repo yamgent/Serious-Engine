@@ -118,7 +118,7 @@ void CRenderer::PreClipPlanes(void)
       const FLOAT fx = wpl.wpl_plRelative(1);
       const FLOAT fy = wpl.wpl_plRelative(2);
       const FLOAT fz = wpl.wpl_plRelative(3);
-      const FLOAT fd = wpl.wpl_plRelative.Distance();
+      //const FLOAT fd = wpl.wpl_plRelative.Distance();
       wpl.wpl_plView(1) = fx*m(1, 1)+fy*m(1, 2)+fz*m(1, 3);
       wpl.wpl_plView(2) = fx*m(2, 1)+fy*m(2, 2)+fz*m(2, 3);
       wpl.wpl_plView(3) = fx*m(3, 1)+fy*m(3, 2)+fz*m(3, 3);
@@ -179,8 +179,8 @@ void CRenderer::PreClipPlanes(void)
 void CRenderer::PostClipVertices(void)
 {
   _pfRenderProfile.StartTimer(CRenderProfile::PTI_PROJECTVERTICES);
-  const FLOATmatrix3D &m = re_pbrCurrent->br_prProjection->pr_RotationMatrix;
-  const FLOAT3D       &v = re_pbrCurrent->br_prProjection->pr_TranslationVector;
+  //const FLOATmatrix3D &m = re_pbrCurrent->br_prProjection->pr_RotationMatrix;
+  //const FLOAT3D       &v = re_pbrCurrent->br_prProjection->pr_TranslationVector;
 
   // if the projection is perspective
   if (re_pbrCurrent->br_prProjection.IsPerspective()) {
@@ -749,7 +749,7 @@ CScreenPolygon *CRenderer::MakeScreenPolygon(CBrushPolygon &bpo)
           sppo.spo_aubTextureFlags[0] = STXF_BLEND_ALPHA;
         }
         // get its mapping gradients from shadowmap and stretch
-        CWorkingPlane &wpl  = *bpo.bpo_pbplPlane->bpl_pwplWorking;
+        //CWorkingPlane &wpl  = *bpo.bpo_pbplPlane->bpl_pwplWorking;
         sppo.spo_amvMapping[0] = sppo.spo_amvMapping[3];
         FLOAT fStretch = bpo.bpo_boxBoundingBox.Size().Length()/1000;
         sppo.spo_amvMapping[0].mv_vU *= fStretch;
@@ -870,7 +870,7 @@ void CRenderer::AddSpansToScene(void)
     return;
   }
 
-  FLOAT fpixLastScanJOffseted = re_pixCurrentScanJ-1 +OFFSET_DN;
+  //FLOAT fpixLastScanJOffseted = re_pixCurrentScanJ-1 +OFFSET_DN;
   // first, little safety check - quit if zero spans in line!
   INDEX ctSpans = re_aspSpans.Count();
   if( ctSpans==0) {

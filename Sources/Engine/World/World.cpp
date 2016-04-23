@@ -51,6 +51,7 @@ extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
 extern INDEX _ctPredictorEntities;
 
+#if 0 // DG: unused.
 // calculate ray placement from origin and target positions (obsolete?)
 static inline CPlacement3D CalculateRayPlacement(
   const FLOAT3D &vOrigin, const FLOAT3D &vTarget)
@@ -65,6 +66,7 @@ static inline CPlacement3D CalculateRayPlacement(
   DirectionVectorToAngles(vDirection, plRay.pl_OrientationAngle);
   return plRay;
 }
+#endif // 0
 
 /* Constructor. */
 CTextureTransformation::CTextureTransformation(void)

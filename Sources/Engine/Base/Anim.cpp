@@ -904,14 +904,14 @@ void CAnimObject::PlayAnim(INDEX iNew, ULONG ulFlags)
     	class COneAnim *pCOA = &ao_AnimData->ad_Anims[ao_iCurrentAnim];
       TIME tmNow = _pTimer->CurrentTick();
       TIME tmLength = GetCurrentAnimLength();
-      FLOAT fFrame = ((_pTimer->CurrentTick() - ao_tmAnimStart)/pCOA->oa_SecsPerFrame);
+      FLOAT fFrame = ((tmNow - ao_tmAnimStart)/pCOA->oa_SecsPerFrame);
       INDEX iFrame = INDEX(fFrame);
       FLOAT fFract = fFrame-iFrame;
       iFrame = ClipFrame(iFrame);
       TIME tmPassed = (iFrame+fFract)*pCOA->oa_SecsPerFrame;
       TIME tmLeft = tmLength-tmPassed;
       // set time ahead to end of the current animation
-	    ao_tmAnimStart = _pTimer->CurrentTick()+tmLeft;
+	    ao_tmAnimStart = tmNow+tmLeft;
       // remember last animation
       ao_iLastAnim = ao_iCurrentAnim;
       // set new animation number

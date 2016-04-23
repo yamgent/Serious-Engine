@@ -72,7 +72,7 @@ FLOAT GFX_fLastF = 0;
 INDEX GFX_ctVertices = 0;
 
 // for D3D: mark need for clipping (when wants to be disable but cannot be because of user clip plane)
-static BOOL _bWantsClipping = TRUE;
+//static BOOL _bWantsClipping = TRUE;
 // current color mask (for Get... function)
 static ULONG _ulCurrentColorMask = (CT_RMASK|CT_GMASK|CT_BMASK|CT_AMASK);
 // locking state for OGL
@@ -81,7 +81,7 @@ static BOOL _bCVAReallyLocked = FALSE;
 // clip plane and last view matrix for D3D
 FLOAT D3D_afClipPlane[4]    = {0,0,0,0};
 FLOAT D3D_afViewMatrix[16]  = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
-static FLOAT _afActiveClipPlane[4] = {0,0,0,0};
+//static FLOAT _afActiveClipPlane[4] = {0,0,0,0};
 
 // Truform/N-Patches
 INDEX truform_iLevel  = -1;

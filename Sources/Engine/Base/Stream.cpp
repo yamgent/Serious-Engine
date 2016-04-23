@@ -1433,7 +1433,7 @@ static INDEX ExpandFilePath_read(ULONG ulType, const CTFileName &fnmFile, CTFile
 {
   // search for the file in zips
   INDEX iFileInZip = UNZIPGetFileIndex(fnmFile);
-  const BOOL userdir_not_basedir = (_fnmUserDir != _fnmApplicationPath);
+  //const BOOL userdir_not_basedir = (_fnmUserDir != _fnmApplicationPath);
 
   // if a mod is active
   if (_fnmMod!="") {

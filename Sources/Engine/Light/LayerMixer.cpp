@@ -128,6 +128,7 @@ static inline void IncrementByteWithClip( UBYTE &ub, SLONG slAdd)
   ub = pubClipByte[(SLONG)ub+slAdd];
 }
 
+#if 0 // DG: unused.
 // increment a color without overflowing it
 static inline void IncrementColorWithClip( UBYTE &ubR, UBYTE &ubG, UBYTE &ubB,
                                            SLONG  slR, SLONG  slG, SLONG  slB)
@@ -136,6 +137,7 @@ static inline void IncrementColorWithClip( UBYTE &ubR, UBYTE &ubG, UBYTE &ubB,
   IncrementByteWithClip( ubG, slG);
   IncrementByteWithClip( ubB, slB);
 }
+#endif // 0 (unused)
 
 // add the intensity to the pixel
 inline void CLayerMixer::AddToCluster( UBYTE *pub)
@@ -276,7 +278,7 @@ void CLayerMixer::AddAmbientPoint(void)
   // prepare some local variables
   mmDDL2oDU_AddAmbientPoint = _slDDL2oDU;
   mmDDL2oDV_AddAmbientPoint = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap(lm_colLight); // FIXME: shouldn't this be used in plain C impl too?
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -476,7 +478,7 @@ void CLayerMixer::AddAmbientMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   // prepare some local variables
   mmDDL2oDU_addAmbientMaskPoint = _slDDL2oDU;
   mmDDL2oDV_addAmbientMaskPoint = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap(lm_colLight); // FIXME: shouldn't this be used in plain C impl too?
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -654,7 +656,7 @@ skipPixel:
     for( PIX pixU=0; pixU<_iPixCt; pixU++)
     {
       // if the point is not masked
-      if( *pubMask & ubMask && (slL2Point<FTOX)) {
+      if( (*pubMask & ubMask) && (slL2Point<FTOX)) {
         SLONG slL = (slL2Point>>SHIFTX)&(SQRTTABLESIZE-1);  // and is just for degenerate cases
         SLONG slIntensity = _slLightMax;
         slL = aubSqrt[slL];
@@ -699,7 +701,7 @@ void CLayerMixer::AddDiffusionPoint(void)
   // prepare some local variables
   mmDDL2oDU_AddDiffusionPoint = _slDDL2oDU;
   mmDDL2oDV_AddDiffusionPoint = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap(lm_colLight); // FIXME: shouldn't this be used in plain C impl too?
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -900,7 +902,7 @@ void CLayerMixer::AddDiffusionMaskPoint( UBYTE *pubMask, UBYTE ubMask)
   // prepare some local variables
   mmDDL2oDU_AddDiffusionMaskPoint = _slDDL2oDU;
   mmDDL2oDV_AddDiffusionMaskPoint = _slDDL2oDV;
-  ULONG ulLightRGB = ByteSwap(lm_colLight);
+  ULONG ulLightRGB = ByteSwap(lm_colLight); // FIXME: shouldn't this be used in plain C impl too?
   _slLightMax<<=7;
   _slLightStep>>=1;
 
@@ -1076,7 +1078,7 @@ skipPixel:
     for( PIX pixU=0; pixU<_iPixCt; pixU++)
     {
       // if the point is not masked
-      if( *pubMask&ubMask && (slL2Point<FTOX)) {
+      if( (*pubMask & ubMask) && (slL2Point<FTOX)) {
         SLONG sl1oL = (slL2Point>>SHIFTX)&(SQRTTABLESIZE-1);  // and is just for degenerate cases
         sl1oL = auw1oSqrt[sl1oL];
         SLONG slIntensity = _slLightMax;
@@ -1709,7 +1711,7 @@ void CLayerMixer::AddOneLayerDirectional( CBrushShadowLayer *pbsl, UBYTE *pubMas
 
   // get the light source of the layer
   lm_plsLight = pbsl->bsl_plsLightSource;
-  const FLOAT3D &vLight = lm_plsLight->ls_penEntity->GetPlacement().pl_PositionVector;
+  //const FLOAT3D &vLight = lm_plsLight->ls_penEntity->GetPlacement().pl_PositionVector;
   AnglesToDirectionVector( lm_plsLight->ls_penEntity->GetPlacement().pl_OrientationAngle,
                            lm_vLightDirection);
   // calculate intensity
@@ -1845,7 +1847,7 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap)
     ASSERT( &ls!=NULL); if( &ls==NULL) continue; // safety check
 
     // skip if should not be applied
-    if( (bDynamicOnly && !(ls.ls_ulFlags&LSF_NONPERSISTENT)) || ls.ls_ulFlags&LSF_DYNAMIC) continue;
+    if( (bDynamicOnly && !(ls.ls_ulFlags&LSF_NONPERSISTENT)) || (ls.ls_ulFlags & LSF_DYNAMIC)) continue;
 
     // set corresponding shadowmap flag if this is an animating light
     if( ls.ls_paoLightAnimation!=NULL) lm_pbsmShadowMap->sm_ulFlags |= SMF_ANIMATINGLIGHTS;

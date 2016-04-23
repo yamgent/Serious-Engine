@@ -220,7 +220,7 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
 
       #else
       // Basically average every other pixel...
-      UWORD w = 0;
+      //UWORD w = 0;
       UBYTE *dptr = (UBYTE *) pulDst;
       UBYTE *sptr = (UBYTE *) pulSrc;
       #if 0

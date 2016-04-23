@@ -34,6 +34,7 @@ extern const D3DDEVTYPE d3dDevType;
 // list of all modes avaliable through CDS
 static CListHead _lhCDSModes;
 
+#ifdef PLATFORM_WIN32 // DG: all this code is (currently?) only used for windows.
 class CResolution {
 public:
   PIX   re_pixSizeI;
@@ -73,8 +74,6 @@ static CResolution _areResolutions[] =
 // THIS NUMBER MUST NOT BE OVER 25! (otherwise change it in adapter.h)
 static const INDEX MAX_RESOLUTIONS = sizeof(_areResolutions)/sizeof(_areResolutions[0]);
 
-
-#ifdef PLATFORM_WIN32
 
 // initialize CDS support (enumerate modes at startup)
 void CGfxLibrary::InitAPIs(void)
@@ -240,7 +239,7 @@ void CGfxLibrary::InitAPIs(void)
 
   // fill OpenGL adapter info
   CDisplayAdapter *pda;
-  INDEX iResolution;
+  //INDEX iResolution;
 
   gl_gaAPI[GAT_OGL].ga_ctAdapters = 1;
   gl_gaAPI[GAT_OGL].ga_iCurrentAdapter = 0;

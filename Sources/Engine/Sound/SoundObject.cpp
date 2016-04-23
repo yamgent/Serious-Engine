@@ -51,6 +51,7 @@ extern BOOL _bPredictionActive;
 extern FLOAT snd_fSoundVolume;
 extern FLOAT snd_fMusicVolume;
 
+#if 0 // DG: unused.
 static CTString GetPred(CEntity*pen)
 {
   CTString str1;
@@ -67,6 +68,7 @@ static CTString GetPred(CEntity*pen)
   str.PrintF("%08x-%s", pen, (const char *) str1);
   return str;
 }
+#endif // 0 (unused)
 /* ====================================================
  *
  *  Class global methods

@@ -509,7 +509,7 @@ CBrushPolygon &CBrushPolygon::CopyPolygon(CBrushPolygon &bp)
   bpo_boxBoundingBox=bp.bpo_boxBoundingBox;
   bpo_pbscSector=bp.bpo_pbscSector;
   bpo_rsOtherSideSectors.Clear();
-  bpo_lhShadingInfos;
+  //bpo_lhShadingInfos; // FIXME: DG: was this missing "= bp.bpo_lhShadingInfos" or something like that?
   bpo_iInWorld=bp.bpo_iInWorld;
   return *this;
 }

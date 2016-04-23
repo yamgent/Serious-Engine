@@ -843,6 +843,7 @@ void CTextureData::Read_t( CTStream *inFile)
       *inFile >> ctEffectSources;
       // add requested number of members to effect source array
       CTextureEffectSource *pEffectSources = td_ptegEffect->teg_atesEffectSources.New( ctEffectSources);
+      (void)pEffectSources;
 
       // read whole dynamic array of effect sources
       FOREACHINDYNAMICARRAY( td_ptegEffect->teg_atesEffectSources, CTextureEffectSource, itEffectSource)

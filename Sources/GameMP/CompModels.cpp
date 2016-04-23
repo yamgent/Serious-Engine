@@ -733,7 +733,7 @@ extern void SetupCompModel_t(const CTString &strName)
       CTFILENAME("ModelsMP\\Weapons\\Chainsaw\\Blade.tex"),
       CTFILENAME("Models\\ReflectionTextures\\LightMetal01.tex"),
       CTFILENAME("Models\\SpecularTextures\\Medium.tex"));
-    CAttachmentModelObject *amo = pmo->GetAttachmentModel(CHAINSAWITEM_ATTACHMENT_BLADE);
+    //CAttachmentModelObject *amo = pmo->GetAttachmentModel(CHAINSAWITEM_ATTACHMENT_BLADE);
     AddAttachment_t(pmo, BLADEFORPLAYER_ATTACHMENT_TEETH, 
       CTFILENAME("ModelsMP\\Weapons\\Chainsaw\\Teeth.mdl"), 0,
       CTFILENAME("ModelsMP\\Weapons\\Chainsaw\\Teeth.tex"),

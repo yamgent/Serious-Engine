@@ -96,7 +96,7 @@ void CEntity::WriteEntityPointer_t(CTStream *ostrm, CEntityPointer pen)
 void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
 {
   istrm.ExpectID_t("PRPS");  // 'properties'
-  CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
+  //CDLLEntityClass *pdecDLLClass = en_pecClass->ec_pdecDLLClass;
   INDEX ctProperties;
   // read number of properties (note that this doesn't have to be same as number
   // of properties in the class (class might have changed))
@@ -104,7 +104,7 @@ void CEntity::ReadProperties_t(CTStream &istrm) // throw char *
 
   // for all saved properties
   for(INDEX iProperty=0; iProperty<ctProperties; iProperty++) {
-    pdecDLLClass->dec_ctProperties;
+    //pdecDLLClass->dec_ctProperties;
     // read packed identifier
     ULONG ulIDAndType;
     istrm>>ulIDAndType;

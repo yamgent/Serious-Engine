@@ -91,7 +91,9 @@ extern BOOL CVA_bModels;
 static FLOAT _fLastBrightness, _fLastContrast, _fLastGamma;
 static FLOAT _fLastBiasR, _fLastBiasG, _fLastBiasB;
 static INDEX _iLastLevels;
+#ifdef PLATFORM_WIN32 // DG: not used on other platforms
 static UWORD _auwGammaTable[256*3];
+#endif
 
 // table for clipping [-512..+1024] to [0..255]
 static UBYTE aubClipByte[256*2+ 256 +256*3];
@@ -1213,6 +1215,7 @@ void CGfxLibrary::Init(void)
     // !!! FIXME : rcg11232001 Scripts/CustomOptions/GFX-AdvancedRendering.cfg
     // !!! FIXME : rcg11232001 references non-existing cvars, so I'm adding
     // !!! FIXME : rcg11232001 them here for now.
+    // FXME: DG: so why are they commented out?
 //  _pShell->DeclareSymbol("persistent user INDEX mdl_bRenderBump;", (void *) &mdl_bRenderBump);
 //  _pShell->DeclareSymbol("persistent user FLOAT ogl_fTextureAnisotropy;", (void *) &ogl_fTextureAnisotropy);
   _pShell->DeclareSymbol("persistent user FLOAT tex_fNormalSize;", (void *) &tex_fNormalSize);
@@ -1609,11 +1612,10 @@ void CGfxLibrary::UnlockDrawPort( CDrawPort *pdpToUnlock)
 /* Create a new window canvas. */
 void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort **ppdpNew)
 {
-  RECT rectWindow;	// rectangle for the client area of the window
-
   // get the dimensions from the window
 // !!! FIXME : rcg11052001 Abstract this.
 #ifdef PLATFORM_WIN32
+  RECT rectWindow;  // rectangle for the client area of the window
   GetClientRect( (HWND)hWnd, &rectWindow);
   const PIX pixWidth  = rectWindow.right  - rectWindow.left;
   const PIX pixHeight = rectWindow.bottom - rectWindow.top;
@@ -1627,7 +1629,7 @@ void CGfxLibrary::CreateWindowCanvas(void *hWnd, CViewPort **ppvpNew, CDrawPort 
   *ppvpNew = NULL;
   *ppdpNew = NULL;
   // create a new viewport
-  if (*ppvpNew = new CViewPort( pixWidth, pixHeight, (HWND)hWnd)) {
+  if((*ppvpNew = new CViewPort( pixWidth, pixHeight, (HWND)hWnd))) {
     // and it's drawport
 		*ppdpNew = &(*ppvpNew)->vp_Raster.ra_MainDrawPort;
   } else {
@@ -1802,7 +1804,9 @@ INDEX _ctProbeShdU = 0;
 INDEX _ctProbeShdB = 0;
 INDEX _ctFullShdU  = 0;
 SLONG _slFullShdUBytes = 0;
+#ifdef PLATFORM_WIN32 // only used there
 static BOOL GenerateGammaTable(void);
+#endif
 
 
 
@@ -2064,7 +2068,7 @@ void CGfxLibrary::UnlockRaster( CRaster *praToUnlock)
 }
 
 
-
+#ifdef PLATFORM_WIN32 // DG: only used on windows
 // generates gamma table and returns true if gamma table has been changed
 static BOOL GenerateGammaTable(void)
 {
@@ -2140,7 +2144,7 @@ static BOOL GenerateGammaTable(void)
   // done
   return TRUE;
 }
-
+#endif // PLATFORM_WIN32
 
 
 #if 0

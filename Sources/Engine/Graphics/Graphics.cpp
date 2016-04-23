@@ -2673,7 +2673,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   // find row counter and max delta J
   SLONG ctJShort1 = pixMdJ - pixUpJ;
   SLONG ctJShort2 = pixDnJ - pixMdJ;
-  SLONG ctJLong   = pixDnJ - pixUpJ;
+  //SLONG ctJLong   = pixDnJ - pixUpJ;
 
   FLOAT currK, curr1oK, currUoK, currVoK;
   PIX   pixJ = pixUpJ;

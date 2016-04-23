@@ -103,18 +103,19 @@ static HINSTANCE _hInstDS = NULL;
 static CTString snd_strDeviceName;
 #endif
 
-static INDEX _iWriteOffset  = 0;
-static INDEX _iWriteOffset2 = 0;
 static BOOL  _bMuted  = FALSE;
 static INDEX _iLastEnvType = 1234;
 static FLOAT _fLastEnvSize = 1234;
-static FLOAT _fLastPanning = 1234;
 
+#ifdef PLATFORM_WIN32
+static FLOAT _fLastPanning = 1234;
+static INDEX _iWriteOffset  = 0;
+static INDEX _iWriteOffset2 = 0;
 
 // TEMP! - for writing mixer buffer to file
 static FILE *_filMixerBuffer;
 static BOOL _bOpened = FALSE;
-
+#endif
 
 #define WAVEOUTBLOCKSIZE 1024
 #define MINPAN (1.0f)
@@ -1467,10 +1468,10 @@ void CSoundTimerHandler::HandleTimer(void)
 
 // copying of mixer buffer to sound buffer(s)
 
+#ifdef PLATFORM_WIN32
 static LPVOID _lpData, _lpData2;
 static DWORD  _dwSize, _dwSize2;
 
-#ifdef PLATFORM_WIN32
 static void CopyMixerBuffer_dsound( CSoundLibrary &sl, SLONG slMixedSize)
 {
   LPVOID lpData;

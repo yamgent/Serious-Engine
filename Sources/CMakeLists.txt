@@ -114,8 +114,9 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wno-switch)
 	add_compile_options(-Wno-char-subscripts)
 	add_compile_options(-Wno-unknown-pragmas)
-	add_compile_options(-Wno-unused-variable)
-	add_compile_options(-Wno-unused-value)
+	add_compile_options(-Wno-unused-variable) # TODO: maybe only enable this for Entities
+	add_compile_options(-Wno-unused-value)    # same here (the Scripts generate tons of unused variables and values)
+	add_compile_options(-Wno-missing-braces)
 	add_compile_options(-Wno-parentheses)
 	MESSAGE(WARNING, "re-enable some of the warnings some day!")
 

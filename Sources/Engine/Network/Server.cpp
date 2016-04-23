@@ -728,7 +728,7 @@ void CServer::ServerLoop(void)
   // handle all incoming messages
   HandleAll();
 
-  INDEX iSpeed = 1;
+  //INDEX iSpeed = 1;
   extern INDEX ser_bWaitFirstPlayer;
   // if the local session is keeping up with time and not paused
   BOOL bPaused = srv_bPause || _pNetwork->ga_bLocalPause || _pNetwork->IsWaitingForPlayers() || 
@@ -1094,8 +1094,8 @@ void CServer::SendSessionStateData(INDEX iClient)
 void CServer::HandleAll()
 {
   // clear last accepted client info
-  INDEX iClient = -1;
-/*  if (_cmiComm.GetLastAccepted(iClient)) {
+  /* INDEX iClient = -1;
+  if (_cmiComm.GetLastAccepted(iClient)) {
     CPrintF(TRANSV("Server: Accepted session connection by '%s'\n"),
       (const char *) _cmiComm.Server_GetClientName(iClient));
   }

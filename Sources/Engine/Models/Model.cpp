@@ -1068,7 +1068,7 @@ void CModelData::IndicesToPtrs()
     {
       FOREACHINSTATICARRAY(it1.Current().mp_PolygonVertices, ModelPolygonVertex, it2)
       {
-        struct ModelPolygonVertex * pMPV = &it2.Current();
+        //struct ModelPolygonVertex * pMPV = &it2.Current();
         // DG: this looks like a 64-bit issue but is most probably ok, as the pointers
         //     should contain indices from PtrToIndices()
         j = (INDEX) (size_t) it2.Current().mpv_ptvTransformedVertex;

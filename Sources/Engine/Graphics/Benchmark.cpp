@@ -33,7 +33,7 @@ static PIX _pixSizeI;
 static PIX _pixSizeJ;
 static CTimerValue _tv;
 static BOOL _bBlend = FALSE;
-static BOOL _bVisible = FALSE;
+//static BOOL _bVisible = FALSE;
 static BOOL _bTexture = FALSE;
 static BOOL _bDepth = FALSE;
 static BOOL _bMultiTexture = FALSE;

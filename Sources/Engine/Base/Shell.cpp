@@ -110,7 +110,7 @@ CDynamicStackArray<CTString> _shell_astrTempStrings;
 CDynamicStackArray<CTString> _shell_astrExtStrings;
 CDynamicStackArray<FLOAT> _shell_afExtFloats;
 
-static const char *strCommandLine = "";
+//static const char *strCommandLine = "";
 
 FLOAT tmp_af[10] = { 0 };
 INDEX tmp_ai[10] = { 0 };

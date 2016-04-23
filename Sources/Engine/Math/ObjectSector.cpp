@@ -90,6 +90,7 @@ static int qsort_CompareVerticesAlongLine(const void *pvVertex0, const void *pvV
   CObjectVertex &vx1 = **(CObjectVertex **)pvVertex1;
   return CompareVerticesAlongLine(vx0, vx1);
 }
+#if 0 // DG: unused.
 /*
  * Compare two vertices along a line for quick-sort - reversely.
  */
@@ -99,6 +100,7 @@ static int qsort_CompareVerticesAlongLineReversely(const void *pvVertex0, const 
   CObjectVertex &vx1 = **(CObjectVertex **)pvVertex1;
   return -CompareVerticesAlongLine(vx0, vx1);
 }
+#endif // 0 (unused)
 
 
 /*
@@ -548,6 +550,7 @@ CObjectPolygon *CObjectSector::CreatePolygon(INDEX ctVertices, INDEX aivVertices
 void CObjectSector::CheckOptimizationAlgorithm(void)
 {
   // for vertices
+#if 0 // DG: this doesn't really do anything?!
   FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itvx1) {
     FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itvx2) {
       CObjectVertex &vx1 = itvx1.Current();
@@ -555,6 +558,7 @@ void CObjectSector::CheckOptimizationAlgorithm(void)
       // !!!!why this fails sometimes ?(on spheres) ASSERT( (&vx1 == &vx2) || (CompareVertices(vx1, vx2)!=0) );
     }
   }
+#endif // 0
 
   // for planes
   FOREACHINDYNAMICARRAY(osc_aoplPlanes, CObjectPlane, itpl1) {
@@ -600,7 +604,7 @@ void CObjectSector::CheckOptimizationAlgorithm(void)
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     // for each edge in polygon
     {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      CObjectEdge &oedThis = *itope->ope_Edge;
+      //CObjectEdge &oedThis = *itope->ope_Edge;
       CObjectVertex *povxStartThis, *povxEndThis;
       // get start and end vertices
       itope->GetVertices(povxStartThis, povxEndThis);
@@ -629,7 +633,7 @@ BOOL CObjectSector::ArePolygonsPlanar(void)
   {FOREACHINDYNAMICARRAY(osc_aopoPolygons, CObjectPolygon, itopo) {
     // for each edge in polygon
     {FOREACHINDYNAMICARRAY(itopo->opo_PolygonEdges, CObjectPolygonEdge, itope) {
-      CObjectEdge &oedThis = *itope->ope_Edge;
+      //CObjectEdge &oedThis = *itope->ope_Edge;
       CObjectVertex *povxStartThis, *povxEndThis;
       // get start and end vertices
       itope->GetVertices(povxStartThis, povxEndThis);
@@ -715,7 +719,7 @@ void CObjectSector::RemapClonedPlanes(void)
 /*
  * Remap different vertices with same coordinates to use only one of each.
  */
-static BOOL bBug=FALSE;
+//static BOOL bBug=FALSE;
 void CObjectSector::RemapClonedVertices(void)
 {
   // if there are no vertices in the sector
@@ -1107,7 +1111,7 @@ void CObjectPolygon::JoinContinuingEdges(CDynamicArray<CObjectEdge> &oedEdges)
   // create an empty array for newly created edges
   CDynamicArray<CObjectPolygonEdge> aopeNew;
   // set the counter of edges to current number of edges
-  INDEX ctEdges = opo_PolygonEdges.Count();
+  //INDEX ctEdges = opo_PolygonEdges.Count();
 
   // for each edge
   {FOREACHINDYNAMICARRAY(opo_PolygonEdges, CObjectPolygonEdge, itope) {
@@ -1186,10 +1190,10 @@ void CObjectSector::SplitCollinearEdgesRun(CStaticArray<CEdgeEx *> &apedxSortedE
   if (iFirstInRun>iLastInRun) {
     return; // this should not happen, but anyway!
   }
-  CEdgeEx &edxLine = *apedxSortedEdgeLines[iFirstInRun];  // representative line of the run
 
   /* set up array of vertex pointers */
 /*
+  CEdgeEx &edxLine = *apedxSortedEdgeLines[iFirstInRun];  // representative line of the run
   // for each vertex in sector
   INDEX ctVerticesOnLine=0;
   {FOREACHINDYNAMICARRAY(osc_aovxVertices, CObjectVertex, itovx) {

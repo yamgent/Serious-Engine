@@ -441,8 +441,8 @@ void CTerrainTile::ReGenerate()
     }
   }
 
-  INDEX ctVtxBefore = GetVertices().Count();
-  INDEX ctTrisBefore = GetIndices().Count()/3;
+  //INDEX ctVtxBefore = GetVertices().Count();
+  //INDEX ctTrisBefore = GetIndices().Count()/3;
 
   // tt_ctNormalVertices = GetVertexCount();
   // Generate borders for tile
@@ -535,7 +535,7 @@ INDEX CTerrainTile::CalculateLOD(void)
       INDEX ini = tt_aiNeighbours[in];
       // if neighbour is valid
       if(ini>=0) {
-        CTerrainTile &ttNeigbour = _ptrTerrain->tr_attTiles[ini];
+        //CTerrainTile &ttNeigbour = _ptrTerrain->tr_attTiles[ini];
         // if neighbour is in higher lod
         if(TRUE) { /*ttNeigbour.tt_iLod > tt.tt_iNewLod*/
           // add neighbour to regen queue

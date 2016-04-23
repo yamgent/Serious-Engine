@@ -274,7 +274,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     // exp fog
     case AT_EXP: {
       // calculate linear step for the fog parameter
-      FLOAT fT = 0.0f;
+      //FLOAT fT = 0.0f;
       FLOAT fTStep = 1.0f/pixSizeL*fFar*fDensity*fA;
       // fog is exp(-t) function of fog parameter, now calculate
       // step (actually multiplication) for the fog
@@ -287,7 +287,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     } break;
     case AT_EXP2: {
       // calculate linear step for the fog parameter
-      FLOAT fT = 0.0f;
+      //FLOAT fT = 0.0f;
       FLOAT fTStep = 1.0f/pixSizeL*fFar*fDensity*fA;
       // fog is exp(-t^2) function of fog parameter, now calculate
       // first and second order step (actually multiplication) for the fog

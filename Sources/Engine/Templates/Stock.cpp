@@ -142,7 +142,7 @@ SLONG CStock_TYPE::CalculateUsedMemory(void)
 void CStock_TYPE::DumpMemoryUsage_t(CTStream &strm) // throw char *
 {
   CTString strLine;
-  SLONG slUsedTotal = 0;
+  //SLONG slUsedTotal = 0;
   {FOREACHINDYNAMICCONTAINER(st_ctObjects, TYPE, itt) {
     SLONG slUsedByObject = itt->GetUsedMemory();
     if (slUsedByObject<0) {

@@ -402,7 +402,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 		
 	// if there are packets in the input buffer, process them
 	FORDELETELIST(CPacket,pa_lnListNode,ci_pbInputBuffer.pb_lhPacketStorage,ppaPacket) {
-		CPacket &paPacket = *ppaPacket;
+		//CPacket &paPacket = *ppaPacket;
 		
 			// if it's an acknowledge packet, remove the acknowledged packets from the wait acknowledge buffer
 			if (ppaPacket->pa_ubReliable & UDP_PACKET_ACKNOWLEDGE) {
@@ -552,7 +552,7 @@ BOOL CClientInterface::UpdateInputBuffersBroadcast(void)
 	
 	// if there are packets in the input buffer, process them
 	FORDELETELIST(CPacket,pa_lnListNode,ci_pbInputBuffer.pb_lhPacketStorage,ppaPacket) {
-		CPacket &paPacket = *ppaPacket;
+		//CPacket &paPacket = *ppaPacket;
 
 			// if it's an acknowledge packet, remove the acknowledged packets from the wait acknowledge buffer
 			if (ppaPacket->pa_ubReliable & UDP_PACKET_ACKNOWLEDGE) {

@@ -481,7 +481,7 @@ void CEntity::GetCollisionBoxParameters(INDEX iBox, FLOATaabbox3D &box, INDEX &i
   if(en_RenderType==RT_SKAMODEL || en_RenderType==RT_SKAEDITORMODEL) {
     box.minvect = GetModelInstance()->GetCollisionBoxMin(iBox);
     box.maxvect = GetModelInstance()->GetCollisionBoxMax(iBox);
-    FLOATaabbox3D boxNS = box;
+    //FLOATaabbox3D boxNS = box;
     box.StretchByVector(GetModelInstance()->mi_vStretch);
     iEquality = GetModelInstance()->GetCollisionBoxDimensionEquality(iBox);
   } else {
@@ -1833,7 +1833,7 @@ void CEntity::FindSectorsAroundEntity(void)
 
   // for each brush in the world
   FOREACHINDYNAMICARRAY(en_pwoWorld->wo_baBrushes.ba_abrBrushes, CBrush3D, itbr) {
-    CBrush3D &br=*itbr;
+    //CBrush3D &br=*itbr;
     // if the brush entity is not zoning
     if (itbr->br_penEntity==NULL || !(itbr->br_penEntity->en_ulFlags&ENF_ZONING)) {
       // skip it
@@ -3146,7 +3146,7 @@ void CEntity::InflictBoxDamage(CEntity *penInflictor, enum DamageType dmtType,
     if (en.en_pciCollisionInfo==NULL) {
       continue;
     }
-    CCollisionInfo *pci = en.en_pciCollisionInfo;
+    //CCollisionInfo *pci = en.en_pciCollisionInfo;
     // if entity is not allowed to execute now
     if (!en.IsAllowedForPrediction()) {
       // do nothing

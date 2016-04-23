@@ -613,9 +613,10 @@ void RenderMap( CDrawPort *pdp, ULONG ulLevelMask, CProgressHookInfo *pphi)
   if (ulLevelMask == 0x00000001 && !map_bIsFirstEncounter) {
 
     // render the book
-    PIX pixX = (PIX) (aIconCoords[0][0]*fStretch+pixC1S);
-    PIX pixY = (PIX) (aIconCoords[0][1]*fStretch+pixR1S);
+    //PIX pixX = (PIX) (aIconCoords[0][0]*fStretch+pixC1S);
+    //PIX pixY = (PIX) (aIconCoords[0][1]*fStretch+pixR1S);
     CTextureObject *pto = &atoIcons[0];
+    // FIXME: DG: or was the line below supposed to use pixX and pixY?
     pdp->PutTexture( pto, PIXaabbox2D( PIX2D(pixC1S,pixR1S), PIX2D(pixC2E,pixR2E)), C_WHITE|255);
 
   } else {
