@@ -546,7 +546,7 @@ void CWorld::FindShadowLayers(
     CLightSource *pls = iten->GetLightSource();
     if (pls!=NULL) {
       FLOATaabbox3D boxLight(iten->en_plPlacement.pl_PositionVector, pls->ls_rFallOff);
-      if ( bDirectional && (pls->ls_ulFlags &LSF_DIRECTIONAL)
+      if ( (bDirectional && (pls->ls_ulFlags & LSF_DIRECTIONAL))
         ||boxLight.HasContactWith(boxNear)) {
         // find layers for that light source
         pls->FindShadowLayers(bSelectedOnly);
@@ -970,8 +970,8 @@ void CWorld::MarkForPrediction(void)
       // find whether it is local
       BOOL bLocal = _pNetwork->IsPlayerLocal(pen);
       // if allowed for prediction
-      if (  bLocal && cli_bPredictLocalPlayers
-        || !bLocal && cli_bPredictRemotePlayers) {
+      if (  (bLocal && cli_bPredictLocalPlayers)
+        || (!bLocal && cli_bPredictRemotePlayers)) {
         // add it
         pen->AddToPrediction();
       }

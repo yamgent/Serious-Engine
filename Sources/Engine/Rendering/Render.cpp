@@ -870,9 +870,9 @@ void CRenderer::Render(void)
     // or not rendering second layer in world editor
     // and not in wireframe mode
     if(  re_iIndex>0 
-     || !re_bRenderingShadows
-     && !re_pdpDrawPort->IsOverlappedRendering()
-     && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE) {
+     || (!re_bRenderingShadows
+         && !re_pdpDrawPort->IsOverlappedRendering()
+         && _wrpWorldRenderPrefs.wrp_ftPolygons != CWorldRenderPrefs::FT_NONE)) {
       re_pdpDrawPort->FillZBuffer(ZBUF_BACK);
     }
     // draw the prepared things to screen and finish

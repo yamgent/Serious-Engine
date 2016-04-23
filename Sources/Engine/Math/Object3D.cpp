@@ -81,7 +81,7 @@ void CObject3D::Project(CSimpleProjection3D_DOUBLE &pr)
   BOOL bXInverted = vObjectStretch(1)<0;
   BOOL bYInverted = vObjectStretch(2)<0;
   BOOL bZInverted = vObjectStretch(3)<0;
-  BOOL bInverted = bXInverted!=bYInverted!=bZInverted;
+  BOOL bInverted = (bXInverted != bYInverted) != bZInverted;
 
   // for all sectors
   FOREACHINDYNAMICARRAY(ob_aoscSectors, CObjectSector, itsc) {

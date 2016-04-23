@@ -246,7 +246,7 @@ void LastUnreadMessage(void)
 // go to next/previous message
 void PrevMessage(void)
 {
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if (_iActiveMessage < _acmMessages.Count()==0) { // FIXME: DG: what is this about?
     return;
   }
   _iActiveMessage--;
@@ -258,7 +258,7 @@ void PrevMessage(void)
 
 void NextMessage(void)
 {
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if (_iActiveMessage < _acmMessages.Count()==0) { // FIXME: DG: what is this about?
     return;
   }
   _iActiveMessage++;
@@ -305,7 +305,7 @@ void MessageTextUp(INDEX ctLines)
 void MessageTextDn(INDEX ctLines)
 {
   // if no message do nothing
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if (_iActiveMessage < _acmMessages.Count()==0) {  // FIXME: DG: what is this about?
     return;
   }
   // find text lines count
@@ -874,7 +874,7 @@ static void ComputerOff(void)
 static void ExitRequested(void)
 {
   // if end of game
-  if (_ppenPlayer!=NULL && _ppenPlayer->m_bEndOfGame || _pNetwork->IsGameFinished()) {
+  if ((_ppenPlayer!=NULL && _ppenPlayer->m_bEndOfGame) || _pNetwork->IsGameFinished()) {
     // if in single player
     if (GetSP()->sp_bSinglePlayer) {
       // request app to show high score

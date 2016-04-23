@@ -449,8 +449,8 @@ inline void CRenderer::MakeScreenEdge(
     sed.sed_xI = (FIX16_16) (fI0 + ((FLOAT)sed.sed_pixTopJ-fJ0) * fDIoDJ );
   }
 
-  ASSERT( sed.sed_xI > FIX16_16(-1.0f)
-       && sed.sed_xI < FIX16_16(re_fbbClipBox.Max()(1) + SENTINELEDGE_EPSILON)
+  ASSERT( (sed.sed_xI > FIX16_16(-1.0f)
+       && sed.sed_xI < FIX16_16(re_fbbClipBox.Max()(1) + SENTINELEDGE_EPSILON))
        || (sed.sed_pixTopJ >= sed.sed_pixBottomJ));
 
   // return the screen edge

@@ -459,8 +459,8 @@ void CServer::SendGameStreamBlocks(INDEX iClient)
     nmGameStreamBlocks.PackDefault(nmPackedBlocksNew);
     // if some blocks written already and the batch is too large
     if (iBlocksOk>0) {
-      if (iStep>0 && nmPackedBlocksNew.nm_slSize>=ctMaxBytes ||
-          iStep<0 && nmPackedBlocksNew.nm_slSize>=ctMinBytes ) {
+      if ((iStep>0 && nmPackedBlocksNew.nm_slSize>=ctMaxBytes) ||
+          (iStep<0 && nmPackedBlocksNew.nm_slSize>=ctMinBytes) ) {
         // stop
 //        CPrintF("toomuch ");
         break;

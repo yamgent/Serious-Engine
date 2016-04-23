@@ -1661,7 +1661,7 @@ void CSoundLibrary::MixSounds(void)
   _pfSoundProfile.IncrementCounter(CSoundProfile::PCI_MIXINGS, 1);
   ResetMixer( sl_pslMixerBuffer, slDataToMix);
 
-  BOOL bGamePaused = _pNetwork->IsPaused() || _pNetwork->IsServer() && _pNetwork->GetLocalPause();
+  BOOL bGamePaused = _pNetwork->IsPaused() || (_pNetwork->IsServer() && _pNetwork->GetLocalPause());
 
   // for each sound
   FOREACHINLIST( CSoundData, sd_Node, sl_ClhAwareList, itCsdSoundData) {

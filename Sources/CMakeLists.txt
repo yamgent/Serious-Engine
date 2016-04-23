@@ -110,6 +110,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -DNDEBUG=1 -D_NDEBUG=1 -Os -fno-unsafe-math-optimizations")
 
 	# TODO fix these warnings
+	# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
 	add_compile_options(-Wno-sign-compare)
 	add_compile_options(-Wno-switch)
 	add_compile_options(-Wno-char-subscripts)
@@ -117,16 +118,14 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wno-unused-variable) # TODO: maybe only enable this for Entities
 	add_compile_options(-Wno-unused-value)    # same here (the Scripts generate tons of unused variables and values)
 	add_compile_options(-Wno-missing-braces)
-	add_compile_options(-Wno-parentheses)
+	add_compile_options(-Wno-overloaded-virtual)
 	MESSAGE(WARNING, "re-enable some of the warnings some day!")
 
 	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-		# !!! FIXME: turn a bunch of these off, this is just for now. I hope.  --ryan.
-		add_compile_options(-Wno-tautological-undefined-compare)
+		add_compile_options(-Wno-tautological-undefined-compare) # don't complain about if(this!=NULL)
 		add_compile_options(-Wno-c++11-compat-deprecated-writable-strings)
-		add_compile_options(-Wno-logical-op-parentheses) # FIXME: this too should be re-enabled
-	else()
-		add_compile_options(-Wno-unused-but-set-variable) # my clang doesn't know this
+	else() # most probably GCC
+		add_compile_options(-Wno-unused-but-set-variable) # my clang doesn't know this FIXME: re-enable?
 	endif()
 
 	if(MACOSX)

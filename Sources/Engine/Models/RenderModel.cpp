@@ -240,7 +240,7 @@ BOOL CModelObject::CreateAttachment( CRenderModel &rmMain, CAttachmentModelObjec
   _pfModelProfile.StartTimer( CModelProfile::PTI_CREATEATTACHMENT);
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_CREATEATTACHMENT);
   CRenderModel &rmAttached = *amo.amo_prm;
-  rmAttached.rm_ulFlags = rmMain.rm_ulFlags&(RMF_FOG|RMF_HAZE|RMF_WEAPON) | RMF_ATTACHMENT;
+  rmAttached.rm_ulFlags = (rmMain.rm_ulFlags & (RMF_FOG|RMF_HAZE|RMF_WEAPON)) | RMF_ATTACHMENT;
 
   // get the position
   rmMain.rm_pmdModelData->md_aampAttachedPosition.Lock();
@@ -493,7 +493,7 @@ void CModelObject::SetupModelRendering( CRenderModel &rm)
   BOOL bYInverted = rm.rm_vStretch(2) < 0;
   BOOL bZInverted = rm.rm_vStretch(3) < 0;
   rm.rm_ulFlags &= ~RMF_INVERTED;
-  if( bXInverted != bYInverted != bZInverted != _aprProjection->pr_bInverted) rm.rm_ulFlags |= RMF_INVERTED;
+  if( ((bXInverted != bYInverted) != bZInverted) != _aprProjection->pr_bInverted) rm.rm_ulFlags |= RMF_INVERTED;
 
   // prepare projections
   _pfModelProfile.StartTimer( CModelProfile::PTI_INITPROJECTION);

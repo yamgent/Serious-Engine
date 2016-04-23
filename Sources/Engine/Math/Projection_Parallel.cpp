@@ -43,7 +43,7 @@ void CParallelProjection3D::Prepare(void)
   BOOL bYInverted = pr_ObjectStretch(2)<0;
   BOOL bZInverted = pr_ObjectStretch(3)<0;
 
-  pr_bInverted = bXInverted!=bYInverted!=bZInverted;
+  pr_bInverted = (bXInverted != bYInverted) != bZInverted;
 
   // if the projection is mirrored
   if (pr_bMirror) {
