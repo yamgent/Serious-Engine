@@ -548,7 +548,7 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
 {
   // prepare ...
   ULONG *pulSrcMipmap = pulMipmaps + GetMipmapOffset( i1stMipmapToColorize, pixWidth, pixHeight);
-  ULONG *pulDstMipmap;
+  //ULONG *pulDstMipmap;
   PIX pixCurrWidth  = pixWidth >>i1stMipmapToColorize;
   PIX pixCurrHeight = pixHeight>>i1stMipmapToColorize;
   PIX pixMipSize;
@@ -561,7 +561,7 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
   while( pixCurrWidth>1 && pixCurrHeight>1)
   { // prepare current mip-level
     pixMipSize   = pixCurrWidth*pixCurrHeight;
-    pulDstMipmap = pulSrcMipmap + pixMipSize;
+    //pulDstMipmap = pulSrcMipmap + pixMipSize;
     // mask mipmap
     const ULONG ulColorMask = ByteSwap( _acolMips[iTableOfs] | 0x3F3F3FFF);
     for( INDEX iPix=0; iPix<pixMipSize; iPix++) pulSrcMipmap[iPix] &= ulColorMask;

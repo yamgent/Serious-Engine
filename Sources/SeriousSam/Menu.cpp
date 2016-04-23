@@ -4077,6 +4077,7 @@ void CPlayerProfileMenu::SelectPlayer(INDEX iPlayer)
       mgPlayerModel.mg_strTip = TRANS("cannot change model for single-player game");
       mgPlayerModel.mg_bEnabled = FALSE;
     }
+    (void)bSet;
     // ignore gender flags, if any
     strName.RemovePrefix("#female#"); 
     strName.RemovePrefix("#male#");

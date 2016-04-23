@@ -789,7 +789,7 @@ void CMesh::Read_t(CTStream *istrFile)
         // read float count
         (*istrFile)>>ctfl;
 
-        CShader *pshMeshShader = NULL;
+        //CShader *pshMeshShader = NULL;
         ShaderParams *pshpShaderParams = NULL;
         CShader shDummyShader;            // dummy shader if shader is not found
         ShaderParams shpDummyShaderParams;// dummy shader params if shader is not found
@@ -799,12 +799,12 @@ void CMesh::Read_t(CTStream *istrFile)
         // try to load shader
         try{
           msrf.msrf_pShader = _pShaderStock->Obtain_t(strShaderName);
-          pshMeshShader = msrf.msrf_pShader;
+          //pshMeshShader = msrf.msrf_pShader;
           pshpShaderParams = &msrf.msrf_ShadingParams;
         } catch(char *strErr) {
           CPrintF("%s\n",strErr);
           msrf.msrf_pShader = NULL;
-          pshMeshShader = &shDummyShader;
+          //pshMeshShader = &shDummyShader;
           pshpShaderParams = &shpDummyShaderParams;
         }
 

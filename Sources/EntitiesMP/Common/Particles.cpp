@@ -1035,9 +1035,9 @@ void Particles_BeastProjectileTrail( CEntity *pen, FLOAT fSize, FLOAT fHeight, I
     fT *= 1/BEAST_PROJECTILE_TOTAL_TIME;
     // get fraction part
     fT = fT-int(fT);
-    FLOAT fFade;
-    if (fT>(1.0f-BEAST_PROJECTILE_FADE_OUT)) fFade=(1-fT)*(1/BEAST_PROJECTILE_FADE_OUT);
-    else fFade=1.0f;
+    //FLOAT fFade;
+    //if (fT>(1.0f-BEAST_PROJECTILE_FADE_OUT)) fFade=(1-fT)*(1/BEAST_PROJECTILE_FADE_OUT);
+    //else fFade=1.0f;
 
 #define GET_POS( time) vCenter + \
       vX*(afStarsPositions[iStar][0]*time*fSize*1.5) +\

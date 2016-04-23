@@ -202,13 +202,14 @@ void CTerrain::CreateEmptyTerrain_t(PIX pixWidth,PIX pixHeight)
 void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
 {
   _ptrTerrain = this;
-  BOOL bResizeTerrain = FALSE;
+  //BOOL bResizeTerrain = FALSE;
 
   // Load targa file 
   CImageInfo iiHeightMap;
   iiHeightMap.LoadAnyGfxFormat_t(fnHeightMap);
 
-  // if new width and height are same 
+  // if new width and height are same
+  /* unused
   if(tr_pixHeightMapWidth==iiHeightMap.ii_Width && tr_pixHeightMapHeight==iiHeightMap.ii_Height) {
     // Clear terrain data without removing layers
     bResizeTerrain = FALSE;
@@ -217,6 +218,7 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
     bResizeTerrain = TRUE;
   }
   bResizeTerrain = TRUE;
+  */
 
   FLOAT fLogWidht  = Log2(iiHeightMap.ii_Width-1);
   FLOAT fLogHeight = Log2(iiHeightMap.ii_Height-1);

@@ -1988,7 +1988,7 @@ functions:
     FLOATmatrix3D m;
     MakeRotationMatrixFast(m, plKnife.pl_OrientationAngle);
     FLOAT3D vRight = m.GetColumn(1)*fWide;
-    FLOAT3D vUp    = m.GetColumn(2)*fWide;
+    //FLOAT3D vUp    = m.GetColumn(2)*fWide;
     FLOAT3D vFront = -m.GetColumn(3)*fRange;
 
     FLOAT3D vDest[3];

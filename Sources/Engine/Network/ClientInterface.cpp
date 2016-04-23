@@ -395,7 +395,7 @@ void CClientInterface::ExchangeBuffers(void)
 // and generate acknowledge messages for incoming reliable packets
 BOOL CClientInterface::UpdateInputBuffers(void)
 {
-	BOOL bSomethingDone;
+	//BOOL bSomethingDone;
 	ULONG pulGenAck[MAX_ACKS_PER_PACKET];
 	ULONG ulAckCount=0;
 	CTimerValue tvNow;
@@ -438,7 +438,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 				ci_pbInputBuffer.RemovePacket(ppaPacket->pa_ulSequence,FALSE);
 				delete ppaPacket;
 				
-				bSomethingDone = TRUE;
+				//bSomethingDone = TRUE;
 			// if the packet is reliable
 			} else if (ppaPacket->pa_ubReliable & UDP_PACKET_RELIABLE) {
 				
@@ -547,7 +547,7 @@ BOOL CClientInterface::UpdateInputBuffers(void)
 // packet separately, instead of grouping them together
 BOOL CClientInterface::UpdateInputBuffersBroadcast(void)
 {
-	BOOL bSomethingDone;
+	//BOOL bSomethingDone;
 	CTimerValue tvNow;
 	
 	// if there are packets in the input buffer, process them
@@ -585,7 +585,7 @@ BOOL CClientInterface::UpdateInputBuffersBroadcast(void)
 				}
 
 				ci_pbInputBuffer.RemovePacket(ppaPacket->pa_ulSequence,FALSE);
-				bSomethingDone = TRUE;
+				//bSomethingDone = TRUE;
 				delete ppaPacket;
 			// if the packet is reliable
 			} else if (ppaPacket->pa_ubReliable & UDP_PACKET_RELIABLE) {

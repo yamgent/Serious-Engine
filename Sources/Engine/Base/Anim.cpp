@@ -296,13 +296,13 @@ void CAnimData::LoadFromScript_t( CTStream *File, CListHead *pFrameFileList) // 
 	char ld_line[ 128];
 	CTmpListHead TempAnimationList;
 	SLONG lc;
-	BOOL ret_val;
+	//BOOL ret_val;
 
 	//ASSERT( ad_Anims == NULL);
   // clears possible animations
   CAnimData::Clear();
 
-	ret_val = TRUE;
+	//ret_val = TRUE;
 	FOREVER
 	{
 		// Repeat reading of one line of script file until it is not empty or comment

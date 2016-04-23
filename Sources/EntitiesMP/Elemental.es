@@ -873,20 +873,20 @@ functions:
     GetBoundingBox(box);
     FLOAT fEntitySize = box.Size().MaxNorm()/2;
 
-    INDEX iCount = 1;
+    FLOAT3D vNormalizedDamage = m_vDamage-m_vDamage*(m_fBlowUpAmount/m_vDamage.Length());
+    vNormalizedDamage /= Sqrt(vNormalizedDamage.Length());
+    vNormalizedDamage *= 1.75f;
+/*
+    FLOAT3D vBodySpeed = en_vCurrentTranslationAbsolute-en_vGravityDir*(en_vGravityDir%en_vCurrentTranslationAbsolute);
+
+    // spawn debris
+
+	INDEX iCount = 1;
     switch (m_EecChar) {
       case ELC_SMALL: iCount = 3; break;
       case ELC_BIG: iCount = 5; break;
       case ELC_LARGE: iCount = 7; break;
     }
-
-    FLOAT3D vNormalizedDamage = m_vDamage-m_vDamage*(m_fBlowUpAmount/m_vDamage.Length());
-    vNormalizedDamage /= Sqrt(vNormalizedDamage.Length());
-    vNormalizedDamage *= 1.75f;
-    FLOAT3D vBodySpeed = en_vCurrentTranslationAbsolute-en_vGravityDir*(en_vGravityDir%en_vCurrentTranslationAbsolute);
-
-    // spawn debris
-/*
     switch (m_EetType) {
       case ELT_ICE: {
         Debris_Begin(EIBT_ICE, DPT_NONE, BET_NONE, fEntitySize, vNormalizedDamage, vBodySpeed, 1.0f, 0.0f);

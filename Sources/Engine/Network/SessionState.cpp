@@ -695,7 +695,7 @@ void CSessionState::HandleMovers(void)
 void CSessionState::HandleTimers(TIME tmCurrentTick)
 {
 #define TIME_EPSILON 0.0001f
-  IFDEBUG(TIME tmLast = 0.0f);
+  //IFDEBUG(TIME tmLast = 0.0f);
 
   _pfPhysicsProfile.StartTimer(CPhysicsProfile::PTI_HANDLETIMERS);
   // repeat
@@ -729,7 +729,7 @@ void CSessionState::HandleTimers(TIME tmCurrentTick)
     // check that timers are propertly handled
     ASSERT(penTimer->en_timeTimer>tmCurrentTick-_pTimer->TickQuantum-TIME_EPSILON);
     //ASSERT(penTimer->en_timeTimer>=tmLast);
-    IFDEBUG(tmLast=penTimer->en_timeTimer);
+    //IFDEBUG(tmLast=penTimer->en_timeTimer);
 
     // remove the timer from the list
     penTimer->en_timeTimer = THINKTIME_NEVER;

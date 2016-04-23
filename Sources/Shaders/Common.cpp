@@ -100,9 +100,9 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 
 void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFullBright)
 {
-  GFXVertex4 *paVertices = NULL;
+  //GFXVertex4 *paVertices = NULL;
   GFXNormal *paNormals = NULL;
-  paVertices = shaGetVertexArray();
+  //paVertices = shaGetVertexArray();
   paNormals = shaGetNormalArray();
   INDEX ctVertices = shaGetVertexCount();
   GFXTexCoord *ptcUVMap = shaGetNewTexCoordArray();

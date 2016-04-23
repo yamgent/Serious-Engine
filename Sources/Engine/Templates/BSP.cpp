@@ -186,6 +186,8 @@ void BSPVertexContainer<Type, iDimensions>::Sort(void)
 template<class Type, int iDimensions>
 void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
 {
+  // FIXME: DG: am I missing something or is this function not actually changing anything?
+
   // if there are no vertices, or the container is not line
   if (bvc_aVertices.Count()==0 || IsPlannar()) {
     // do not attempt to sort

@@ -224,14 +224,14 @@ void UnDiff_t(void)
   //UBYTE *pubOld = _pubOld;
   UBYTE *pubNew = _pubNew;
   SLONG slSizeOldStream = 0;
-  SLONG slSizeOutStream = 0;
+  //SLONG slSizeOutStream = 0;
   // get header with size of files
   if (*(SLONG*)pubNew!=DIFF) {
     ThrowF_t(TRANS("Not a DIFF stream!"));
   }
   pubNew+=sizeof(SLONG);
   slSizeOldStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
-  slSizeOutStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
+  /* slSizeOutStream = *(SLONG*)pubNew; */ pubNew+=sizeof(SLONG);
   ULONG ulCRC =  *(ULONG*)pubNew; pubNew+=sizeof(ULONG);
 
   CRC_Start(_ulCRC);

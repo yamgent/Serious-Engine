@@ -505,9 +505,9 @@ extern void SetTBufferEffect( BOOL bEnable)
     if( ogl_iTBufferEffect==0 || _pGfx->go_ctSampleBuffers<2 || !bEnable) pglDisable( GL_MULTISAMPLE_3DFX);
     else {
       pglEnable( GL_MULTISAMPLE_3DFX);
-      UINT uiMask = 0xFFFFFFFF;
+      //UINT uiMask = 0xFFFFFFFF;
       // set one buffer in case of motion-blur
-      if( ogl_iTBufferEffect==2) uiMask = (1UL) << _pGfx->go_iCurrentWriteBuffer;
+      //if( ogl_iTBufferEffect==2) uiMask = (1UL) << _pGfx->go_iCurrentWriteBuffer;
       //pglTBufferMask3DFX(uiMask);
     }
   }
