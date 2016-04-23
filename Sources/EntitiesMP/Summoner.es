@@ -618,7 +618,7 @@ functions:
       pen = &m_penGroup03Template01;
       iCount = IRnd()%m_iGroup03Count+1;
     } else {
-      ASSERT("Invalid group!");
+      ASSERT(false && "Invalid group!");
       iCount = 0; // DG: this should have a deterministic value in case this happens after all!
     }
     ASSERT(iCount>0);
