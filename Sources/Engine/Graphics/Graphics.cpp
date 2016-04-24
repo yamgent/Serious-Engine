@@ -665,6 +665,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   ASSERT( pixCanvasWidth>=pixWidth && pixCanvasHeight>=pixHeight);
   SLONG slModulo      = (pixCanvasWidth-pixWidth) *BYTES_PER_TEXEL;
   SLONG slWidthModulo = pixWidth*BYTES_PER_TEXEL +slModulo;
+  (void)slWidthModulo; // shut up compiler, this is used if inline ASM is used
 
   // if bitmap is smaller than 4x2 pixels
   if( pixWidth<4 || pixHeight<2)

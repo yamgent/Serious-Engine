@@ -119,13 +119,12 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	add_compile_options(-Wno-unused-value)    # same here (the Scripts generate tons of unused variables and values)
 	add_compile_options(-Wno-missing-braces)
 	add_compile_options(-Wno-overloaded-virtual)
+	add_compile_options(-Wno-invalid-offsetof)
 	MESSAGE(WARNING, "re-enable some of the warnings some day!")
 
 	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
 		add_compile_options(-Wno-tautological-undefined-compare) # don't complain about if(this!=NULL)
 		add_compile_options(-Wno-c++11-compat-deprecated-writable-strings)
-	else() # most probably GCC
-		add_compile_options(-Wno-unused-but-set-variable) # my clang doesn't know this FIXME: re-enable?
 	endif()
 
 	if(MACOSX)

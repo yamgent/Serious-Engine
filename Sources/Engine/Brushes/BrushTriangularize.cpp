@@ -337,7 +337,7 @@ void CTriangularizer::MakeEdgesForTriangularization(void)
   // get number of edges in polygon
   INDEX ctEdges = tr_abpeOriginalEdges.Count();
   // create that much edges in the array
-  CBrushEdge *pbedEdges = tr_abedEdges.New(ctEdges);
+  /* CBrushEdge *pbedEdges = */ tr_abedEdges.New(ctEdges);
 
   tr_abedEdges.Lock();
 

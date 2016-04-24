@@ -2863,7 +2863,7 @@ out:;
 
     _pfPhysicsProfile.IncrementCounter((INDEX) CPhysicsProfile::PCI_DOMOVING);
 
-    FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
+    //FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
 
     // if rotation and translation are synchronized
     if (en_ulPhysicsFlags&EPF_RT_SYNCHRONIZED) {
@@ -2878,7 +2878,7 @@ out:;
       if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_PUSH) {
         penPusher = this;
       }
-      BOOL bMoveSuccessfull = TryToMove(penPusher, TRUE, TRUE);
+      /* BOOL bMoveSuccessfull = */ TryToMove(penPusher, TRUE, TRUE);
 
     // if rotation and translation are asynchronious
     } else {

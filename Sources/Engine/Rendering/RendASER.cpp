@@ -763,7 +763,7 @@ CScreenPolygon *CRenderer::ScanOneLine(void)
     }
     // remove all left-over polygons from stack
     do {
-      BOOL bWasTop = RemPolygonFromSurfaceStack(*pspoTop);
+      /* BOOL bWasTop = */ RemPolygonFromSurfaceStack(*pspoTop);
       pspoTop = LIST_HEAD(re_lhSurfaceStack, CScreenPolygon, spo_lnInStack);
     } while (&re_spoFarSentinel != pspoTop);
     // mark start of background span at right border

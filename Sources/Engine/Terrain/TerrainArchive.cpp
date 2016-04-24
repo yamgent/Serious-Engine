@@ -44,7 +44,7 @@ void CTerrainArchive::Read_t( CTStream *istrFile) // throw char *
   // if there are some terrains
   if (ctTerrains!=0) {
     // create that much terrains
-    CTerrain *atrBrushes = ta_atrTerrains.New(ctTerrains);
+    /* CTerrain *atrBrushes = */ ta_atrTerrains.New(ctTerrains);
     // for each of the new terrains
     for (INDEX iTerrain=0; iTerrain<ctTerrains; iTerrain++) {
       // read it from stream

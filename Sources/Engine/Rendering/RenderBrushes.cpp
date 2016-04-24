@@ -154,7 +154,7 @@ void CRenderer::DrawBrushPolygonVerticesAndEdges(CBrushPolygon &bpo)
  */
 void CRenderer::DrawBrushSectorVerticesAndEdges(CBrushSector &bscSector)
 {
-  CBrushMip *pbm = bscSector.bsc_pbmBrushMip;
+  //CBrushMip *pbm = bscSector.bsc_pbmBrushMip;
   //CBrush3D &br = *pbm->bm_pbrBrush;
 
   // clear all vertex drawn flags

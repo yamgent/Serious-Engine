@@ -1008,12 +1008,14 @@ void CheckOnePolygon(CBrushSector &bsc, CBrushPolygon &bpo)
   //       "try to access stuff and make sure it doesn't segfault", so keep it
   //       like it is even if the compiler complains about unused values?
   CBrushPlane *pbplPlane=bpo.bpo_pbplPlane;
+  (void)pbplPlane; // shut up, compiler - I know this is unused, but I think it's intended like that.
   INDEX ctEdges=bpo.bpo_abpePolygonEdges.Count();
   INDEX ctVertices=bpo.bpo_apbvxTriangleVertices.Count();
   for(INDEX iEdge=0;iEdge<ctEdges;iEdge++)
   {
     CBrushPolygonEdge &edg=bpo.bpo_abpePolygonEdges[iEdge];
     CBrushEdge &be=*edg.bpe_pbedEdge;
+    (void)be; // shut up, compiler
     CBrushVertex *pbvx0, *pbvx1;
     edg.GetVertices(pbvx0, pbvx1);
   }
@@ -1025,11 +1027,13 @@ void CheckOnePolygon(CBrushSector &bsc, CBrushPolygon &bpo)
     DOUBLE3D vdRel=vtx.bvx_vdPreciseRelative;
     DOUBLE3D *pvdPreciseAbsolute=vtx.bvx_pvdPreciseAbsolute;
     CBrushSector &bsc=*vtx.bvx_pbscSector;
+    (void)vAbs; (void)vRel; (void)vdRel; (void)pvdPreciseAbsolute; (void)bsc; // shut up, compiler
   }
   for(INDEX ite=0;ite<bpo.bpo_aiTriangleElements.Count();ite++)
   {
     INDEX iTriangleVtx=bpo.bpo_aiTriangleElements[ite];
     CBrushSector &bsc=*bpo.bpo_pbscSector;
+    (void)iTriangleVtx; (void)bsc; // ...
   }
 }
 

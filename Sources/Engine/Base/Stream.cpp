@@ -934,7 +934,7 @@ void CTFileStream::Create_t(const CTFileName &fnFileName,
   }
 
   CTFileName fnmFullFileName;
-  INDEX iFile = ExpandFilePath(EFP_WRITE, fnFileNameAbsolute, fnmFullFileName);
+  /* INDEX iFile = */ ExpandFilePath(EFP_WRITE, fnFileNameAbsolute, fnmFullFileName);
 
   // check parameters
   ASSERT(strlen(fnFileNameAbsolute)>0);
@@ -1317,7 +1317,7 @@ BOOL FileExistsForWriting(const CTFileName &fnmFile)
   }
   // expand the filename to full path for writing
   CTFileName fnmFullFileName;
-  INDEX iFile = ExpandFilePath(EFP_WRITE, fnmFile, fnmFullFileName);
+  /* INDEX iFile = */ ExpandFilePath(EFP_WRITE, fnmFile, fnmFullFileName);
 
   // check if it exists
   FILE *f = fopen(fnmFullFileName, "rb");

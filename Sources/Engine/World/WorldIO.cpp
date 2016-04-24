@@ -384,7 +384,7 @@ void CWorld::ReadState_veryold_t( CTStream *istr) // throw char *
     // read entity class index and entity placement
     (*istr)>>iEntityClass>>plPlacement;
     // create an entity of that class
-    CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
+    /* CEntity *penNew = */ CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
   }}
 
   // for each entity
@@ -498,7 +498,7 @@ void CWorld::ReadState_old_t( CTStream *istr) // throw char *
     // read entity class index and entity placement
     (*istr)>>iEntityClass>>plPlacement;
     // create an entity of that class
-    CEntity *penNew = CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
+    /* CEntity *penNew = */ CreateEntity_t(plPlacement, cecClasses[iEntityClass]);
   }}
 
   // for each entity

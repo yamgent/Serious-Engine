@@ -462,10 +462,10 @@ DECL_DLL void ctl_ComposeActionPacket(const CPlayerCharacter &pc, CPlayerAction 
   }
 
   // add button movement/rotation/look actions to the axis actions
-  if(pctlCurrent.bMoveForward  || pctlCurrent.bStrafeFB&&pctlCurrent.bTurnUp  ) paAction.pa_vTranslation(3) -= plr_fSpeedForward;
-  if(pctlCurrent.bMoveBackward || pctlCurrent.bStrafeFB&&pctlCurrent.bTurnDown) paAction.pa_vTranslation(3) += plr_fSpeedBackward;
-  if(pctlCurrent.bMoveLeft  || pctlCurrent.bStrafe&&pctlCurrent.bTurnLeft) paAction.pa_vTranslation(1) -= plr_fSpeedSide;
-  if(pctlCurrent.bMoveRight || pctlCurrent.bStrafe&&pctlCurrent.bTurnRight) paAction.pa_vTranslation(1) += plr_fSpeedSide;
+  if(pctlCurrent.bMoveForward  || (pctlCurrent.bStrafeFB&&pctlCurrent.bTurnUp)  ) paAction.pa_vTranslation(3) -= plr_fSpeedForward;
+  if(pctlCurrent.bMoveBackward || (pctlCurrent.bStrafeFB&&pctlCurrent.bTurnDown)) paAction.pa_vTranslation(3) += plr_fSpeedBackward;
+  if(pctlCurrent.bMoveLeft  || (pctlCurrent.bStrafe&&pctlCurrent.bTurnLeft) ) paAction.pa_vTranslation(1) -= plr_fSpeedSide;
+  if(pctlCurrent.bMoveRight || (pctlCurrent.bStrafe&&pctlCurrent.bTurnRight)) paAction.pa_vTranslation(1) += plr_fSpeedSide;
   if(pctlCurrent.bMoveUp       ) paAction.pa_vTranslation(2) += plr_fSpeedUp;
   if(pctlCurrent.bMoveDown     ) paAction.pa_vTranslation(2) -= plr_fSpeedUp;
 
@@ -3702,7 +3702,7 @@ functions:
       }
 
       // if just started swimming
-      if (m_pstState == PST_SWIM && _pTimer->CurrentTick()<m_fSwimTime+0.5f
+      if ((m_pstState == PST_SWIM && _pTimer->CurrentTick()<m_fSwimTime+0.5f)
         ||_pTimer->CurrentTick()<m_tmOutOfWater+0.5f) {
         // no up/down change
         vTranslation(2)=0;
@@ -3852,7 +3852,8 @@ functions:
   void DeathActions(const CPlayerAction &paAction) {
     // set heading, pitch and banking from the normal rotation into the camera view rotation
     if (m_penView!=NULL) {
-      ASSERT(IsPredicted()&&m_penView->IsPredicted()||IsPredictor()&&m_penView->IsPredictor()||!IsPredicted()&&!m_penView->IsPredicted()&&!IsPredictor()&&!m_penView->IsPredictor());
+      ASSERT((IsPredicted()&&m_penView->IsPredicted()) || (IsPredictor()&&m_penView->IsPredictor())
+            || (!IsPredicted()&&!m_penView->IsPredicted()&&!IsPredictor()&&!m_penView->IsPredictor()));
       en_plViewpoint.pl_PositionVector = FLOAT3D(0, 1, 0);
       en_plViewpoint.pl_OrientationAngle += (ANGLE3D(
         (ANGLE)((FLOAT)paAction.pa_aRotation(1)*_pTimer->TickQuantum),

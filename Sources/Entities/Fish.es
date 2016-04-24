@@ -125,7 +125,7 @@ functions:
       // render one lightning toward enemy
       FLOAT3D vSource = GetPlacement().pl_PositionVector;
       FLOAT3D vTarget = m_penEnemy->GetPlacement().pl_PositionVector;
-      FLOAT3D vDirection = (vTarget-vSource).Normalize();
+      //FLOAT3D vDirection = (vTarget-vSource).Normalize();
       Particles_Ghostbuster(vSource, vTarget, 32, 1.0f);
 
       // random lightnings arround
