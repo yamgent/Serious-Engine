@@ -9,6 +9,6 @@ set -x
 rm -rf cmake-build
 mkdir $_
 cd $_
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_OSX_ARCHITECTURES=x86_64 -DUSE_I386_ASM=FALSE ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_OSX_ARCHITECTURES=x86_64 ..
 make -j$NCPU
 

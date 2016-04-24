@@ -43,7 +43,7 @@ static CSoundData *psd;
 
 // nasm on MacOS X is getting wrong addresses of external globals, so I have
 //  to define them in the .asm file...lame.
-#if (defined __GNU_INLINE_X86_32__)
+#if (defined __GNU_INLINE_X86_32__) && (defined USE_I386_NASM_ASM)
 #define INASM extern
 #elif (defined __MSVC_INLINE__)
 #define INASM static
@@ -283,7 +283,7 @@ void NormalizeMixerBuffer( const FLOAT fNormStrength, const SLONG slBytes, FLOAT
 }
  
 
-#ifdef __GNU_INLINE_X86_32__
+#if (defined __GNU_INLINE_X86_32__) && (defined USE_I386_NASM_ASM)
 // These are implemented in an external NASM file.
 extern "C" {
     void MixStereo_asm(CSoundObject *pso);
@@ -430,7 +430,7 @@ loopEnd:
     emms
   }
 
- #elif (defined __GNU_INLINE_X86_32__)
+ #elif (defined __GNU_INLINE_X86_32__) && (defined USE_I386_NASM_ASM)
    // This is implemented in an external NASM file.
    MixMono_asm(pso);
 
@@ -658,7 +658,7 @@ loopEnd:
     emms
   }
 
- #elif (defined __GNU_INLINE_X86_32__)
+ #elif (defined __GNU_INLINE_X86_32__) && (defined USE_I386_NASM_ASM)
    // This is implemented in an external NASM file.
    MixStereo_asm(pso);
 
