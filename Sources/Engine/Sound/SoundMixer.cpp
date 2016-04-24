@@ -43,7 +43,7 @@ static CSoundData *psd;
 
 // nasm on MacOS X is getting wrong addresses of external globals, so I have
 //  to define them in the .asm file...lame.
-#ifdef __GNU_INLINE__
+#ifdef __GNU_INLINE_X86_32__
 #ifdef USE_PORTABLE_C
 #define INASM 
 #else
@@ -94,7 +94,7 @@ void ResetMixer( const SLONG *pslBuffer, const SLONG slBufferSize)
     shl     ecx,1 // *2 because of 32-bit src format
     rep     stosd
   }
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
   // !!! FIXME : rcg12172001 Is this REALLY any faster than memset()?
   ULONG clob1, clob2;
   __asm__ __volatile__ (
@@ -131,7 +131,7 @@ void CopyMixerBuffer_stereo( const SLONG slSrcOffset, void *pDstBuffer, const SL
     shr     ecx,2   // bytes to samples per channel
     rep     movsd
   }
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
   // !!! FIXME : rcg12172001 Is this REALLY any faster than memcpy()?
   ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
@@ -184,7 +184,7 @@ copyLoop:
     jnz     copyLoop
   }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl     %[pvMixerBuffer], %%esi         \n\t"
     "movl     %[pDstBuffer], %%edi            \n\t"
@@ -250,7 +250,7 @@ copyLoop:
     emms
   }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl     %[pvMixerBuffer], %%esi      \n\t"
     "movl     %[pvMixerBuffer], %%edi      \n\t"
@@ -323,7 +323,7 @@ void NormalizeMixerBuffer( const FLOAT fNormStrength, const SLONG slBytes, FLOAT
 }
  
 
-#ifdef __GNU_INLINE__
+#ifdef __GNU_INLINE_X86_32__
 // These are implemented in an external NASM file.
 extern "C" {
     void MixStereo_asm(CSoundObject *pso);
@@ -548,7 +548,7 @@ loopEnd:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
    // This is implemented in an external NASM file.
    MixMono_asm(pso);
 
@@ -778,7 +778,7 @@ loopEnd:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
    // This is implemented in an external NASM file.
    MixStereo_asm(pso);
 

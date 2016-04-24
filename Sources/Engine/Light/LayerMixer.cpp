@@ -44,7 +44,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #define ASMOPT 0
 #elif (defined __MSVC_INLINE__)
   #define ASMOPT 1
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   #define ASMOPT 1
 #else
   #define ASMOPT 0
@@ -364,7 +364,7 @@ skipPixel:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
@@ -576,7 +576,7 @@ skipPixel:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
@@ -796,7 +796,7 @@ skipPixel:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
@@ -1008,7 +1008,7 @@ skipPixel:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp1, tmp2;
   __asm__ __volatile__ (
     // prepare interpolants
@@ -1201,7 +1201,7 @@ BOOL CLayerMixer::PrepareOneLayerPoint( CBrushShadowLayer *pbsl, BOOL bNoMask)
   FLOAT fDL2oDV     = fDDL2oDV + 2*(lm_vStepV%v00);
   //_v00 = v00;
 
-#if ((ASMOPT == 1) && (!defined __GNU_INLINE__))
+#if ((ASMOPT == 1) && (!defined __GNU_INLINE_X86_32__))
  #if (defined __MSVC_INLINE__)
   __asm {
     fld     D [fDDL2oDU]
@@ -1230,7 +1230,7 @@ BOOL CLayerMixer::PrepareOneLayerPoint( CBrushShadowLayer *pbsl, BOOL bNoMask)
     fistp   D [_slDDL2oDV]
     fistp   D [_slDDL2oDU]
   }
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
     STUBBED("inline asm.");
  #else
    #error Please write inline assembly for your platform.
@@ -1321,7 +1321,7 @@ void CLayerMixer::AddOneLayerGradient( CGradientParameters &gp)
   _pulLayer  = lm_pulShadowMap;
   FLOAT fStart = Clamp( fGr00-(fDGroDJ+fDGroDI)*0.5f, 0.0f, 1.0f);
 
-#if ((ASMOPT == 1) && (!defined __GNU_INLINE__))
+#if ((ASMOPT == 1) && (!defined __GNU_INLINE_X86_32__))
  #if (defined __MSVC_INLINE__)
   __int64 mmRowAdv;
   SLONG fixGRow  = (fGr00-(fDGroDJ+fDGroDI)*0.5f)*32767.0f; // 16:15
@@ -1436,7 +1436,7 @@ rowNext:
 rowDone:
     emms
   }
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
 
     STUBBED("WRITE ME. Argh.");
 
@@ -1565,7 +1565,7 @@ rowNext:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp;
   __asm__ __volatile__ (
     // prepare pointers and variables
@@ -1665,7 +1665,7 @@ skipLight:
     emms
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp;
   __asm__ __volatile__ (
     // prepare pointers and variables
@@ -1862,7 +1862,7 @@ void CLayerMixer::MixOneMipmap(CBrushShadowMap *pbsm, INDEX iMipmap)
     rep     stosd
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"
@@ -1967,7 +1967,7 @@ __forceinline void CLayerMixer::CopyShadowLayer(void)
     mov     edi,D [ebx].lm_pulShadowMap
     rep     movsd
   }
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"
@@ -2006,7 +2006,7 @@ __forceinline void CLayerMixer::FillShadowLayer( COLOR col)
     rep     stosd
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   ULONG clob1, clob2, clob3;
   __asm__ __volatile__ (
     "cld                    \n\t"

@@ -148,7 +148,7 @@ static void DetectCPU(void)
     mov     dword ptr [ulFeatures], edx
   }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
     // test MMX presence and update flag
     __asm__ __volatile__ (
         "pushl   %%ebx            \n\t"

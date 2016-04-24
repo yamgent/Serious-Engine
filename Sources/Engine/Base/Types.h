@@ -134,21 +134,21 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
       #endif
     #endif
 
-    #if ((defined __GNUC__) && (!defined __GNU_INLINE__))
-      #define __GNU_INLINE__
+    #if ((defined __GNUC__) && (!defined __GNU_INLINE_X86__))
+      #define __GNU_INLINE_X86__
     #endif
 
     #if (defined __INTEL_COMPILER)
-      #if ((!defined __GNU_INLINE__) && (!defined __MSVC_INLINE__))
-        #error Please define __GNU_INLINE__ or __MSVC_INLINE__ with Intel C++.
+      #if ((!defined __GNU_INLINE_X86__) && (!defined __MSVC_INLINE__))
+        #error Please define __GNU_INLINE_X86__ or __MSVC_INLINE__ with Intel C++.
       #endif
 
-      #if ((defined __GNU_INLINE__) && (defined __MSVC_INLINE__))
-        #error Define either __GNU_INLINE__ or __MSVC_INLINE__ with Intel C++.
+      #if ((defined __GNU_INLINE_X86__) && (defined __MSVC_INLINE__))
+        #error Define either __GNU_INLINE_X86__ or __MSVC_INLINE__ with Intel C++.
       #endif
     #endif
 
-    #if defined(__GNU_INLINE__) && defined(__i386__)
+    #if defined(__GNU_INLINE_X86__) && defined(__i386__)
       #define FPU_REGS "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)"
       #define MMX_REGS "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7"
     #endif
@@ -233,7 +233,7 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
         #if (defined USE_PORTABLE_C)
             // DG: according to http://blog.regehr.org/archives/1063 this is fast
             return (ul<<bits) | (ul>>(-bits&31));
-        #elif (defined __GNU_INLINE__)
+        #elif (defined __GNU_INLINE_X86_32__)
             // This, on the other hand, is wicked fast.  :)
             __asm__ __volatile__ (
                 "roll %%cl, %%eax    \n\t"

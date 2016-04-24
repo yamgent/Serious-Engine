@@ -42,7 +42,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define ASMOPT 0
 #elif (defined __MSVC_INLINE__)
 #define ASMOPT 1
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
 #define ASMOPT 1
 #else
 #define ASMOPT 0
@@ -184,7 +184,7 @@ elemRest:
     mov     D [edi],eax
 elemDone:
   }
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl    %[ctElems], %%ecx      \n\t"
     "movl    %[piDst], %%edi        \n\t"
@@ -505,7 +505,7 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
     mov     D [_ctGroupsCount],eax
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl     $2, %%eax          \n\t"
     "bsrl     (%%esi), %%ecx     \n\t"
@@ -860,7 +860,7 @@ static void RSSetTextureCoords( ScenePolygon *pspoGroup, INDEX iLayer, INDEX iUn
 
 // !!! FIXME: rcg11232001 This inline conversion is broken. Use the
 // !!! FIXME: rcg11232001  C version for now with GCC.
-#if ((ASMOPT == 1) && (!defined __GNU_INLINE__) && (!defined __INTEL_COMPILER))
+#if ((ASMOPT == 1) && (!defined __GNU_INLINE_X86_32__) && (!defined __INTEL_COMPILER))
   #if (defined __MSVC_INLINE__)
     __asm {
       mov     esi,D [pspo]
@@ -915,7 +915,7 @@ vtxLoop:
 /*
     // !!! FIXME: rcg11232001 This inline conversion is broken. Use the
     // !!! FIXME: rcg11232001  C version for now on Linux.
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
     STUBBED("debug this");
     __asm__ __volatile__ (
       "0:                                  \n\t" // vtxLoop

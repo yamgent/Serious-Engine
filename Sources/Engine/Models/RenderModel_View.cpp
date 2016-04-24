@@ -42,7 +42,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #if (defined __MSVC_INLINE__)
 #define ASMOPT 1
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
 #define ASMOPT 0  // !!! FIXME: rcg10112001 Write GCC inline asm versions...
 #else
 #define ASMOPT 0

@@ -297,7 +297,7 @@ pixLoopN:
       emms
     }
 
-   #elif (defined __GNU_INLINE__)
+   #elif (defined __GNU_INLINE_X86_32__)
     __asm__ __volatile__ (
       "pxor    %%mm0, %%mm0                 \n\t"
       "movl    %[pulSrcMipmap], %%esi       \n\t"
@@ -428,7 +428,7 @@ halfEnd:
 fullEnd:
     }
 
-   #elif (defined __GNU_INLINE__)
+   #elif (defined __GNU_INLINE_X86_32__)
     ULONG tmp, tmp2;
     __asm__ __volatile__ (
       "xorl     %[xbx], %[xbx]             \n\t"
@@ -852,7 +852,7 @@ nextRowO:
     emms;
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp;
   __asm__ __volatile__ (
     "movl     %[pulSrc], %%esi           \n\t"
@@ -1046,7 +1046,7 @@ allDoneE:
     emms;
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "pxor    %%mm0, %%mm0                 \n\t"
     "movl    %[pulDst], %%esi             \n\t"
@@ -2204,7 +2204,7 @@ lowerLoop:
     emms
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
 
   FB_pulSrc = pulSrc;
   FB_pulDst = pulDst;

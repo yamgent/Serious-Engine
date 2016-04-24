@@ -325,7 +325,7 @@ inline SLONG FloatToInt( FLOAT f)
   }
   return slRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   SLONG slRet;
   __asm__ __volatile__ (
     "flds     (%%eax)   \n\t"
@@ -355,7 +355,7 @@ inline FLOAT Log2( FLOAT f) {
   }
   return fRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   FLOAT fRet;
   __asm__ __volatile__ (
     "fld1               \n\t"
@@ -402,7 +402,7 @@ inline SLONG FastLog2( SLONG x)
   }
   return slRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   SLONG slRet;
   __asm__ __volatile__ (
     "bsrl   %%ecx, %%eax      \n\t"
@@ -435,7 +435,7 @@ printf("CHECK THIS: %s:%d\n", __FILE__, __LINE__);
   }
   return slRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   SLONG slRet;
   __asm__ __volatile__ (
     "bsrl  %%ecx, %%eax     \n\t"

@@ -123,7 +123,7 @@ static inline PIX PIXCoord(FLOAT f) // (f+0.9999f) or (ceil(f))
   }
   return pixRet;
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   PIX pixRet;
   SLONG clobber;
   __asm__ __volatile__ (

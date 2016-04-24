@@ -347,7 +347,7 @@ COLOR MulColors( COLOR col1, COLOR col2)
   }
   return colRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   COLOR colRet;
   __asm__ __volatile__ (
     "pushl     %%ebx                \n\t"
@@ -535,7 +535,7 @@ COLOR AddColors( COLOR col1, COLOR col2)
     mov     D [colRet],ebx
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp;
   __asm__ __volatile__ (
     // if xbx is "r", gcc runs out of regs in -fPIC + -fno-omit-fp :(
@@ -679,7 +679,7 @@ colSkip2:
 colSkip1:
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   STUBBED("convert to inline asm.");
 
 #else

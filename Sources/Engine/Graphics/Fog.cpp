@@ -95,7 +95,7 @@ pixLoop:
     jnz     pixLoop
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl    %[pubTexture], %%esi      \n\t"
     "movl    %[pixTextureSize], %%ecx  \n\t"

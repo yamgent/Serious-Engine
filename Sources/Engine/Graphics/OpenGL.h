@@ -102,7 +102,7 @@ inline void glCOLOR( COLOR col)
     mov     dword ptr [col],eax
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "bswapl   %%eax    \n\t"
         : "=a" (col)

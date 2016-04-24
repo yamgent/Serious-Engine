@@ -216,7 +216,7 @@ void UploadTexture_OGL( ULONG *pulTexture, PIX pixSizeU, PIX pixSizeV,
         emms
       }
 
-      #elif (defined __GNU_INLINE__)
+      #elif (defined __GNU_INLINE_X86_32__)
       __asm__ __volatile__ (
         "pxor      %%mm0,%%mm0                \n\t"
         "movl      %[pulSrc],%%esi            \n\t"

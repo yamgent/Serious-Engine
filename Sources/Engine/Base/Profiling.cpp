@@ -47,7 +47,7 @@ static inline __int64 ReadTSC_profile(void)
   }
   return mmRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __int64 mmRet;
   __asm__ __volatile__ (
     "rdtsc                    \n\t"

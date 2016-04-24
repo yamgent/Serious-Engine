@@ -36,7 +36,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define ASMOPT 0
 #elif (defined __MSVC_INLINE__)
 #define ASMOPT 1
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
 #define ASMOPT 1
 #else
 #define ASMOPT 0
@@ -1357,7 +1357,7 @@ pixLoop:
       pop     ebx
     }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
     // rcg12152001 needed extra registers. :(
     _slHeightMapStep_renderWater = slHeightMapStep;
     _pixBaseWidth_renderWater = pixBaseWidth;
@@ -1626,7 +1626,7 @@ pixLoop2:
       pop     ebx
     }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
     __asm__ __volatile__ (
       "bsfl      %[pixBaseWidth], %%eax             \n\t"
       "movl      $32, %%edx                         \n\t"
@@ -2146,7 +2146,7 @@ pixLoop4:
       pop     ebx
     }
 
-  #elif (defined __GNU_INLINE__)
+  #elif (defined __GNU_INLINE_X86_32__)
     __asm__ __volatile__ (
       "bsfl      %[pixBaseWidth], %%eax             \n\t"
       "movl      $32, %%edx                         \n\t"
@@ -2976,7 +2976,7 @@ pixDone:
     pop     ebx
   }
 
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl    %[slColumnModulo], %%edx             \n\t"
     "movl    %[slBufferMask], %%ecx               \n\t"
@@ -3119,7 +3119,7 @@ pixLoopF:
     jnz     rowLoopF
     pop     ebx
   }
- #elif (defined __GNU_INLINE__)
+ #elif (defined __GNU_INLINE_X86_32__)
   _pubHeat_RenderPlasmaFire = pubHeat;  // ran out of registers.  :/
   __asm__ __volatile__ (
     "movl    %[slHeatRowStep], %%eax     \n\t"

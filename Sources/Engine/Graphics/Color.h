@@ -225,7 +225,7 @@ __forceinline ULONG ByteSwap( ULONG ul)
   }
   return ulRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "bswapl   %%eax    \n\t"
         : "=a" (ul)
@@ -252,7 +252,7 @@ __forceinline ULONG rgba2argb( ULONG ul)
   }
   return ulRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   ULONG ulRet;
   __asm__ __volatile__ (
     "rorl   $8, %%eax       \n\t"
@@ -287,7 +287,7 @@ __forceinline ULONG abgr2argb( COLOR col)
   }
   return ulRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   ULONG ulRet;
   __asm__ __volatile__ (
     "bswapl %%eax           \n\t"
@@ -323,7 +323,7 @@ inline void CopyLongs( ULONG *pulSrc, ULONG *pulDst, INDEX ctLongs)
     rep   movsd
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
     // I haven't benchmarked it, but in many cases, memcpy() becomes an
     //  inline (asm?) macro on GNU platforms, so this might not be a
     //  speed gain at all over the USE_PORTABLE_C version.
@@ -359,7 +359,7 @@ inline void StoreLongs( ULONG ulVal, ULONG *pulDst, INDEX ctLongs)
     rep   stosd
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "cld    \n\t"
     "rep    \n\t"

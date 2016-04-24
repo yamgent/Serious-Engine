@@ -37,7 +37,7 @@ inline ULONG _control87(WORD newcw, WORD mask)
     return(fpw);
 }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
 
 inline ULONG _control87(WORD newcw, WORD mask)
 {
