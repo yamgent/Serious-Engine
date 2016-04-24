@@ -105,10 +105,7 @@ static SLONG slTmp;
 
 static inline PIX PIXCoord(FLOAT f) // (f+0.9999f) or (ceil(f))
 {
- #if (defined USE_PORTABLE_C)
-  return((PIX) (f+0.9999f));
-
- #elif (defined __MSVC_INLINE__)
+ #if (defined __MSVC_INLINE__)
   PIX pixRet;
   __asm {
     fld     dword ptr [f]
@@ -142,7 +139,8 @@ static inline PIX PIXCoord(FLOAT f) // (f+0.9999f) or (ceil(f))
   return pixRet;
 
  #else
-  #error Please write inline ASM for your platform.
+  return((PIX) (f+0.9999f));
+
  #endif
 }
 

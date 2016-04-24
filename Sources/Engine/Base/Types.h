@@ -229,10 +229,7 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 
     inline ULONG _rotl(ULONG ul, int bits)
     {
-        #if (defined USE_PORTABLE_C)
-            // DG: according to http://blog.regehr.org/archives/1063 this is fast
-            return (ul<<bits) | (ul>>(-bits&31));
-        #elif (defined __GNU_INLINE_X86_32__)
+        #if (defined __GNU_INLINE_X86_32__)
             // This, on the other hand, is wicked fast.  :)
             __asm__ __volatile__ (
                 "roll %%cl, %%eax    \n\t"
@@ -254,7 +251,8 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
             return(ul);
 
         #else
-            #error need inline asm for your platform.
+            // DG: according to http://blog.regehr.org/archives/1063 this is fast
+            return (ul<<bits) | (ul>>(-bits&31));
         #endif
     }
 

@@ -312,12 +312,7 @@ inline FLOAT NormByteToFloat( const ULONG ul)
 // fast float to int conversion
 inline SLONG FloatToInt( FLOAT f)
 {
-#if defined(__arm__) || defined(USE_PORTABLE_C)
-  // round to nearest by adding/subtracting 0.5 (depending on f pos/neg) before converting to SLONG
-  float addToRound = copysignf(0.5f, f); // copy f's signbit to 0.5 => if f<0 then addToRound = -0.5, else 0.5
-  return((SLONG) (f + addToRound));
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   SLONG slRet;
   __asm {
     fld    D [f]
@@ -336,16 +331,16 @@ inline SLONG FloatToInt( FLOAT f)
   );
   return(slRet);
 #else
-  #error Fill this in for your platform.
+  // round to nearest by adding/subtracting 0.5 (depending on f pos/neg) before converting to SLONG
+  float addToRound = copysignf(0.5f, f); // copy f's signbit to 0.5 => if f<0 then addToRound = -0.5, else 0.5
+  return((SLONG) (f + addToRound));
+
 #endif
 }
 
 // log base 2 of any float numero
 inline FLOAT Log2( FLOAT f) {
-#if (defined USE_PORTABLE_C) || defined(__arm__)
-  return log2f(f);
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   FLOAT fRet;
   _asm {
     fld1
@@ -368,7 +363,8 @@ inline FLOAT Log2( FLOAT f) {
   );
   return(fRet);
 #else
-  #error Fill this in for your platform.
+  return log2f(f);
+
 #endif
 }
 
@@ -376,25 +372,7 @@ inline FLOAT Log2( FLOAT f) {
 // returns accurate values only for integers that are power of 2
 inline SLONG FastLog2( SLONG x)
 {
-#if (defined USE_PORTABLE_C)
-#ifdef __GNUC__
-  if(x == 0) return 0; // __builtin_clz() is undefined for 0
-  int numLeadingZeros  = __builtin_clz(x);
-  return 31 - numLeadingZeros;
-#else
-  register SLONG val = x;
-  register SLONG retval = 31;
-  while (retval > 0)
-  {
-    if (val & (1 << retval))
-        return retval;
-    retval--;
-  }
-
-  return 0;
-#endif
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   SLONG slRet;
   __asm {
     bsr   eax,D [x]
@@ -411,8 +389,21 @@ inline SLONG FastLog2( SLONG x)
         : "memory"
   );
   return(slRet);
+#elif (defined __GNUC__)
+  if(x == 0) return 0; // __builtin_clz() is undefined for 0
+  int numLeadingZeros  = __builtin_clz(x);
+  return 31 - numLeadingZeros;
 #else
-  #error Fill this in for your platform.
+  register SLONG val = x;
+  register SLONG retval = 31;
+  while (retval > 0)
+  {
+    if (val & (1 << retval))
+        return retval;
+    retval--;
+  }
+
+  return 0;
 #endif
 }
 
@@ -420,11 +411,7 @@ inline SLONG FastLog2( SLONG x)
 // returns log2 of first larger value that is a power of 2
 inline SLONG FastMaxLog2( SLONG x)
 { 
-#if (defined USE_PORTABLE_C)
-printf("CHECK THIS: %s:%d\n", __FILE__, __LINE__);
-  return((SLONG) log2((double) x));
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   SLONG slRet;
   __asm {
     bsr   eax,D [x]
@@ -448,7 +435,9 @@ printf("CHECK THIS: %s:%d\n", __FILE__, __LINE__);
   );
   return(slRet);
 #else
-  #error Fill this in for your platform.
+printf("CHECK THIS: %s:%d\n", __FILE__, __LINE__);
+  return((SLONG) log2((double) x));
+
 #endif
 }
 */

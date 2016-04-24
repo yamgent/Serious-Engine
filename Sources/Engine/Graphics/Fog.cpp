@@ -67,18 +67,7 @@ ULONG PrepareTexture( UBYTE *pubTexture, PIX pixSizeI, PIX pixSizeJ)
   // need to upload from RGBA format
   const PIX pixTextureSize = pixSizeI*pixSizeJ;
 
- #if (defined USE_PORTABLE_C)
-   const UBYTE* src = pubTexture;
-   DWORD* dst = (DWORD*)(pubTexture+pixTextureSize);
-   for (int i=0; i<pixTextureSize; i++) {
-    const DWORD tmp = ((DWORD)*src) | 0xFFFFFF00;
-    *dst = ((tmp << 24) & 0xff000000 ) | ((tmp <<  8) & 0x00ff0000 ) |
-      ((tmp >>  8) & 0x0000ff00 ) | ((tmp >> 24) & 0x000000ff );
-    src++;
-    dst++;
-   }
-
- #elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov     esi,D [pubTexture]
     mov     edi,D [pubTexture]
@@ -95,7 +84,7 @@ pixLoop:
     jnz     pixLoop
   }
 
- #elif (defined __GNU_INLINE_X86_32__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl    %[pubTexture], %%esi      \n\t"
     "movl    %[pixTextureSize], %%ecx  \n\t"
@@ -115,10 +104,18 @@ pixLoop:
         : "eax", "ecx", "esi", "edi", "cc", "memory"
   );
 
- #else
-   #error Write inline ASM for your platform.
+#else
+   const UBYTE* src = pubTexture;
+   DWORD* dst = (DWORD*)(pubTexture+pixTextureSize);
+   for (int i=0; i<pixTextureSize; i++) {
+    const DWORD tmp = ((DWORD)*src) | 0xFFFFFF00;
+    *dst = ((tmp << 24) & 0xff000000 ) | ((tmp <<  8) & 0x00ff0000 ) |
+      ((tmp >>  8) & 0x0000ff00 ) | ((tmp >> 24) & 0x000000ff );
+    src++;
+    dst++;
+   }
 
- #endif
+#endif
 
   // determine internal format
   extern INDEX gap_bAllowGrayTextures;

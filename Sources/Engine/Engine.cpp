@@ -125,14 +125,10 @@ BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 static void DetectCPU(void)
 {
-#if (defined USE_PORTABLE_C)  // rcg10072001
-  CPrintF(TRANSV("  (No CPU detection in this binary.)\n"));
-
-#else
-  char strVendor[12+1];
+  char strVendor[12+1] = { 0 };
   strVendor[12] = 0;
-  ULONG ulTFMS;
-  ULONG ulFeatures;
+  ULONG ulTFMS = 0;
+  ULONG ulFeatures = 0;
 
   #if (defined __MSVC_INLINE__)
   // test MMX presence and update flag
@@ -181,9 +177,12 @@ static void DetectCPU(void)
             : "eax", "ecx", "edx", "memory"
     );
 
-  #else
-    #error Please implement for your platform or define USE_PORTABLE_C.
   #endif
+
+  if (ulTFMS == 0) {
+    CPrintF(TRANSV("  (No CPU detection in this binary.)\n"));
+    return;
+  }
 
   INDEX iType     = (ulTFMS>>12)&0x3;
   INDEX iFamily   = (ulTFMS>> 8)&0xF;
@@ -215,8 +214,6 @@ static void DetectCPU(void)
   sys_iCPUMHz = INDEX(_pTimer->tm_llCPUSpeedHZ/1E6);
 
   if( !bMMX) FatalError( TRANS("MMX support required but not present!"));
-
-#endif  // defined USE_PORTABLE_C
 }
 
 static void DetectCPUWrapper(void)

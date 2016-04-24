@@ -32,9 +32,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#if (defined USE_PORTABLE_C)
-#define ASMOPT 0
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
 #define ASMOPT 1
 #elif (defined __GNU_INLINE_X86_32__)
 #define ASMOPT 1
@@ -1285,8 +1283,7 @@ static void RenderWater(void)
   { // SUB-SAMPLING
     SLONG slHeightMapStep, slHeightRowStep;
 
-#if ASMOPT == 1
-  #if (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
     __asm {
       push    ebx
       bsf     ecx,D [_pixTexWidth]
@@ -1357,7 +1354,7 @@ pixLoop:
       pop     ebx
     }
 
-  #elif (defined __GNU_INLINE_X86_32__)
+#elif (defined __GNU_INLINE_X86_32__)
     // rcg12152001 needed extra registers. :(
     _slHeightMapStep_renderWater = slHeightMapStep;
     _pixBaseWidth_renderWater = pixBaseWidth;
@@ -1459,10 +1456,6 @@ pixLoop:
         : FPU_REGS, MMX_REGS, "eax", "ecx", "edx", "esi", "edi",
           "cc", "memory"
     );
-
-  #else
-    #error fill in for your platform.
-  #endif
 
 #else
 

@@ -38,16 +38,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define W  word ptr
 #define B  byte ptr
 
-#if (defined USE_PORTABLE_C)
-#define ASMOPT 0
-#elif (defined __MSVC_INLINE__)
-#define ASMOPT 1
-#elif (defined __GNU_INLINE_X86_32__)
-#define ASMOPT 1
-#else
-#define ASMOPT 0
-#endif
-
 #define MAXTEXUNITS   4
 #define SHADOWTEXTURE 3
 
@@ -153,8 +143,7 @@ void AddElements( ScenePolygon *pspo)
   const INDEX ctElems = pspo->spo_ctElements;
   INDEX *piDst = _aiElements.Push(ctElems);
 
-#if (ASMOPT == 1)
- #if (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov     eax,D [pspo]
     mov     ecx,D [ctElems]
@@ -184,7 +173,7 @@ elemRest:
     mov     D [edi],eax
 elemDone:
   }
- #elif (defined __GNU_INLINE_X86_32__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl    %[ctElems], %%ecx      \n\t"
     "movl    %[piDst], %%edi        \n\t"
@@ -218,11 +207,6 @@ elemDone:
         : FPU_REGS, "mm0", "mm1", "eax", "ecx", "esi", "edi",
           "cc", "memory"
   );
-
- #else
-   #error Please write inline ASM for your platform.
-
- #endif
 
 #else
   const INDEX iVtx0Pass = pspo->spo_iVtx0Pass;
@@ -495,9 +479,7 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
   // determine maximum used groups
   ASSERT( _ctGroupsCount);
 
-#if ASMOPT == 1
-
- #if (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov     eax,2
     bsr     ecx,D [_ctGroupsCount]
@@ -505,7 +487,7 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
     mov     D [_ctGroupsCount],eax
   }
 
- #elif (defined __GNU_INLINE_X86_32__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "movl     $2, %%eax          \n\t"
     "bsrl     (%%esi), %%ecx     \n\t"
@@ -515,11 +497,6 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
         : "S" (&_ctGroupsCount)
         : "eax", "ecx", "cc", "memory"
   );
-
- #else
-   #error Please write inline ASM for your platform.
-
- #endif
 
 #else
   // emulate x86's bsr opcode...not fast.  :/
@@ -858,10 +835,7 @@ static void RSSetTextureCoords( ScenePolygon *pspoGroup, INDEX iLayer, INDEX iUn
       continue;
     }
 
-// !!! FIXME: rcg11232001 This inline conversion is broken. Use the
-// !!! FIXME: rcg11232001  C version for now with GCC.
-#if ((ASMOPT == 1) && (!defined __GNU_INLINE_X86_32__) && (!defined __INTEL_COMPILER))
-  #if (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
     __asm {
       mov     esi,D [pspo]
       mov     edi,D [iMappingOffset]
@@ -915,7 +889,7 @@ vtxLoop:
 /*
     // !!! FIXME: rcg11232001 This inline conversion is broken. Use the
     // !!! FIXME: rcg11232001  C version for now on Linux.
- #elif (defined __GNU_INLINE_X86_32__)
+#elif (defined __GNU_INLINE_X86_32__)
     STUBBED("debug this");
     __asm__ __volatile__ (
       "0:                                  \n\t" // vtxLoop
@@ -955,11 +929,6 @@ vtxLoop:
         : "cc", "memory"
     );
 */
-
- #else
-   #error Please write inline ASM for your platform.
-
- #endif
 
 #else
 

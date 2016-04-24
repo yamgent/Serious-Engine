@@ -65,9 +65,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #else
   #warning "UNKNOWN PLATFORM IDENTIFIED!!!!"
   #define PLATFORM_UNKNOWN 1
-  #warning "USING PORTABLE C!!!"
-  #define USE_PORTABLE_C
-#endif 
+#endif
 
 #if PLATFORM_LINUX || PLATFORM_MACOSX
   #ifndef PLATFORM_UNIX

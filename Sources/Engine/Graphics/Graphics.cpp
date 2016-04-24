@@ -209,58 +209,7 @@ static void MakeOneMipmap( ULONG *pulSrcMipmap, ULONG *pulDstMipmap, PIX pixWidt
   if( bBilinear) // type of filtering?
   { // BILINEAR
 
-   #if (defined USE_PORTABLE_C)
-	UBYTE *src = (UBYTE *) pulSrcMipmap;
-	UBYTE *dest = (UBYTE *) pulDstMipmap;
-	for (int i = 0 ; i < pixHeight; i++)
-	{
-		for (int j = 0; j < pixWidth; j++)
-		{
-			// Grab pixels from image
-			UWORD upleft[4];
-			UWORD upright[4];
-			UWORD downleft[4];
-			UWORD downright[4];
-			upleft[0] = *(src + 0);
-			upleft[1] = *(src + 1);
-			upleft[2] = *(src + 2);
-			upleft[3] = *(src + 3);
-			upright[0] = *(src + 4);
-			upright[1] = *(src + 5);
-			upright[2] = *(src + 6);
-			upright[3] = *(src + 7);
-
-			downleft[0] = *(src + pixWidth*8 + 0);
-			downleft[1] = *(src + pixWidth*8 + 1);
-			downleft[2] = *(src + pixWidth*8 + 2);
-			downleft[3] = *(src + pixWidth*8 + 3);
-			downright[0] = *(src + pixWidth*8 + 4);
-			downright[1] = *(src + pixWidth*8 + 5);
-			downright[2] = *(src + pixWidth*8 + 6);
-			downright[3] = *(src + pixWidth*8 + 7);
-
-			UWORD answer[4];
-			answer[0] = upleft[0] + upright[0] + downleft[0] + downright[0] + 2;
-			answer[1] = upleft[1] + upright[1] + downleft[1] + downright[1] + 2;
-			answer[2] = upleft[2] + upright[2] + downleft[2] + downright[2] + 2;
-			answer[3] = upleft[3] + upright[3] + downleft[3] + downright[3] + 2;
-			answer[0] /= 4;
-			answer[1] /= 4;
-			answer[2] /= 4;
-			answer[3] /= 4;
-
-			*(dest + 0) = answer[0];
-			*(dest + 1) = answer[1];
-			*(dest + 2) = answer[2];
-			*(dest + 3) = answer[3];
-
-			src += 8;
-			dest += 4;
-		}
-		src += 8*pixWidth;
-    }
-
-   #elif (defined __MSVC_INLINE__)
+   #if (defined __MSVC_INLINE__)
     __asm {
       pxor    mm0,mm0
       mov     ebx,D [pixWidth]
@@ -346,43 +295,63 @@ pixLoopN:
     );
 
    #else
-     #error Write inline asm for your platform.
+	UBYTE *src = (UBYTE *) pulSrcMipmap;
+	UBYTE *dest = (UBYTE *) pulDstMipmap;
+	for (int i = 0 ; i < pixHeight; i++)
+	{
+		for (int j = 0; j < pixWidth; j++)
+		{
+			// Grab pixels from image
+			UWORD upleft[4];
+			UWORD upright[4];
+			UWORD downleft[4];
+			UWORD downright[4];
+			upleft[0] = *(src + 0);
+			upleft[1] = *(src + 1);
+			upleft[2] = *(src + 2);
+			upleft[3] = *(src + 3);
+			upright[0] = *(src + 4);
+			upright[1] = *(src + 5);
+			upright[2] = *(src + 6);
+			upright[3] = *(src + 7);
+
+			downleft[0] = *(src + pixWidth*8 + 0);
+			downleft[1] = *(src + pixWidth*8 + 1);
+			downleft[2] = *(src + pixWidth*8 + 2);
+			downleft[3] = *(src + pixWidth*8 + 3);
+			downright[0] = *(src + pixWidth*8 + 4);
+			downright[1] = *(src + pixWidth*8 + 5);
+			downright[2] = *(src + pixWidth*8 + 6);
+			downright[3] = *(src + pixWidth*8 + 7);
+
+			UWORD answer[4];
+			answer[0] = upleft[0] + upright[0] + downleft[0] + downright[0] + 2;
+			answer[1] = upleft[1] + upright[1] + downleft[1] + downright[1] + 2;
+			answer[2] = upleft[2] + upright[2] + downleft[2] + downright[2] + 2;
+			answer[3] = upleft[3] + upright[3] + downleft[3] + downright[3] + 2;
+			answer[0] /= 4;
+			answer[1] /= 4;
+			answer[2] /= 4;
+			answer[3] /= 4;
+
+			*(dest + 0) = answer[0];
+			*(dest + 1) = answer[1];
+			*(dest + 2) = answer[2];
+			*(dest + 3) = answer[3];
+
+			src += 8;
+			dest += 4;
+		}
+		src += 8*pixWidth;
+    }
+
    #endif
     }
     else
     { // NEAREST-NEIGHBOUR but with border preserving
        ULONG ulRowModulo = pixWidth*2 *BYTES_PER_TEXEL;
 
-   #if (defined USE_PORTABLE_C)
-
-     PIX offset = 0;
-     ulRowModulo /= 4;
-
-     for (int q = 0; q < 2; q++)
-     {
-         for (PIX i = pixHeight / 2; i > 0; i--)
-         {
-             for (PIX j = pixWidth / 2; j > 0; j--)
-             {
-                 *pulDstMipmap = *(pulSrcMipmap + offset);
-                 pulSrcMipmap += 2;
-                 pulDstMipmap++;
-             }
-
-             for (PIX j = pixWidth / 2; j > 0; j--)
-             {
-                 *pulDstMipmap = *(pulSrcMipmap + offset + 1);
-                 pulSrcMipmap += 2;
-                 pulDstMipmap++;
-             }
-
-             pulSrcMipmap += ulRowModulo;
-        }
-
-        offset = pixWidth * 2;
-     }
-
-   #elif (defined __MSVC_INLINE__)
+   #if (defined __MSVC_INLINE__)
     __asm {
       xor     ebx,ebx
       mov     esi,D [pulSrcMipmap]
@@ -493,7 +462,33 @@ fullEnd:
     );
 
    #else
-     #error Write inline asm for your platform.
+     PIX offset = 0;
+     ulRowModulo /= 4;
+
+     for (int q = 0; q < 2; q++)
+     {
+         for (PIX i = pixHeight / 2; i > 0; i--)
+         {
+             for (PIX j = pixWidth / 2; j > 0; j--)
+             {
+                 *pulDstMipmap = *(pulSrcMipmap + offset);
+                 pulSrcMipmap += 2;
+                 pulDstMipmap++;
+             }
+
+             for (PIX j = pixWidth / 2; j > 0; j--)
+             {
+                 *pulDstMipmap = *(pulSrcMipmap + offset + 1);
+                 pulSrcMipmap += 2;
+                 pulDstMipmap++;
+             }
+
+             pulSrcMipmap += ulRowModulo;
+        }
+
+        offset = pixWidth * 2;
+     }
+
    #endif
   }
 }
@@ -649,7 +644,7 @@ __int64 mmShifter = 0;
 __int64 mmMask  = 0;
 ULONG *pulDitherTable;
 
-#ifdef USE_PORTABLE_C
+#if !(defined __MSVC_INLINE__) && !(defined __GNU_INLINE_X86_32__)
 extern const UBYTE *pubClipByte;
 // increment a byte without overflowing it
 static inline void IncrementByteWithClip( UBYTE &ub, SLONG slAdd)
@@ -778,35 +773,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
 // ------------------------------- ordered matrix dithering routine
 
 ditherOrder:
-#if (defined USE_PORTABLE_C)
-  union uConv
-  {
-    ULONG val;
-    DWORD dwords[2];
-    UWORD words[4];
-    WORD  iwords[4];
-    UBYTE bytes[8];
-  };
-  for (int i=0; i<pixHeight; i++) {
-    int idx = i&3;
-    uConv dith;
-    dith.val = pulDitherTable[idx];
-    for (int j=0; j<4; j++) { dith.words[j] >>= mmShifter; }
-    dith.val &= mmMask;
-    uConv* src = (uConv*)(pulSrc+i*pixWidth);
-    uConv* dst = (uConv*)(pulDst+i*pixWidth);
-    for (int j=0; j<pixWidth; j+=2) {
-      uConv p=src[0];
-      for (int k=0; k<8; k++) {
-        IncrementByteWithClip(p.bytes[k], dith.bytes[k]);
-      }
-      dst[0] = p;
-      src++;
-      dst++;
-    }
-  }
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov     esi,D [pulSrc]
     mov     edi,D [pulDst]
@@ -912,7 +879,33 @@ nextRowO:
   );
 
 #else
-  #error Write inline asm for your platform.
+  union uConv
+  {
+    ULONG val;
+    DWORD dwords[2];
+    UWORD words[4];
+    WORD  iwords[4];
+    UBYTE bytes[8];
+  };
+  for (int i=0; i<pixHeight; i++) {
+    int idx = i&3;
+    uConv dith;
+    dith.val = pulDitherTable[idx];
+    for (int j=0; j<4; j++) { dith.words[j] >>= mmShifter; }
+    dith.val &= mmMask;
+    uConv* src = (uConv*)(pulSrc+i*pixWidth);
+    uConv* dst = (uConv*)(pulDst+i*pixWidth);
+    for (int j=0; j<pixWidth; j+=2) {
+      uConv p=src[0];
+      for (int k=0; k<8; k++) {
+        IncrementByteWithClip(p.bytes[k], dith.bytes[k]);
+      }
+      dst[0] = p;
+      src++;
+      dst++;
+    }
+  }
+
 #endif
 
   goto theEnd;
@@ -924,34 +917,7 @@ ditherError:
   if( pulDst!=pulSrc) memcpy( pulDst, pulSrc, pixCanvasWidth*pixCanvasHeight *BYTES_PER_TEXEL);
   // slModulo+=4;
   // now, dither destination
-#if (defined USE_PORTABLE_C)
-  #if 1 //SEB doesn't works....
-  for (int i=0; i<pixHeight-1; i++) {
-    int step = (i&1)?-4:+4;
-    const UBYTE ubMask = (mmErrDiffMask&0xff);
-    UBYTE *src = ((UBYTE*)pulDst)+i*pixCanvasWidth*4;
-    if(i&1) src+=pixWidth*4;
-    // left to right or right to left
-    for (int j=0; j<pixWidth-1; j++) {
-      uConv p1, p3, p5, p7;
-      src+=step;
-      for (int k=0; k<4; k++) { p1.words[k] = src[k]&ubMask; }
-      //p1.val &= mmErrDiffMask;
-      for (int k=0; k<4; k++) { p3.words[k] = (p1.words[k]*3)>>4;
-                                p5.words[k] = (p1.words[k]*5)>>4;
-                                p7.words[k] = (p1.words[k]*7)>>4; }
-      for (int k=0; k<4; k++) { p1.words[k] -= (p3.words[k] + p5.words[k] + p7.words[k]);}
-      for (int k=0; k<4; k++) { 
-        IncrementByteWithClip( src[k + step]                 , p7.words[k]);
-        IncrementByteWithClip( src[pixCanvasWidth*4 -step +k], p5.words[k]);
-        IncrementByteWithClip( src[pixCanvasWidth*4 +0    +k], p3.words[k]);
-        IncrementByteWithClip( src[pixCanvasWidth*4 +step +k], p1.words[k]);
-      }
-    }
-  }
-  #endif
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     pxor    mm0,mm0
     mov     esi,D [pulDst]
@@ -1157,7 +1123,32 @@ allDoneE:
   );
 
 #else
-  #error Write inline asm for your platform.
+  #if 1 //SEB doesn't works....
+  for (int i=0; i<pixHeight-1; i++) {
+    int step = (i&1)?-4:+4;
+    const UBYTE ubMask = (mmErrDiffMask&0xff);
+    UBYTE *src = ((UBYTE*)pulDst)+i*pixCanvasWidth*4;
+    if(i&1) src+=pixWidth*4;
+    // left to right or right to left
+    for (int j=0; j<pixWidth-1; j++) {
+      uConv p1, p3, p5, p7;
+      src+=step;
+      for (int k=0; k<4; k++) { p1.words[k] = src[k]&ubMask; }
+      //p1.val &= mmErrDiffMask;
+      for (int k=0; k<4; k++) { p3.words[k] = (p1.words[k]*3)>>4;
+                                p5.words[k] = (p1.words[k]*5)>>4;
+                                p7.words[k] = (p1.words[k]*7)>>4; }
+      for (int k=0; k<4; k++) { p1.words[k] -= (p3.words[k] + p5.words[k] + p7.words[k]);}
+      for (int k=0; k<4; k++) { 
+        IncrementByteWithClip( src[k + step]                 , p7.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 -step +k], p5.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 +0    +k], p3.words[k]);
+        IncrementByteWithClip( src[pixCanvasWidth*4 +step +k], p1.words[k]);
+      }
+    }
+  }
+  #endif
+
 #endif
 
   goto theEnd;
@@ -1265,7 +1256,7 @@ extern "C" {
 }
 
 
-#ifdef USE_PORTABLE_C
+#if !(defined USE_MMX_INTRINSICS) && !(defined __MSVC_INLINE__) && !(defined __GNU_INLINE_X86_32__)
 typedef SWORD ExtPix[4];
 
 static inline void extpix_fromi64(ExtPix &pix, const __int64 i64)
@@ -1631,265 +1622,6 @@ void FilterBitmap( INDEX iFilter, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth, PI
 
     _mm_empty();  // we're done, clear out the MMX registers!
 
-
-#elif (defined USE_PORTABLE_C)
-    slModulo1 /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
-    slCanvasWidth /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
-
-    ULONG *src = pulSrc;
-    ULONG *dst = pulDst;
-    ULONG *rowptr = aulRows;
-
-    ExtPix rmm1={0}, rmm2={0}, rmm3={0}, rmm4={0}, rmm5={0}, rmm6={0}, rmm7={0};
-    #define EXTPIXFROMINT64(x) ExtPix r##x; extpix_fromi64(r##x, x);
-    EXTPIXFROMINT64(mmCm);
-    EXTPIXFROMINT64(mmCe);
-    EXTPIXFROMINT64(mmCc);
-    EXTPIXFROMINT64(mmEch);
-    EXTPIXFROMINT64(mmEcl);
-    EXTPIXFROMINT64(mmEe);
-    EXTPIXFROMINT64(mmEm);
-    EXTPIXFROMINT64(mmMm);
-    EXTPIXFROMINT64(mmMe);
-    EXTPIXFROMINT64(mmMc);
-    EXTPIXFROMINT64(mmAdd);
-    EXTPIXFROMINT64(mmInvDiv);
-    #undef EXTPIXFROMINT64
-
-    // ----------------------- process upper left corner
-    extend_pixel(src[0], rmm1);
-    extend_pixel(src[1], rmm2);
-    extend_pixel(src[pixCanvasWidth], rmm3);
-    extend_pixel(src[pixCanvasWidth+1], rmm4);
-
-    extpix_add(rmm2, rmm3);
-    extpix_mul(rmm1, rmmCm);
-    extpix_mul(rmm2, rmmCe);
-    extpix_mul(rmm4, rmmCc);
-    extpix_add(rmm1, rmm2);
-    extpix_add(rmm1, rmm4);
-    extpix_adds(rmm1, rmmAdd);
-    extpix_mulhi(rmm1, rmmInvDiv);
-    *(rowptr++) = unextend_pixel(rmm1);
-    
-    src++;
-
-    // ----------------------- process upper edge pixels
-    for (PIX i = pixWidth - 2; i != 0; i--)
-    {
-        extend_pixel(src[-1], rmm1);
-        extend_pixel(src[0], rmm2);
-        extend_pixel(src[1], rmm3);
-        extend_pixel(src[pixCanvasWidth-1], rmm4);
-        extend_pixel(src[pixCanvasWidth], rmm5);
-        extend_pixel(src[pixCanvasWidth+1], rmm6);
-
-        extpix_add(rmm1, rmm3);
-        extpix_add(rmm4, rmm6);
-        extpix_mul(rmm1, rmmEch);
-        extpix_mul(rmm2, rmmEm);
-        extpix_mul(rmm4, rmmEcl);
-        extpix_mul(rmm5, rmmEe);
-        extpix_add(rmm1, rmm2);
-        extpix_add(rmm1, rmm4);
-        extpix_add(rmm1, rmm5);
-        extpix_adds(rmm1, rmmAdd);
-        extpix_mulhi(rmm1, rmmInvDiv);
-        *(rowptr++) = unextend_pixel(rmm1);
-        src++;
-    }
-
-    // ----------------------- process upper right corner
-
-    extend_pixel(src[-1], rmm1);
-    extend_pixel(src[0], rmm2);
-    extend_pixel(src[pixCanvasWidth-1], rmm3);
-    extend_pixel(src[pixCanvasWidth], rmm4);
-
-    extpix_add(rmm1, rmm4);
-    extpix_mul(rmm1, rmmCe);
-    extpix_mul(rmm2, rmmCm);
-    extpix_mul(rmm3, rmmCc);
-    extpix_add(rmm1, rmm2);
-    extpix_add(rmm1, rmm3);
-    extpix_adds(rmm1, rmmAdd);
-    extpix_mulhi(rmm1, rmmInvDiv);
-    *rowptr = unextend_pixel(rmm1);
-
-// ----------------------- process bitmap middle pixels
-
-    dst += slCanvasWidth;
-    src += slModulo1;
-
-    // for each row
-    for (size_t i = pixHeight-2; i != 0; i--)  // rowLoop
-    {
-        rowptr = aulRows;
-
-        // process left edge pixel
-        extend_pixel(src[-pixCanvasWidth], rmm1);
-        extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
-        extend_pixel(src[0], rmm3);
-        extend_pixel(src[1], rmm4);
-        extend_pixel(src[pixCanvasWidth], rmm5);
-        extend_pixel(src[pixCanvasWidth+1], rmm6);
-
-        extpix_add(rmm1, rmm5);
-        extpix_add(rmm2, rmm6);
-        extpix_mul(rmm1, rmmEch);
-        extpix_mul(rmm2, rmmEcl);
-        extpix_mul(rmm3, rmmEm);
-        extpix_mul(rmm4, rmmEe);
-        extpix_add(rmm1, rmm2);
-        extpix_add(rmm1, rmm3);
-        extpix_add(rmm1, rmm4);
-        extpix_adds(rmm1, rmmAdd);
-        extpix_mulhi(rmm1, rmmInvDiv);
-        dst[-pixCanvasWidth] = *rowptr;
-        *(rowptr++) = unextend_pixel(rmm1);
-        src++;
-        dst++;
-
-        // for each pixel in current row
-        for (size_t j = pixWidth-2; j != 0; j--)  // pixLoop
-        {
-            // prepare upper convolution row
-            extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
-            extend_pixel(src[-pixCanvasWidth], rmm2);
-            extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
-
-            // prepare middle convolution row
-            extend_pixel(src[-1], rmm4);
-            extend_pixel(src[0], rmm5);
-            extend_pixel(src[1], rmm6);
-
-            // free some registers
-            extpix_add(rmm1, rmm3);
-            extpix_add(rmm2, rmm4);
-            extpix_mul(rmm5, rmmMm);
-
-            // prepare lower convolution row
-            extend_pixel(src[pixCanvasWidth-1], rmm3);
-            extend_pixel(src[pixCanvasWidth], rmm4);
-            extend_pixel(src[pixCanvasWidth+1], rmm7);
-
-            // calc weightened value
-            extpix_add(rmm2, rmm6);
-            extpix_add(rmm1, rmm3);
-            extpix_add(rmm2, rmm4);
-            extpix_add(rmm1, rmm7);
-            extpix_mul(rmm2, rmmMe);
-            extpix_mul(rmm1, rmmMc);
-            extpix_add(rmm2, rmm5);
-            extpix_add(rmm1, rmm2);
-
-            // calc and store wightened value
-            extpix_adds(rmm1, rmmAdd);
-            extpix_mulhi(rmm1, rmmInvDiv);
-            dst[-pixCanvasWidth] = *rowptr;
-            *(rowptr++) = unextend_pixel(rmm1);
-
-            // advance to next pixel
-            src++;
-            dst++;
-        }
-
-        // process right edge pixel
-        extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
-        extend_pixel(src[-pixCanvasWidth], rmm2);
-        extend_pixel(src[-1], rmm3);
-        extend_pixel(src[0], rmm4);
-        extend_pixel(src[pixCanvasWidth-1], rmm5);
-        extend_pixel(src[pixCanvasWidth], rmm6);
-
-        extpix_add(rmm1, rmm5);
-        extpix_add(rmm2, rmm6);
-        extpix_mul(rmm1, rmmEcl);
-        extpix_mul(rmm2, rmmEch);
-        extpix_mul(rmm3, rmmEe);
-        extpix_mul(rmm4, rmmEm);
-        extpix_add(rmm1, rmm2);
-        extpix_add(rmm1, rmm3);
-        extpix_add(rmm1, rmm4);
-        extpix_adds(rmm1, rmmAdd);
-        extpix_mulhi(rmm1, rmmInvDiv);
-        dst[-pixCanvasWidth] = *rowptr;
-        *rowptr = unextend_pixel(rmm1);
-
-        // advance to next row
-        src += slModulo1;
-        dst += slModulo1;
-    }
-
-    // ----------------------- process lower left corner
-    rowptr = aulRows;
-    extend_pixel(src[-pixCanvasWidth], rmm1);
-    extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
-    extend_pixel(src[0], rmm3);
-    extend_pixel(src[1], rmm4);
-
-    extpix_add(rmm1, rmm4);
-    extpix_mul(rmm1, rmmCe);
-    extpix_mul(rmm2, rmmCc);
-    extpix_mul(rmm3, rmmCm);
-    extpix_add(rmm1, rmm2);
-    extpix_add(rmm1, rmm3);
-    extpix_adds(rmm1, rmmAdd);
-    extpix_mulhi(rmm1, rmmInvDiv);
-    dst[-pixCanvasWidth] = *rowptr;
-    dst[0] = unextend_pixel(rmm1);
-
-    src++;
-    dst++;
-    rowptr++;
-
-    // ----------------------- process lower edge pixels
-    for (size_t i = pixWidth-2; i != 0; i--)  // lowerLoop
-    {
-        // for each pixel
-        extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
-        extend_pixel(src[-pixCanvasWidth], rmm2);
-        extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
-        extend_pixel(src[-1], rmm4);
-        extend_pixel(src[0], rmm5);
-        extend_pixel(src[1], rmm6);
-
-        extpix_add(rmm1, rmm3);
-        extpix_add(rmm4, rmm6);
-        extpix_mul(rmm1, rmmEcl);
-        extpix_mul(rmm2, rmmEe);
-        extpix_mul(rmm4, rmmEch);
-        extpix_mul(rmm5, rmmEm);
-        extpix_add(rmm1, rmm2);
-        extpix_add(rmm1, rmm4);
-        extpix_add(rmm1, rmm5);
-        extpix_adds(rmm1, rmmAdd);
-        extpix_mulhi(rmm1, rmmInvDiv);
-        dst[-pixCanvasWidth] = *rowptr;
-        dst[0] = unextend_pixel(rmm1);
-
-        // advance to next pixel
-        src++;
-        dst++;
-        rowptr++;
-    }
-
-    // ----------------------- lower right corners
-    extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
-    extend_pixel(src[-pixCanvasWidth], rmm2);
-    extend_pixel(src[-1], rmm3);
-    extend_pixel(src[0], rmm4);
-
-    extpix_add(rmm2, rmm3);
-    extpix_mul(rmm1, rmmCc);
-    extpix_mul(rmm2, rmmCe);
-    extpix_mul(rmm4, rmmCm);
-    extpix_add(rmm1, rmm2);
-    extpix_add(rmm1, rmm4);
-    extpix_adds(rmm1, rmmAdd);
-    extpix_mulhi(rmm1, rmmInvDiv);
-    dst[-pixCanvasWidth] = *rowptr;
-    dst[0] = unextend_pixel(rmm1);
 
 #elif (defined __MSVC_INLINE__)
   __asm {
@@ -2537,7 +2269,264 @@ lowerLoop:
   );
 
 #else
-  #error Write inline asm for your platform.
+    slModulo1 /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
+    slCanvasWidth /= BYTES_PER_TEXEL;  // C++ handles incrementing by sizeof type
+
+    ULONG *src = pulSrc;
+    ULONG *dst = pulDst;
+    ULONG *rowptr = aulRows;
+
+    ExtPix rmm1={0}, rmm2={0}, rmm3={0}, rmm4={0}, rmm5={0}, rmm6={0}, rmm7={0};
+    #define EXTPIXFROMINT64(x) ExtPix r##x; extpix_fromi64(r##x, x);
+    EXTPIXFROMINT64(mmCm);
+    EXTPIXFROMINT64(mmCe);
+    EXTPIXFROMINT64(mmCc);
+    EXTPIXFROMINT64(mmEch);
+    EXTPIXFROMINT64(mmEcl);
+    EXTPIXFROMINT64(mmEe);
+    EXTPIXFROMINT64(mmEm);
+    EXTPIXFROMINT64(mmMm);
+    EXTPIXFROMINT64(mmMe);
+    EXTPIXFROMINT64(mmMc);
+    EXTPIXFROMINT64(mmAdd);
+    EXTPIXFROMINT64(mmInvDiv);
+    #undef EXTPIXFROMINT64
+
+    // ----------------------- process upper left corner
+    extend_pixel(src[0], rmm1);
+    extend_pixel(src[1], rmm2);
+    extend_pixel(src[pixCanvasWidth], rmm3);
+    extend_pixel(src[pixCanvasWidth+1], rmm4);
+
+    extpix_add(rmm2, rmm3);
+    extpix_mul(rmm1, rmmCm);
+    extpix_mul(rmm2, rmmCe);
+    extpix_mul(rmm4, rmmCc);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm4);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    *(rowptr++) = unextend_pixel(rmm1);
+    
+    src++;
+
+    // ----------------------- process upper edge pixels
+    for (PIX i = pixWidth - 2; i != 0; i--)
+    {
+        extend_pixel(src[-1], rmm1);
+        extend_pixel(src[0], rmm2);
+        extend_pixel(src[1], rmm3);
+        extend_pixel(src[pixCanvasWidth-1], rmm4);
+        extend_pixel(src[pixCanvasWidth], rmm5);
+        extend_pixel(src[pixCanvasWidth+1], rmm6);
+
+        extpix_add(rmm1, rmm3);
+        extpix_add(rmm4, rmm6);
+        extpix_mul(rmm1, rmmEch);
+        extpix_mul(rmm2, rmmEm);
+        extpix_mul(rmm4, rmmEcl);
+        extpix_mul(rmm5, rmmEe);
+        extpix_add(rmm1, rmm2);
+        extpix_add(rmm1, rmm4);
+        extpix_add(rmm1, rmm5);
+        extpix_adds(rmm1, rmmAdd);
+        extpix_mulhi(rmm1, rmmInvDiv);
+        *(rowptr++) = unextend_pixel(rmm1);
+        src++;
+    }
+
+    // ----------------------- process upper right corner
+
+    extend_pixel(src[-1], rmm1);
+    extend_pixel(src[0], rmm2);
+    extend_pixel(src[pixCanvasWidth-1], rmm3);
+    extend_pixel(src[pixCanvasWidth], rmm4);
+
+    extpix_add(rmm1, rmm4);
+    extpix_mul(rmm1, rmmCe);
+    extpix_mul(rmm2, rmmCm);
+    extpix_mul(rmm3, rmmCc);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm3);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    *rowptr = unextend_pixel(rmm1);
+
+// ----------------------- process bitmap middle pixels
+
+    dst += slCanvasWidth;
+    src += slModulo1;
+
+    // for each row
+    for (size_t i = pixHeight-2; i != 0; i--)  // rowLoop
+    {
+        rowptr = aulRows;
+
+        // process left edge pixel
+        extend_pixel(src[-pixCanvasWidth], rmm1);
+        extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
+        extend_pixel(src[0], rmm3);
+        extend_pixel(src[1], rmm4);
+        extend_pixel(src[pixCanvasWidth], rmm5);
+        extend_pixel(src[pixCanvasWidth+1], rmm6);
+
+        extpix_add(rmm1, rmm5);
+        extpix_add(rmm2, rmm6);
+        extpix_mul(rmm1, rmmEch);
+        extpix_mul(rmm2, rmmEcl);
+        extpix_mul(rmm3, rmmEm);
+        extpix_mul(rmm4, rmmEe);
+        extpix_add(rmm1, rmm2);
+        extpix_add(rmm1, rmm3);
+        extpix_add(rmm1, rmm4);
+        extpix_adds(rmm1, rmmAdd);
+        extpix_mulhi(rmm1, rmmInvDiv);
+        dst[-pixCanvasWidth] = *rowptr;
+        *(rowptr++) = unextend_pixel(rmm1);
+        src++;
+        dst++;
+
+        // for each pixel in current row
+        for (size_t j = pixWidth-2; j != 0; j--)  // pixLoop
+        {
+            // prepare upper convolution row
+            extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+            extend_pixel(src[-pixCanvasWidth], rmm2);
+            extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
+
+            // prepare middle convolution row
+            extend_pixel(src[-1], rmm4);
+            extend_pixel(src[0], rmm5);
+            extend_pixel(src[1], rmm6);
+
+            // free some registers
+            extpix_add(rmm1, rmm3);
+            extpix_add(rmm2, rmm4);
+            extpix_mul(rmm5, rmmMm);
+
+            // prepare lower convolution row
+            extend_pixel(src[pixCanvasWidth-1], rmm3);
+            extend_pixel(src[pixCanvasWidth], rmm4);
+            extend_pixel(src[pixCanvasWidth+1], rmm7);
+
+            // calc weightened value
+            extpix_add(rmm2, rmm6);
+            extpix_add(rmm1, rmm3);
+            extpix_add(rmm2, rmm4);
+            extpix_add(rmm1, rmm7);
+            extpix_mul(rmm2, rmmMe);
+            extpix_mul(rmm1, rmmMc);
+            extpix_add(rmm2, rmm5);
+            extpix_add(rmm1, rmm2);
+
+            // calc and store wightened value
+            extpix_adds(rmm1, rmmAdd);
+            extpix_mulhi(rmm1, rmmInvDiv);
+            dst[-pixCanvasWidth] = *rowptr;
+            *(rowptr++) = unextend_pixel(rmm1);
+
+            // advance to next pixel
+            src++;
+            dst++;
+        }
+
+        // process right edge pixel
+        extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+        extend_pixel(src[-pixCanvasWidth], rmm2);
+        extend_pixel(src[-1], rmm3);
+        extend_pixel(src[0], rmm4);
+        extend_pixel(src[pixCanvasWidth-1], rmm5);
+        extend_pixel(src[pixCanvasWidth], rmm6);
+
+        extpix_add(rmm1, rmm5);
+        extpix_add(rmm2, rmm6);
+        extpix_mul(rmm1, rmmEcl);
+        extpix_mul(rmm2, rmmEch);
+        extpix_mul(rmm3, rmmEe);
+        extpix_mul(rmm4, rmmEm);
+        extpix_add(rmm1, rmm2);
+        extpix_add(rmm1, rmm3);
+        extpix_add(rmm1, rmm4);
+        extpix_adds(rmm1, rmmAdd);
+        extpix_mulhi(rmm1, rmmInvDiv);
+        dst[-pixCanvasWidth] = *rowptr;
+        *rowptr = unextend_pixel(rmm1);
+
+        // advance to next row
+        src += slModulo1;
+        dst += slModulo1;
+    }
+
+    // ----------------------- process lower left corner
+    rowptr = aulRows;
+    extend_pixel(src[-pixCanvasWidth], rmm1);
+    extend_pixel(src[(-pixCanvasWidth)+1], rmm2);
+    extend_pixel(src[0], rmm3);
+    extend_pixel(src[1], rmm4);
+
+    extpix_add(rmm1, rmm4);
+    extpix_mul(rmm1, rmmCe);
+    extpix_mul(rmm2, rmmCc);
+    extpix_mul(rmm3, rmmCm);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm3);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    dst[-pixCanvasWidth] = *rowptr;
+    dst[0] = unextend_pixel(rmm1);
+
+    src++;
+    dst++;
+    rowptr++;
+
+    // ----------------------- process lower edge pixels
+    for (size_t i = pixWidth-2; i != 0; i--)  // lowerLoop
+    {
+        // for each pixel
+        extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+        extend_pixel(src[-pixCanvasWidth], rmm2);
+        extend_pixel(src[(-pixCanvasWidth)+1], rmm3);
+        extend_pixel(src[-1], rmm4);
+        extend_pixel(src[0], rmm5);
+        extend_pixel(src[1], rmm6);
+
+        extpix_add(rmm1, rmm3);
+        extpix_add(rmm4, rmm6);
+        extpix_mul(rmm1, rmmEcl);
+        extpix_mul(rmm2, rmmEe);
+        extpix_mul(rmm4, rmmEch);
+        extpix_mul(rmm5, rmmEm);
+        extpix_add(rmm1, rmm2);
+        extpix_add(rmm1, rmm4);
+        extpix_add(rmm1, rmm5);
+        extpix_adds(rmm1, rmmAdd);
+        extpix_mulhi(rmm1, rmmInvDiv);
+        dst[-pixCanvasWidth] = *rowptr;
+        dst[0] = unextend_pixel(rmm1);
+
+        // advance to next pixel
+        src++;
+        dst++;
+        rowptr++;
+    }
+
+    // ----------------------- lower right corners
+    extend_pixel(src[(-pixCanvasWidth)-1], rmm1);
+    extend_pixel(src[-pixCanvasWidth], rmm2);
+    extend_pixel(src[-1], rmm3);
+    extend_pixel(src[0], rmm4);
+
+    extpix_add(rmm2, rmm3);
+    extpix_mul(rmm1, rmmCc);
+    extpix_mul(rmm2, rmmCe);
+    extpix_mul(rmm4, rmmCm);
+    extpix_add(rmm1, rmm2);
+    extpix_add(rmm1, rmm4);
+    extpix_adds(rmm1, rmmAdd);
+    extpix_mulhi(rmm1, rmmInvDiv);
+    dst[-pixCanvasWidth] = *rowptr;
+    dst[0] = unextend_pixel(rmm1);
+
 #endif
 
   // all done (finally)
