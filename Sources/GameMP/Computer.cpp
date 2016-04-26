@@ -246,7 +246,7 @@ void LastUnreadMessage(void)
 // go to next/previous message
 void PrevMessage(void)
 {
-  if (_iActiveMessage < _acmMessages.Count()==0) { // FIXME: DG: what is this about?
+  if (_iActiveMessage >= _acmMessages.Count()) {
     return;
   }
   _iActiveMessage--;
@@ -258,7 +258,7 @@ void PrevMessage(void)
 
 void NextMessage(void)
 {
-  if (_iActiveMessage < _acmMessages.Count()==0) { // FIXME: DG: what is this about?
+  if (_iActiveMessage >= _acmMessages.Count()) {
     return;
   }
   _iActiveMessage++;
@@ -305,7 +305,7 @@ void MessageTextUp(INDEX ctLines)
 void MessageTextDn(INDEX ctLines)
 {
   // if no message do nothing
-  if (_iActiveMessage < _acmMessages.Count()==0) {  // FIXME: DG: what is this about?
+  if (_iActiveMessage >= _acmMessages.Count()) {
     return;
   }
   // find text lines count
