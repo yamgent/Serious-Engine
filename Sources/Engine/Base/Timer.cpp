@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Priority.inl>
 
 // !!! FIXME: use SDL timer code instead and rdtsc never?
-#if (USE_PORTABLE_C) 
+#if (defined PLATFORM_UNIX) && !defined(__GNU_INLINE_X86_32__)
 #define USE_GETTIMEOFDAY 1
 #endif
 
@@ -64,7 +64,7 @@ static inline __int64 ReadTSC(void)
   }
   return mmRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __int64 mmRet;
   __asm__ __volatile__ (
     "rdtsc                    \n\t"

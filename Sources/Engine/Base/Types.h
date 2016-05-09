@@ -109,6 +109,30 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
   #define ASMSYM(x) #x
 #endif
 
+/* should we enable inline asm? */
+#ifndef USE_PORTABLE_C
+  #if defined(__MSVC_INLINE__)
+    /* the build system selected __MSVC_INLINE__ */
+  #elif defined(__GNU_INLINE_X86_32__)
+    /* the build system selected __GNU_INLINE_X86_32__ */
+  #elif defined(_MSC_VER) && defined(_M_IX86)
+    #define __MSVC_INLINE__
+  #elif defined (__GNUC__) && defined(__i386)
+    #define __GNU_INLINE_X86_32__
+  #elif defined (__GNUC__) && defined(__x86_64__)
+    #define __GNU_INLINE_X86_64__
+  #endif
+
+  #if defined(__GNU_INLINE_X86_32__) || defined(__GNU_INLINE_X86_64__)
+    #define __GNU_INLINE_X86__
+  #endif
+
+  #if defined(__GNU_INLINE_X86__)
+    #define FPU_REGS "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)"
+    #define MMX_REGS "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7"
+  #endif
+#endif
+
 #ifdef PLATFORM_UNIX  /* rcg10042001 */
     #include <stdio.h>
     #include <string.h>
@@ -132,25 +156,6 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
       #if (!defined __INTEL_COMPILER)
         #define __INTEL_COMPILER  __ICC
       #endif
-    #endif
-
-    #if ((defined __GNUC__) && (!defined __GNU_INLINE__))
-      #define __GNU_INLINE__
-    #endif
-
-    #if (defined __INTEL_COMPILER)
-      #if ((!defined __GNU_INLINE__) && (!defined __MSVC_INLINE__))
-        #error Please define __GNU_INLINE__ or __MSVC_INLINE__ with Intel C++.
-      #endif
-
-      #if ((defined __GNU_INLINE__) && (defined __MSVC_INLINE__))
-        #error Define either __GNU_INLINE__ or __MSVC_INLINE__ with Intel C++.
-      #endif
-    #endif
-
-    #if defined(__GNU_INLINE__) && defined(__i386__)
-      #define FPU_REGS "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)"
-      #define MMX_REGS "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7"
     #endif
 
     #ifndef PAGESIZE
@@ -230,10 +235,7 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 
     inline ULONG _rotl(ULONG ul, int bits)
     {
-        #if (defined USE_PORTABLE_C)
-            // DG: according to http://blog.regehr.org/archives/1063 this is fast
-            return (ul<<bits) | (ul>>(-bits&31));
-        #elif (defined __GNU_INLINE__)
+        #if (defined __GNU_INLINE_X86_32__)
             // This, on the other hand, is wicked fast.  :)
             __asm__ __volatile__ (
                 "roll %%cl, %%eax    \n\t"
@@ -255,7 +257,8 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
             return(ul);
 
         #else
-            #error need inline asm for your platform.
+            // DG: according to http://blog.regehr.org/archives/1063 this is fast
+            return (ul<<bits) | (ul>>(-bits&31));
         #endif
     }
 

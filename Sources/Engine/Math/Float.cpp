@@ -24,20 +24,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define _PC_64    0x0300
 
 // !!! FIXME: I'd like to remove any dependency on the FPU control word from the game, asap.  --ryan.
-#ifdef USE_PORTABLE_C
-// Fake control87 for USE_PORTABLE_C version
-inline ULONG _control87(WORD newcw, WORD mask)
-{
-    static WORD fpw=_PC_64;
-    if (mask != 0)
-    {
-        fpw &= ~mask;
-        fpw |= (newcw & mask);
-    }
-    return(fpw);
-}
+#if (defined _MSC_VER)
 
-#elif (defined __GNU_INLINE__)
+// _control87 is provided by the compiler
+
+#elif (defined __GNU_INLINE_X86_32__)
 
 inline ULONG _control87(WORD newcw, WORD mask)
 {
@@ -74,8 +65,20 @@ inline ULONG _control87(WORD newcw, WORD mask)
     return(fpw);
 }
 
-#elif (!defined _MSC_VER)
-#error Implement for your platform, or add a stub conditional here.
+#else
+
+// Fake control87 for USE_PORTABLE_C version
+inline ULONG _control87(WORD newcw, WORD mask)
+{
+    static WORD fpw=_PC_64;
+    if (mask != 0)
+    {
+        fpw &= ~mask;
+        fpw |= (newcw & mask);
+    }
+    return(fpw);
+}
+
 #endif
 
 /* Get current precision setting of FPU. */

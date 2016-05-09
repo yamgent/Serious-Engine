@@ -247,30 +247,7 @@ COLOR MulColors( COLOR col1, COLOR col2)
   if( col2==0xFFFFFFFF)   return col1;
   if( col1==0 || col2==0) return 0;
 
-#if (defined USE_PORTABLE_C)
-  // !!! FIXME: This...is not fast.
-  union
-  {
-    COLOR col;
-    UBYTE bytes[4];
-  } conv1;
-
-  union
-  {
-    COLOR col;
-    UBYTE bytes[4];
-  } conv2;
-
-  conv1.col = col1;
-  conv2.col = col2;
-  conv1.bytes[0] = (UBYTE) ((((DWORD) conv1.bytes[0]) * ((DWORD) conv2.bytes[0])) / 255);
-  conv1.bytes[1] = (UBYTE) ((((DWORD) conv1.bytes[1]) * ((DWORD) conv2.bytes[1])) / 255);
-  conv1.bytes[2] = (UBYTE) ((((DWORD) conv1.bytes[2]) * ((DWORD) conv2.bytes[2])) / 255);
-  conv1.bytes[3] = (UBYTE) ((((DWORD) conv1.bytes[3]) * ((DWORD) conv2.bytes[3])) / 255);
-
-  return(conv1.col);
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   COLOR colRet;
   __asm {
     xor     ebx,ebx
@@ -347,7 +324,7 @@ COLOR MulColors( COLOR col1, COLOR col2)
   }
   return colRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   COLOR colRet;
   __asm__ __volatile__ (
     "pushl     %%ebx                \n\t"
@@ -433,20 +410,6 @@ COLOR MulColors( COLOR col1, COLOR col2)
 
   return colRet;
 #else
-  #error please fill in inline assembly for your platform.
-#endif
-}
-
-
-// fast color additon function - RES = clamp (1ST + 2ND)
-COLOR AddColors( COLOR col1, COLOR col2) 
-{
-  if( col1==0) return col2;
-  if( col2==0) return col1;
-  if( col1==0xFFFFFFFF || col2==0xFFFFFFFF) return 0xFFFFFFFF;
-  COLOR colRet;
-
-#if (defined USE_PORTABLE_C)
   // !!! FIXME: This...is not fast.
   union
   {
@@ -459,19 +422,28 @@ COLOR AddColors( COLOR col1, COLOR col2)
     COLOR col;
     UBYTE bytes[4];
   } conv2;
-  #define MINVAL(a, b) ((a)>(b))?(b):(a)
 
   conv1.col = col1;
   conv2.col = col2;
-  conv1.bytes[0] = (UBYTE) MINVAL((((WORD) conv1.bytes[0]) + ((WORD) conv2.bytes[0])) , 255);
-  conv1.bytes[1] = (UBYTE) MINVAL((((WORD) conv1.bytes[1]) + ((WORD) conv2.bytes[1])) , 255);
-  conv1.bytes[2] = (UBYTE) MINVAL((((WORD) conv1.bytes[2]) + ((WORD) conv2.bytes[2])) , 255);
-  conv1.bytes[3] = (UBYTE) MINVAL((((WORD) conv1.bytes[3]) + ((WORD) conv2.bytes[3])) , 255);
-  #undef MINVAL
+  conv1.bytes[0] = (UBYTE) ((((DWORD) conv1.bytes[0]) * ((DWORD) conv2.bytes[0])) / 255);
+  conv1.bytes[1] = (UBYTE) ((((DWORD) conv1.bytes[1]) * ((DWORD) conv2.bytes[1])) / 255);
+  conv1.bytes[2] = (UBYTE) ((((DWORD) conv1.bytes[2]) * ((DWORD) conv2.bytes[2])) / 255);
+  conv1.bytes[3] = (UBYTE) ((((DWORD) conv1.bytes[3]) * ((DWORD) conv2.bytes[3])) / 255);
 
-  colRet = conv1.col;
+  return(conv1.col);
+#endif
+}
 
-#elif (defined __MSVC_INLINE__)
+
+// fast color additon function - RES = clamp (1ST + 2ND)
+COLOR AddColors( COLOR col1, COLOR col2) 
+{
+  if( col1==0) return col2;
+  if( col2==0) return col1;
+  if( col1==0xFFFFFFFF || col2==0xFFFFFFFF) return 0xFFFFFFFF;
+  COLOR colRet;
+
+#if (defined __MSVC_INLINE__)
   __asm {
     xor     ebx,ebx
     mov     esi,255
@@ -535,7 +507,7 @@ COLOR AddColors( COLOR col1, COLOR col2)
     mov     D [colRet],ebx
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   ULONG tmp;
   __asm__ __volatile__ (
     // if xbx is "r", gcc runs out of regs in -fPIC + -fno-omit-fp :(
@@ -608,7 +580,29 @@ COLOR AddColors( COLOR col1, COLOR col2)
   );
 
 #else
-  #error please fill in inline assembly for your platform.
+  // !!! FIXME: This...is not fast.
+  union
+  {
+    COLOR col;
+    UBYTE bytes[4];
+  } conv1;
+
+  union
+  {
+    COLOR col;
+    UBYTE bytes[4];
+  } conv2;
+  #define MINVAL(a, b) ((a)>(b))?(b):(a)
+
+  conv1.col = col1;
+  conv2.col = col2;
+  conv1.bytes[0] = (UBYTE) MINVAL((((WORD) conv1.bytes[0]) + ((WORD) conv2.bytes[0])) , 255);
+  conv1.bytes[1] = (UBYTE) MINVAL((((WORD) conv1.bytes[1]) + ((WORD) conv2.bytes[1])) , 255);
+  conv1.bytes[2] = (UBYTE) MINVAL((((WORD) conv1.bytes[2]) + ((WORD) conv2.bytes[2])) , 255);
+  conv1.bytes[3] = (UBYTE) MINVAL((((WORD) conv1.bytes[3]) + ((WORD) conv2.bytes[3])) , 255);
+  #undef MINVAL
+
+  colRet = conv1.col;
 #endif
 
   return colRet;
@@ -619,14 +613,7 @@ COLOR AddColors( COLOR col1, COLOR col2)
 // multiple conversion from OpenGL color to DirectX color
 extern void abgr2argb( ULONG *pulSrc, ULONG *pulDst, INDEX ct)
 {
-#if (defined USE_PORTABLE_C)
-  //#error write me.
-  for (int i=0; i<ct; i++) {
-    ULONG tmp = pulSrc[i];
-    pulDst[i] = (tmp&0xff00ff00) | ((tmp&0x00ff0000)>>16) | ((tmp&0x000000ff)<<16);
-  }
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov   esi,dword ptr [pulSrc]
     mov   edi,dword ptr [pulDst]
@@ -678,12 +665,12 @@ colSkip2:
     mov   dword ptr [edi],eax
 colSkip1:
   }
-
-#elif (defined __GNU_INLINE__)
-  STUBBED("convert to inline asm.");
-
 #else
-  #error please fill in inline assembly for your platform.
+  for (int i=0; i<ct; i++) {
+    ULONG tmp = pulSrc[i];
+    pulDst[i] = (tmp&0xff00ff00) | ((tmp&0x00ff0000)>>16) | ((tmp&0x000000ff)<<16);
+  }
+
 #endif
 }
 

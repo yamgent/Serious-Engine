@@ -21,24 +21,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 template class CStaticArray<CProfileCounter>;
 template class CStaticArray<CProfileTimer>;
 
-#if (defined USE_PORTABLE_C)
+#if (defined PLATFORM_UNIX) && !defined(__GNU_INLINE_X86_32__)
 #include <sys/time.h>
 #endif
 
 static inline __int64 ReadTSC_profile(void)
 {
-#if (defined USE_PORTABLE_C)
-  #ifdef __arm__
-  struct timespec tv;
-  clock_gettime(CLOCK_MONOTONIC, &tv);
-  return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_nsec) / 1000000) );
-  #else
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_usec) / 1000) );
-  #endif
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __int64 mmRet;
   __asm {
     rdtsc
@@ -47,7 +36,7 @@ static inline __int64 ReadTSC_profile(void)
   }
   return mmRet;
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __int64 mmRet;
   __asm__ __volatile__ (
     "rdtsc                    \n\t"
@@ -60,7 +49,16 @@ static inline __int64 ReadTSC_profile(void)
   return(mmRet);
 
 #else
-  #error Please implement for your platform/compiler.
+  #ifdef __arm__
+  struct timespec tv;
+  clock_gettime(CLOCK_MONOTONIC, &tv);
+  return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_nsec) / 1000000) );
+  #else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return( (((__int64) tv.tv_sec) * 1000) + (((__int64) tv.tv_usec) / 1000) );
+  #endif
+
 #endif
 }
 

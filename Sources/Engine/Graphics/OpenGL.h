@@ -89,20 +89,14 @@ extern void  (__stdcall *pglPNTrianglesfATI)( GLenum pname, GLfloat param);
 inline void glCOLOR( COLOR col)
 {
 /* rcg10052001 Platform-wrappers. */
-#if (defined USE_PORTABLE_C)
-	col = ( ((col << 24)            ) |
-            ((col << 8) & 0x00FF0000) |
-            ((col >> 8) & 0x0000FF00) |
-            ((col >> 24)            ) );
-
-#elif (defined __MSVC_INLINE__)
+#if (defined __MSVC_INLINE__)
   __asm {
     mov     eax,dword ptr [col]
     bswap   eax
     mov     dword ptr [col],eax
   }
 
-#elif (defined __GNU_INLINE__)
+#elif (defined __GNU_INLINE_X86_32__)
   __asm__ __volatile__ (
     "bswapl   %%eax    \n\t"
         : "=a" (col)
@@ -110,7 +104,11 @@ inline void glCOLOR( COLOR col)
   );
 
 #else
-  #error please define for your platform.
+  col = ( ((col << 24)            ) |
+          ((col << 8) & 0x00FF0000) |
+          ((col >> 8) & 0x0000FF00) |
+          ((col >> 24)            ) );
+
 #endif
 
   pglColor4ubv((GLubyte*)&col);
