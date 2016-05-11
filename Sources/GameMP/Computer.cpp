@@ -177,7 +177,7 @@ static PIXaabbox2D GetMsgSliderSpace(void)
 
 static PIXaabbox2D GetTextSliderBox(void)
 {
-  if (_iActiveMessage>=_acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return PIXaabbox2D();
   }
   INDEX ctTextLines = _acmMessages[_iActiveMessage].cm_ctFormattedLines;
@@ -246,7 +246,7 @@ void LastUnreadMessage(void)
 // go to next/previous message
 void PrevMessage(void)
 {
-  if (_iActiveMessage >= _acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   _iActiveMessage--;
@@ -258,7 +258,7 @@ void PrevMessage(void)
 
 void NextMessage(void)
 {
-  if (_iActiveMessage >= _acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   _iActiveMessage++;
@@ -305,7 +305,7 @@ void MessageTextUp(INDEX ctLines)
 void MessageTextDn(INDEX ctLines)
 {
   // if no message do nothing
-  if (_iActiveMessage >= _acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   // find text lines count
@@ -336,7 +336,7 @@ void MessageTextUpDn(INDEX ctLines)
 // mark current message as read
 void MarkCurrentRead(void)
 {
-  if (_iActiveMessage>=_acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   // if running in background

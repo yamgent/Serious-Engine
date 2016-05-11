@@ -1373,7 +1373,7 @@ procedures:
       autocall FallOnFloor() EReturn;
     }
 
-    if (m_EecChar==ELC_LARGE || (m_EecChar==ELC_BIG && m_EetType==ELT_LAVA))
+    if ((m_EecChar==ELC_LARGE || m_EecChar==ELC_BIG) && m_EetType==ELT_LAVA)
     {
       PlaySound(m_soBackground, SOUND_LAVA_LAVABURN, SOF_3D|SOF_LOOP);
     }
