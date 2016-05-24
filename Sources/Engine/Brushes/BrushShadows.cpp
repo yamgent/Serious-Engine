@@ -605,7 +605,7 @@ BOOL CBrushShadowMap::IsShadowFlat( COLOR &colFlat)
   COLOR col;
   UBYTE ubR,ubG,ubB, ubR1,ubG1,ubB1;
   SLONG slR=0,slG=0,slB=0;
-  INDEX ctPointLights=0;
+  //INDEX ctPointLights=0;
   CBrushPolygon *pbpo = GetBrushPolygon();
 
   // if the shadowmap is not using the shading mode

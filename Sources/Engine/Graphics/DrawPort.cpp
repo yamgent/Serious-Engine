@@ -799,7 +799,7 @@ void CDrawPort::Fill( PIX pixI, PIX pixJ, PIX pixWidth, PIX pixHeight,
     // thru OpenGL
     gfxResetArrays();
     GFXVertex   *pvtx = _avtxCommon.Push(4);
-    GFXTexCoord *ptex = _atexCommon.Push(4);
+    /* GFXTexCoord *ptex = */ _atexCommon.Push(4);
     GFXColor    *pcol = _acolCommon.Push(4);
     const GFXColor glcolUL(colUL);  const GFXColor glcolUR(colUR);
     const GFXColor glcolDL(colDL);  const GFXColor glcolDR(colDR);
@@ -1617,7 +1617,7 @@ void CDrawPort::AddTriangle( const FLOAT fI0, const FLOAT fJ0,
   const GFXColor glCol( AdjustColor( col, _slTexHueShift, _slTexSaturation));
   const INDEX iStart = _avtxCommon.Count();
   GFXVertex   *pvtx = _avtxCommon.Push(3);
-  GFXTexCoord *ptex = _atexCommon.Push(3);
+  /* GFXTexCoord *ptex = */ _atexCommon.Push(3);
   GFXColor    *pcol = _acolCommon.Push(3);
   INDEX       *pelm = _aiCommonElements.Push(3);
   pvtx[0].x = fI0;  pvtx[0].y = fJ0;  pvtx[0].z = 0;
@@ -1699,7 +1699,7 @@ void CDrawPort::BlendScreen(void)
   // set arrays
   gfxResetArrays();
   GFXVertex   *pvtx = _avtxCommon.Push(4);
-  GFXTexCoord *ptex = _atexCommon.Push(4);
+  /* GFXTexCoord *ptex = */ _atexCommon.Push(4);
   GFXColor    *pcol = _acolCommon.Push(4);
   const INDEX iW = dp_Width;
   const INDEX iH = dp_Height;

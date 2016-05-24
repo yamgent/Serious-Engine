@@ -137,7 +137,7 @@ void CEmiter::AnimateParticles(void)
       ep.ep_fLastRot=ep.ep_fRot;
       ep.ep_fRot+=ep.ep_fRotSpeed*_pTimer->TickQuantum;
       // animate color
-      FLOAT fRatio=CalculateRatio(tmNow, ep.ep_tmEmitted, ep.ep_tmEmitted+ep.ep_tmLife, 1, 0);
+      //FLOAT fRatio=CalculateRatio(tmNow, ep.ep_tmEmitted, ep.ep_tmEmitted+ep.ep_tmLife, 1, 0);
       ep.ep_colLastColor=ep.ep_colColor;
       iCurrent++;
     }

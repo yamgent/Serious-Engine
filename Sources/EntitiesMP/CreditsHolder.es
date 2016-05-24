@@ -198,7 +198,7 @@ functions:
       return 1;
     }
     
-    PIX pixW = 0;
+    //PIX pixW = 0;
     PIX pixH = 0;
     //FLOAT fResolutionScaling;
     CTString strEmpty;
@@ -209,7 +209,7 @@ functions:
     pdp->Unlock();
     pdpCurr->Lock();
     
-    pixW = pdpCurr->GetWidth();
+    //pixW = pdpCurr->GetWidth();
     pixH = pdpCurr->GetHeight();
 
     FLOAT fResFactor = pixH/480.0f;

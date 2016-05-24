@@ -2915,9 +2915,9 @@ static void AnimateFire( SLONG slDensity)
   // use only one buffer (otherwise it's not working)
   UBYTE *pubNew = (UBYTE*)_ptdEffect->td_pubBuffer2;
   SLONG slBufferMask   = _pixBufferWidth*_pixBufferHeight -1;
-  SLONG slColumnModulo = _pixBufferWidth*(_pixBufferHeight-2) -1;
 
 #if ASMOPT == 1
+  SLONG slColumnModulo = _pixBufferWidth*(_pixBufferHeight-2) -1;
 
  #if (defined __MSVC_INLINE__)
   __asm {

@@ -92,7 +92,7 @@ void CActionBuffer::RemoveOldest(void)
 {
   // for each buffered action
   FORDELETELIST(CActionEntry, ae_ln, ab_lhActions, itae) {
-    CActionEntry &ae = *itae;
+    //CActionEntry &ae = *itae;
     // delete only first one
     delete &*itae;
     break;

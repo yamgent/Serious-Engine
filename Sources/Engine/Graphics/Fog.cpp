@@ -109,8 +109,7 @@ pixLoop:
    DWORD* dst = (DWORD*)(pubTexture+pixTextureSize);
    for (int i=0; i<pixTextureSize; i++) {
     const DWORD tmp = ((DWORD)*src) | 0xFFFFFF00;
-    *dst = ((tmp << 24) & 0xff000000 ) | ((tmp <<  8) & 0x00ff0000 ) |
-      ((tmp >>  8) & 0x0000ff00 ) | ((tmp >> 24) & 0x000000ff );
+    *dst = BYTESWAP32_unsigned((ULONG)tmp);
     src++;
     dst++;
    }
@@ -275,7 +274,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     // exp fog
     case AT_EXP: {
       // calculate linear step for the fog parameter
-      FLOAT fT = 0.0f;
+      //FLOAT fT = 0.0f;
       FLOAT fTStep = 1.0f/pixSizeL*fFar*fDensity*fA;
       // fog is exp(-t) function of fog parameter, now calculate
       // step (actually multiplication) for the fog
@@ -288,7 +287,7 @@ void StartFog( CFogParameters &fp, const FLOAT3D &vViewPosAbs, const FLOATmatrix
     } break;
     case AT_EXP2: {
       // calculate linear step for the fog parameter
-      FLOAT fT = 0.0f;
+      //FLOAT fT = 0.0f;
       FLOAT fTStep = 1.0f/pixSizeL*fFar*fDensity*fA;
       // fog is exp(-t^2) function of fog parameter, now calculate
       // first and second order step (actually multiplication) for the fog

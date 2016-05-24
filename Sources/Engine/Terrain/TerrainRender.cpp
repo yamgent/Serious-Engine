@@ -269,7 +269,7 @@ void PrepareSmothVertices(INDEX itt)
   GFXVertex *pvBorderSrc = pavSrc;
 
   for(INDEX ivx=tt.tt_ctNonBorderVertices;ivx<ctVertices;ivx++) {
-    //*pavDst++ = *pavSrc++;
+    // *pavDst++ = *pavSrc++;
     pvBorderDst[0] = pvBorderSrc[0];
     pvBorderDst++;
     pvBorderSrc++;
@@ -601,7 +601,7 @@ void PrepareSmothVertices(INDEX itt)
 void PrepareSmothVerticesOnTileLayer(INDEX iTerrainTile, INDEX iTileLayer)
 {
   CTerrainTile &tt  = _ptrTerrain->tr_attTiles[iTerrainTile];
-  CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[iTileLayer];
+  //CTerrainLayer &tl = _ptrTerrain->tr_atlLayers[iTileLayer];
   TileLayer &ttl    = tt.GetTileLayers()[iTileLayer];
 
   ASSERT(tt.tt_iLod==0);
@@ -1231,7 +1231,7 @@ void RenderTerrain(void)
     RenderBatchedTiles();
   }
 
-  CEntity *pen = _ptrTerrain->tr_penEntity;
+  //CEntity *pen = _ptrTerrain->tr_penEntity;
 
   extern void ShowRayPath(CDrawPort *pdp);
   ShowRayPath(_pdp);

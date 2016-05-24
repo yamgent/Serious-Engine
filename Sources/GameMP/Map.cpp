@@ -613,9 +613,10 @@ void RenderMap( CDrawPort *pdp, ULONG ulLevelMask, CProgressHookInfo *pphi)
   if (ulLevelMask == 0x00000001 && !map_bIsFirstEncounter) {
 
     // render the book
-    PIX pixX = (PIX) (aIconCoords[0][0]*fStretch+pixC1S);
-    PIX pixY = (PIX) (aIconCoords[0][1]*fStretch+pixR1S);
+    //PIX pixX = (PIX) (aIconCoords[0][0]*fStretch+pixC1S);
+    //PIX pixY = (PIX) (aIconCoords[0][1]*fStretch+pixR1S);
     CTextureObject *pto = &atoIcons[0];
+    // FIXME: DG: or was the line below supposed to use pixX and pixY?
     pdp->PutTexture( pto, PIXaabbox2D( PIX2D(pixC1S,pixR1S), PIX2D(pixC2E,pixR2E)), C_WHITE|255);
 
   } else {
@@ -686,6 +687,12 @@ void RenderMap( CDrawPort *pdp, ULONG ulLevelMask, CProgressHookInfo *pphi)
         iPosY = 403;
         colText = 0xc87832ff;
       }
+    }
+    else // DG: make sure iPosX/Y is initialized
+    {
+      // no idea if 0 makes sense, but at least it's deterministic
+      iPosX = 0;
+      iPosY = 0;
     }
 
     PIX pixhtcx = (PIX) (pixC1S+iPosX*fStretch);

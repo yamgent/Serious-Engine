@@ -125,7 +125,7 @@ functions:
 
   void AdjustMipFactor(FLOAT &fMipFactor)
   {
-    if (m_eetType==ET_DISAPPEAR_MODEL || m_eetType==ET_DISAPPEAR_MODEL_NOW && m_penModel!=NULL)
+    if (m_eetType==ET_DISAPPEAR_MODEL || (m_eetType==ET_DISAPPEAR_MODEL_NOW && m_penModel!=NULL))
     {
       CModelObject *pmo = m_penModel->GetModelObject();
       TIME tmDelta = _pTimer->GetLerpedCurrentTick()-m_tmStarted;
@@ -146,7 +146,7 @@ functions:
       COLOR col = C_WHITE|ubAlpha;
       pmo->mo_colBlendColor = col;
     }
-    if (m_eetType==ET_APPEAR_MODEL || m_eetType==ET_APPEAR_MODEL_NOW && m_penModel!=NULL)
+    if (m_eetType==ET_APPEAR_MODEL || (m_eetType==ET_APPEAR_MODEL_NOW && m_penModel!=NULL))
     {
       CModelObject *pmo = m_penModel->GetModelObject();
       TIME tmDelta = _pTimer->GetLerpedCurrentTick()-m_tmStarted;
@@ -449,7 +449,9 @@ procedures:
     // setup light source
     if (m_bLightSource) { SetupLightSource(); }
 
-    while(_pTimer->CurrentTick()<m_tmStarted+m_tmLifeTime && m_bAlive || m_bWaitTrigger)
+    // FIXME: DG: I'm not 100% sure about the loop-condition, I added parenthesis that
+    //            reflect the orig behavior to shut compiler warnings up
+    while(((_pTimer->CurrentTick()<m_tmStarted+m_tmLifeTime) && m_bAlive) || m_bWaitTrigger)
     {
       wait( 0.25f)
       {

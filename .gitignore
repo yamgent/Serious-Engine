@@ -33,6 +33,10 @@
 Build/
 Debug/
 
+# custom user build dirs
+/*build*
+/Sources/*build*
+
 # Visual Studio
 *.vs
 *.opendb
@@ -70,20 +74,22 @@ Sources/Entities/*.cpp
 # Other generated files:
 Sources/Engine/Ska/smcScan.cpp
 Sources/Engine/Ska/smcPars.h
+Sources/Engine/Ska/smcPars.hpp
 Sources/Engine/Ska/smcPars.cpp
 Sources/Engine/Base/Parser.cpp
 Sources/Engine/Base/Parser.h
+Sources/Engine/Base/Parser.hpp
 Sources/Engine/Base/Scanner.cpp
 Sources/Ecc/Parser.cpp
 Sources/Ecc/Parser.h
+Sources/Ecc/Parser.hpp
 Sources/Ecc/Scanner.cpp
 Sources/SeriousSkaStudio/Parser.cpp
 Sources/SeriousSkaStudio/Parser.h
+Sources/SeriousSkaStudio/Parser.hpp
 Sources/SeriousSkaStudio/Scanner.cpp
 
 # vim swap files
 *.swp
 *.swo
-
-
 

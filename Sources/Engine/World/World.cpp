@@ -51,6 +51,7 @@ extern BOOL _bPortalSectorLinksPreLoaded;
 extern BOOL _bEntitySectorLinksPreLoaded;
 extern INDEX _ctPredictorEntities;
 
+#if 0 // DG: unused.
 // calculate ray placement from origin and target positions (obsolete?)
 static inline CPlacement3D CalculateRayPlacement(
   const FLOAT3D &vOrigin, const FLOAT3D &vTarget)
@@ -65,6 +66,7 @@ static inline CPlacement3D CalculateRayPlacement(
   DirectionVectorToAngles(vDirection, plRay.pl_OrientationAngle);
   return plRay;
 }
+#endif // 0
 
 /* Constructor. */
 CTextureTransformation::CTextureTransformation(void)
@@ -84,12 +86,12 @@ CTextureBlending::CTextureBlending(void)
  * Constructor.
  */
 CWorld::CWorld(void)
-  : wo_colBackground(C_lGRAY)       // clear background color
-  , wo_pecWorldBaseClass(NULL)      // worldbase class must be obtained before using the world
-  , wo_bPortalLinksUpToDate(FALSE)  // portal-sector links must be updated
+  : wo_pecWorldBaseClass(NULL)      // worldbase class must be obtained before using the world
   , wo_baBrushes(*new CBrushArchive)
   , wo_taTerrains(*new CTerrainArchive)
+  , wo_colBackground(C_lGRAY)       // clear background color
   , wo_ulSpawnFlags(0)
+  , wo_bPortalLinksUpToDate(FALSE)  // portal-sector links must be updated
 {
   wo_baBrushes.ba_pwoWorld = this;
   wo_taTerrains.ta_pwoWorld = this;
@@ -544,7 +546,7 @@ void CWorld::FindShadowLayers(
     CLightSource *pls = iten->GetLightSource();
     if (pls!=NULL) {
       FLOATaabbox3D boxLight(iten->en_plPlacement.pl_PositionVector, pls->ls_rFallOff);
-      if ( bDirectional && (pls->ls_ulFlags &LSF_DIRECTIONAL)
+      if ( (bDirectional && (pls->ls_ulFlags & LSF_DIRECTIONAL))
         ||boxLight.HasContactWith(boxNear)) {
         // find layers for that light source
         pls->FindShadowLayers(bSelectedOnly);
@@ -968,8 +970,8 @@ void CWorld::MarkForPrediction(void)
       // find whether it is local
       BOOL bLocal = _pNetwork->IsPlayerLocal(pen);
       // if allowed for prediction
-      if (  bLocal && cli_bPredictLocalPlayers
-        || !bLocal && cli_bPredictRemotePlayers) {
+      if (  (bLocal && cli_bPredictLocalPlayers)
+        || (!bLocal && cli_bPredictRemotePlayers)) {
         // add it
         pen->AddToPrediction();
       }

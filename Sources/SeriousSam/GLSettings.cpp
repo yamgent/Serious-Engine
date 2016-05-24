@@ -70,7 +70,7 @@ void InitGLSettings(void)
   try
   {
     strmFile.Open_t( CTString("Scripts\\GLSettings\\GLSettings.lst"), CTStream::OM_READ);
-    INDEX iIndex = 0;
+    //INDEX iIndex = 0;
 	  do
     {
       achrLine    [0] = 0;

@@ -263,6 +263,7 @@ static void GetHazeMapInVertex( GFXVertex4 &vtx, FLOAT &tx1)
   tx1 = (fD+_fHazeAdd) * _haze_fMul;
 }
 
+#if 0 // DG: unused
 // check model's bounding box against fog
 static BOOL IsModelInFog( FLOAT3D &vMin, FLOAT3D &vMax)
 {
@@ -294,6 +295,7 @@ static BOOL IsModelInHaze( FLOAT3D &vMin, FLOAT3D &vMax)
   vtx.x=vMax(1); vtx.y=vMax(2); vtx.z=vMax(3); GetHazeMapInVertex(vtx,fS); if(InHaze(fS)) return TRUE;
   return FALSE;
 }
+#endif // 0 (unused)
 
 BOOL PrepareHaze(void)
 {
@@ -312,7 +314,7 @@ BOOL PrepareHaze(void)
     // _fFogAddZ = _vViewer % (rm.rm_vObjectPosition - _aprProjection->pr_vViewerPosition);  // BUG in compiler !!!!
     _fFogAddZ = -_mObjToView[11];
     // get fog offset
-    _fFogAddH = _fog_fAddH;/*(
+    _fFogAddH = _fog_fAddH; // (
       _vHDirView(1)*_mObjToView[3] +
       _vHDirView(2)*_mObjToView[7] +
       _vHDirView(3)*_mObjToView[11]) + _fog_fp.fp_fH3;
@@ -2087,7 +2089,7 @@ static void RenderMesh(RenMesh &rmsh,RenModel &rm)
 
       // clamp surface texture count to max number of textrues in mesh
       INDEX cttx = pShaderParams->sp_aiTextureIDs.Count();
-      INDEX cttxMax = rmsh.rmsh_pMeshInst->mi_tiTextures.Count();
+      //INDEX cttxMax = rmsh.rmsh_pMeshInst->mi_tiTextures.Count();
       // cttx = ClampUp(cttx,cttxMax);
 
       _patoTextures.PopAll();
@@ -2250,7 +2252,7 @@ static void PrepareMeshForRendering(RenMesh &rmsh, INDEX iSkeletonlod)
         } else {
           // blend absolute (1-f)*cur + f*dst
           INDEX vtx = rm.rmp_pmmmMorphMap->mmp_aMorphMap[ivx].mwm_iVxIndex;
-          MeshVertex &mvSrc = mlod.mlod_aVertices[vtx];
+          //MeshVertex &mvSrc = mlod.mlod_aVertices[vtx];
           MeshVertexMorph &mvmDst = rm.rmp_pmmmMorphMap->mmp_aMorphMap[ivx];
           // blend vertices
           _aMorphedVtxs[vtx].x = (1.0f-rm.rmp_fFactor) * _aMorphedVtxs[vtx].x + rm.rmp_fFactor*mvmDst.mwm_x;

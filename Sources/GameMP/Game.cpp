@@ -252,6 +252,7 @@ static void PlayScriptSound(INDEX iChannel, const CTString &strSound, FLOAT fVol
     CPrintF("%s\n", strError);
   }
 }
+#if 0 // DG: unused.
 static void PlayScriptSoundCfunc(void* pArgs)
 {
   INDEX iChannel = NEXTARGUMENT(INDEX);
@@ -261,6 +262,7 @@ static void PlayScriptSoundCfunc(void* pArgs)
   BOOL bLooping = NEXTARGUMENT(INDEX);
   PlayScriptSound(iChannel, strSound, fVolume, fPitch, bLooping);
 }
+#endif // 0 (unused)
 static void StopScriptSound(void* pArgs)
 {
   INDEX iChannel = NEXTARGUMENT(INDEX);
@@ -1985,12 +1987,12 @@ static void MakeSplitDrawports(enum CGame::SplitScreenCfg ssc, INDEX iCount, CDr
   }
 
   // if one player or observer with one screen
-  if (ssc==CGame::SSC_PLAY1 || ssc==CGame::SSC_OBSERVER && iCount==1) {
+  if (ssc==CGame::SSC_PLAY1 || (ssc==CGame::SSC_OBSERVER && iCount==1)) {
     // the only drawport covers entire screen
     adpDrawPorts[0] = CDrawPort( pdp, 0.0, 0.0, 1.0, 1.0);
     apdpDrawPorts[0] = &adpDrawPorts[0];
   // if two players or observer with two screens
-  } else if (ssc==CGame::SSC_PLAY2 || ssc==CGame::SSC_OBSERVER && iCount==2) {
+  } else if (ssc==CGame::SSC_PLAY2 || (ssc==CGame::SSC_OBSERVER && iCount==2)) {
     // if the drawport is not dualhead
     if (!pdp->IsDualHead()) {
       // need two drawports for filling the empty spaces left and right
@@ -2014,7 +2016,7 @@ static void MakeSplitDrawports(enum CGame::SplitScreenCfg ssc, INDEX iCount, CDr
       apdpDrawPorts[1] = &adpDrawPorts[1];
     }
   // if three players or observer with three screens
-  } else if (ssc==CGame::SSC_PLAY3 || ssc==CGame::SSC_OBSERVER && iCount==3) {
+  } else if (ssc==CGame::SSC_PLAY3 || (ssc==CGame::SSC_OBSERVER && iCount==3)) {
     // if the drawport is not dualhead
     if (!pdp->IsDualHead()) {
       // need two drawports for filling the empty spaces left and right
@@ -2051,7 +2053,7 @@ static void MakeSplitDrawports(enum CGame::SplitScreenCfg ssc, INDEX iCount, CDr
       apdpDrawPorts[2] = &adpDrawPorts[2];
     }
   // if four players or observer with four screens
-  } else if (ssc==CGame::SSC_PLAY4 || ssc==CGame::SSC_OBSERVER && iCount==4) {
+  } else if (ssc==CGame::SSC_PLAY4 || (ssc==CGame::SSC_OBSERVER && iCount==4)) {
     // if the drawport is not dualhead
     if (!pdp->IsDualHead()) {
       // first of four draw ports covers upper-left part of the screen
@@ -2148,7 +2150,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
     CTFileName fnm = _fnmThumb;
     _fnmThumb = CTString("");
     // render one game view to a small cloned drawport
-    PIX pixSizeJ = pdpDrawPort->GetHeight();
+    //PIX pixSizeJ = pdpDrawPort->GetHeight();
     PIXaabbox2D boxThumb( PIX2D(0,0), PIX2D(128,128));
     CDrawPort dpThumb( pdpDrawPort, boxThumb);
     _bPlayerViewRendered = FALSE;
@@ -2180,7 +2182,7 @@ void CGame::GameRedrawView( CDrawPort *pdpDrawPort, ULONG ulFlags)
   }
 
   // if game is started and computer isn't on
-  BOOL bClientJoined = FALSE;
+  //BOOL bClientJoined = FALSE;
   if( gm_bGameOn && (_pGame->gm_csComputerState==CS_OFF || pdpDrawPort->IsDualHead()) 
     && gm_CurrentSplitScreenCfg!=SSC_DEDICATED )
   {

@@ -177,12 +177,12 @@ static PIXaabbox2D GetMsgSliderSpace(void)
 
 static PIXaabbox2D GetTextSliderBox(void)
 {
-  if (_iActiveMessage>=_acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return PIXaabbox2D();
   }
   INDEX ctTextLines = _acmMessages[_iActiveMessage].cm_ctFormattedLines;
-  PIX pixSizeI = _boxMsgText.Size()(1);
-  PIX pixSizeJ = _boxMsgText.Size()(2);
+  //PIX pixSizeI = _boxMsgText.Size()(1);
+  //PIX pixSizeJ = _boxMsgText.Size()(2);
   return GetSliderBox(
     _iTextLineOnScreen, _ctTextLinesOnScreen, ctTextLines, GetTextSliderSpace());
 }
@@ -190,8 +190,8 @@ static PIXaabbox2D GetTextSliderBox(void)
 static PIXaabbox2D GetMsgSliderBox(void)
 {
   INDEX ctLines = _acmMessages.Count();
-  PIX pixSizeI = _boxMsgList.Size()(1);
-  PIX pixSizeJ = _boxMsgList.Size()(2);
+  //PIX pixSizeI = _boxMsgList.Size()(1);
+  //PIX pixSizeJ = _boxMsgList.Size()(2);
   return GetSliderBox(
     _iFirstMessageOnScreen, _ctMessagesOnScreen, ctLines, GetMsgSliderSpace());
 }
@@ -246,7 +246,7 @@ void LastUnreadMessage(void)
 // go to next/previous message
 void PrevMessage(void)
 {
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   _iActiveMessage--;
@@ -258,7 +258,7 @@ void PrevMessage(void)
 
 void NextMessage(void)
 {
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   _iActiveMessage++;
@@ -305,7 +305,7 @@ void MessageTextUp(INDEX ctLines)
 void MessageTextDn(INDEX ctLines)
 {
   // if no message do nothing
-  if (_iActiveMessage<_acmMessages.Count()==0) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   // find text lines count
@@ -336,7 +336,7 @@ void MessageTextUpDn(INDEX ctLines)
 // mark current message as read
 void MarkCurrentRead(void)
 {
-  if (_iActiveMessage>=_acmMessages.Count()) {
+  if ((_iActiveMessage >= _acmMessages.Count()) || (_iActiveMessage < 0)) {
     return;
   }
   // if running in background
@@ -755,7 +755,7 @@ void RenderMessageStats(CDrawPort *pdp)
 {
   CSessionProperties *psp = (CSessionProperties *)_pNetwork->GetSessionProperties();
   ULONG ulLevelMask = psp->sp_ulLevelsMask;
-  INDEX iLevel = -1;
+  //INDEX iLevel = -1;
   if (psp->sp_bCooperative) {
     extern void RenderMap( CDrawPort *pdp, ULONG ulLevelMask, CProgressHookInfo *pphi);
     if (pdp->Lock()) {
@@ -874,7 +874,7 @@ static void ComputerOff(void)
 static void ExitRequested(void)
 {
   // if end of game
-  if (_ppenPlayer!=NULL && _ppenPlayer->m_bEndOfGame || _pNetwork->IsGameFinished()) {
+  if ((_ppenPlayer!=NULL && _ppenPlayer->m_bEndOfGame) || _pNetwork->IsGameFinished()) {
     // if in single player
     if (GetSP()->sp_bSinglePlayer) {
       // request app to show high score
@@ -1244,8 +1244,8 @@ void CGame::ComputerRender(CDrawPort *pdp)
   MarkCurrentRead();
 
   // get current time and alpha value
-  FLOAT tmNow = (FLOAT)tvNow.GetSeconds();
-  ULONG ulA   = NormFloatToByte(fComputerFadeValue);
+  //FLOAT tmNow = (FLOAT)tvNow.GetSeconds();
+  //ULONG ulA   = NormFloatToByte(fComputerFadeValue);
 
   _colLight  = LCDFadedColor(C_WHITE|255);
   _colMedium = LCDFadedColor(SE_COL_BLUE_LIGHT|255);

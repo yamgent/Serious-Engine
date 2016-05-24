@@ -2198,8 +2198,8 @@ void InitializeMenus(void)
   ((CTextureData*)_toLogoMenuB.GetData())->Force(TEX_CONSTANT);
 
   // menu's relative placement
-  CPlacement3D plRelative = CPlacement3D( FLOAT3D( 0.0f, 0.0f, -9.0f), 
-                            ANGLE3D( AngleDeg(0.0f), AngleDeg(0.0f), AngleDeg(0.0f)));
+  //CPlacement3D plRelative = CPlacement3D( FLOAT3D( 0.0f, 0.0f, -9.0f),
+  //                          ANGLE3D( AngleDeg(0.0f), AngleDeg(0.0f), AngleDeg(0.0f)));
   try
   {
     TRANSLATERADIOARRAY(astrNoYes);
@@ -2464,7 +2464,7 @@ void MenuUpdateMouseFocus(void)
   CMenuGadget *pmgActive = NULL;
   // for all gadgets in menu
   FOREACHINLIST( CMenuGadget, mg_lnNode, pgmCurrentMenu->gm_lhGadgets, itmg) {
-    CMenuGadget &mg = *itmg;
+    //CMenuGadget &mg = *itmg;
     // if focused
     if( itmg->mg_bFocused) {
       // remember it
@@ -2596,11 +2596,11 @@ BOOL DoMenu( CDrawPort *pdp)
   if( bMenuActive)
   {
     // get current time
-    TIME  tmNow = _pTimer->GetLerpedCurrentTick();
-    UBYTE ubH1  = (INDEX)(tmNow*08.7f) & 255;
-    UBYTE ubH2  = (INDEX)(tmNow*27.6f) & 255;
-    UBYTE ubH3  = (INDEX)(tmNow*16.5f) & 255;
-    UBYTE ubH4  = (INDEX)(tmNow*35.4f) & 255;
+    //TIME  tmNow = _pTimer->GetLerpedCurrentTick();
+    //UBYTE ubH1  = (INDEX)(tmNow*08.7f) & 255;
+    //UBYTE ubH2  = (INDEX)(tmNow*27.6f) & 255;
+    //UBYTE ubH3  = (INDEX)(tmNow*16.5f) & 255;
+    //UBYTE ubH4  = (INDEX)(tmNow*35.4f) & 255;
 
     // clear screen with background texture
     _pGame->LCDPrepare(1.0f);
@@ -2751,7 +2751,7 @@ BOOL DoMenu( CDrawPort *pdp)
   if (!_bMouseUsedLast) {
     // find focused gadget
     FOREACHINLIST( CMenuGadget, mg_lnNode, pgmCurrentMenu->gm_lhGadgets, itmg) {
-      CMenuGadget &mg = *itmg;
+      //CMenuGadget &mg = *itmg;
       // if focused
       if( itmg->mg_bFocused) {
         // it is active
@@ -2969,8 +2969,8 @@ void CGameMenu::ScrollList(INDEX iDir)
   }
 
   // set new focus
-  const INDEX iFirst = 0;
-  const INDEX iLast = gm_ctListVisible-1;
+  //const INDEX iFirst = 0;
+  //const INDEX iLast = gm_ctListVisible-1;
   switch(iDir) {
     case +1:
       gm_pmgListBottom->OnSetFocus();
@@ -4077,6 +4077,7 @@ void CPlayerProfileMenu::SelectPlayer(INDEX iPlayer)
       mgPlayerModel.mg_strTip = TRANS("cannot change model for single-player game");
       mgPlayerModel.mg_bEnabled = FALSE;
     }
+    (void)bSet;
     // ignore gender flags, if any
     strName.RemovePrefix("#female#"); 
     strName.RemovePrefix("#male#");
@@ -5444,7 +5445,7 @@ void CServersMenu::Initialize_t(void)
   mgServerRefresh.mg_pActivatedFunction = &RefreshServerList;
   gm_lhGadgets.AddTail( mgServerRefresh.mg_lnNode);
 
-  CTString astrColumns[7];
+  //CTString astrColumns[7];
   mgServerColumn[0].mg_strText = TRANS("Server") ;
   mgServerColumn[1].mg_strText = TRANS("Map")    ;
   mgServerColumn[2].mg_strText = TRANS("Ping")   ;

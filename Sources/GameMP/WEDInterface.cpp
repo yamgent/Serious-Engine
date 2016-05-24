@@ -116,7 +116,7 @@ void CGame::QuickTest(const CTFileName &fnMapName,
       // if it is not a mouse message
       if( !(msg.message>=WM_MOUSEFIRST && msg.message<=WM_MOUSELAST)) {
         // if not system key messages
-        if( !(msg.message==WM_KEYDOWN && msg.wParam==VK_F10
+        if( !((msg.message==WM_KEYDOWN && msg.wParam==VK_F10)
             ||msg.message==WM_SYSKEYDOWN)) {
           // dispatch it
           TranslateMessage(&msg);

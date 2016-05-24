@@ -475,7 +475,7 @@ static void PrepareModelMipForRendering( CModelData &md, INDEX iMip)
 
   // for each surface
   INDEX iSrfVx = 0;
-  INDEX iSrfEl = 0;
+  //INDEX iSrfEl = 0;
   {FOREACHINSTATICARRAY( mmi.mmpi_MappingSurfaces, MappingSurface, itms)
   {
     MappingSurface &ms = *itms;
@@ -1953,7 +1953,7 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
   _pfModelProfile.IncrementTimerAveragingCounter( CModelProfile::PTI_VIEW_INIT_VERTICES, _ctAllSrfVx);
 
   // for each surface in current mip model
-  BOOL bEmpty = TRUE;
+  //BOOL bEmpty = TRUE;
   {FOREACHINSTATICARRAY( mmi.mmpi_MappingSurfaces, MappingSurface, itms)
   {
     const MappingSurface &ms = *itms;
@@ -1961,7 +1961,7 @@ void CModelObject::RenderModel_View( CRenderModel &rm)
     ctSrfVx = ms.ms_ctSrfVx;
     // skip to next in case of invisible or empty surface
     if( (ms.ms_ulRenderingFlags&SRF_INVISIBLE) || ctSrfVx==0) break;
-    bEmpty = FALSE;
+    //bEmpty = FALSE;
     puwSrfToMip = &mmi.mmpi_auwSrfToMip[iSrfVx0];
     pvtxSrfBase = &_avtxSrfBase[iSrfVx0];
     INDEX iSrfVx;
@@ -2286,7 +2286,7 @@ diffColLoop:
       // for each vertex in the surface
       for( INDEX iSrfVx=0; iSrfVx<ctSrfVx; iSrfVx++) {
         // set detail texcoord and color
-        INDEX iMipVx = mmi.mmpi_auwSrfToMip[iSrfVx];
+        //INDEX iMipVx = mmi.mmpi_auwSrfToMip[iSrfVx];
         ptexSrfBase[iSrfVx].st.s = pvTexCoord[iSrfVx](1) * fTexCorrU;
         ptexSrfBase[iSrfVx].st.t = pvTexCoord[iSrfVx](2) * fTexCorrV;
         pcolSrfBase[iSrfVx]   = colSrfBump;

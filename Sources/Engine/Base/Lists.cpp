@@ -40,8 +40,8 @@ BOOL CListHead::IsValid(void) const
 {
   ASSERT(this!=NULL);
   ASSERT(lh_NULL == NULL);
-  ASSERT((lh_Head == (CListNode *) &lh_NULL) && (lh_Tail == (CListNode *) &lh_Head)
-      ||  lh_Tail->IsValid() && lh_Head->IsValid() );
+  ASSERT(((lh_Head == (CListNode *) &lh_NULL) && (lh_Tail == (CListNode *) &lh_Head))
+      ||  (lh_Tail->IsValid() && lh_Head->IsValid()) );
   return TRUE;
 }
 
@@ -211,7 +211,7 @@ BOOL CListNode::IsValid(void) const
   ASSERT((ln_Pred==NULL && ln_Succ==NULL) || (ln_Pred!=NULL && ln_Succ!=NULL));
   // it is valid if it is cleared or if it is linked
   return (ln_Pred==NULL && ln_Succ==NULL)
-      || (ln_Pred->ln_Succ == this) && (ln_Succ->ln_Pred == this);
+      || ((ln_Pred->ln_Succ == this) && (ln_Succ->ln_Pred == this));
 }
 
 /*

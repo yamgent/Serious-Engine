@@ -222,8 +222,8 @@ void CControls::Load_t( CTFileName fnFile)
       achrIfInverted[ 0] = 0;
       char achrIfRelative[ 1024];
       achrIfRelative[ 0] = 0;
-      char achrIfSmooth[ 1024];
-      achrIfSmooth[ 0] = 0;
+      //char achrIfSmooth[ 1024];
+      //achrIfSmooth[ 0] = 0;
       achrActionName[ 0] = 0;
       FLOAT fSensitivity = 50;
       FLOAT fDeadZone = 0;

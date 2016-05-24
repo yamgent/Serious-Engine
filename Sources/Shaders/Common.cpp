@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 {
-  GFXVertex4 *paVertices = shaGetVertexArray();
+  //GFXVertex4 *paVertices = shaGetVertexArray();
   GFXNormal *paNormals = shaGetNormalArray();
   INDEX ctVertices = shaGetVertexCount();
   FLOAT3D vLightDir = -shaGetLightDirection().Normalize();
@@ -100,13 +100,13 @@ void DoSpecularLayer(INDEX iSpeculaTexture,INDEX iSpecularColor)
 
 void DoReflectionLayer(INDEX iReflectionTexture,INDEX iReflectionColor,BOOL bFullBright)
 {
-  GFXVertex4 *paVertices = NULL;
+  //GFXVertex4 *paVertices = NULL;
   GFXNormal *paNormals = NULL;
-  paVertices = shaGetVertexArray();
+  //paVertices = shaGetVertexArray();
   paNormals = shaGetNormalArray();
   INDEX ctVertices = shaGetVertexCount();
   GFXTexCoord *ptcUVMap = shaGetNewTexCoordArray();
-  Matrix12 &mObjToView = *shaGetObjToViewMatrix();
+  //Matrix12 &mObjToView = *shaGetObjToViewMatrix();
   Matrix12 &mObjToAbs  = *shaGetObjToAbsMatrix();
   CAnyProjection3D &apr = *shaGetProjection();
 

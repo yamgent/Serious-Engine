@@ -499,18 +499,27 @@ static void RSBinToGroups( ScenePolygon *pspoFirst)
   );
 
 #else
-  // emulate x86's bsr opcode...not fast.  :/
-  register DWORD val = _ctGroupsCount;
-  register INDEX bsr = 31;
-  if (val != 0)
-  {
-      while (bsr > 0)
-      {
-        if (val & (1l << bsr))
-            break;
-        bsr--;
-      }
-  }
+  // emulate x86's bsr opcode...
+
+  // GCC and clang have an architecture-independent intrinsic for this
+  // (it counts leading zeros starting at MSB and is undefined for 0)
+  #ifdef __GNUC__
+    INDEX bsr = 31;
+    if(_ctGroupsCount != 0)  bsr -= __builtin_clz(_ctGroupsCount);
+    else  bsr = 0;
+  #else // another compiler - doing it manually.. not fast.  :/
+    register DWORD val = _ctGroupsCount;
+    register INDEX bsr = 31;
+    if (val != 0)
+    {
+        while (bsr > 0)
+        {
+          if (val & (1l << bsr))
+              break;
+          bsr--;
+        }
+    }
+  #endif
 
   _ctGroupsCount = 2 << bsr;
 #endif
@@ -807,6 +816,7 @@ static void RSSetTextureCoords( ScenePolygon *pspoGroup, INDEX iLayer, INDEX iUn
   // generate tex coord for all scene polygons in list
   const FLOATmatrix3D &mViewer = _ppr->pr_ViewerRotationMatrix;
   const INDEX iMappingOffset = iLayer * sizeof(CMappingVectors);
+  (void)iMappingOffset; // shut up compiler, this is used if inline ASM is used
 
   for( ScenePolygon *pspo=pspoGroup; pspo!=NULL; pspo=pspo->spo_pspoSucc)
   {
@@ -1970,7 +1980,7 @@ void RenderSceneBackground(CDrawPort *pDP, COLOR col)
   // set arrays
   gfxResetArrays();
   GFXVertex   *pvtx = _avtxCommon.Push(4);
-  GFXTexCoord *ptex = _atexCommon.Push(4);
+  /* GFXTexCoord *ptex = */ _atexCommon.Push(4);
   GFXColor    *pcol = _acolCommon.Push(4);
   pvtx[0].x =  0;  pvtx[0].y =  0;  pvtx[0].z = 1;
   pvtx[1].x =  0;  pvtx[1].y = iH;  pvtx[1].z = 1;

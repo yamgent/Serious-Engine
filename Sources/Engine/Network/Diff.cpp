@@ -124,7 +124,7 @@ UBYTE *FindFirstEntity(UBYTE *pubBlock, SLONG slSize)
     if (*(ULONG*)pub == ENT4) {
       UBYTE *pubTmp = pub;
       pubTmp+=sizeof(ULONG);
-      ULONG ulID = *(ULONG*)pubTmp;
+      //ULONG ulID = *(ULONG*)pubTmp;
       pubTmp+=sizeof(ULONG);
       SLONG slSizeChunk = *(SLONG*)pubTmp;
       pubTmp+=sizeof(ULONG);
@@ -221,17 +221,17 @@ void MakeDiff_t(void)
 void UnDiff_t(void)
 {
   // start at beginning
-  UBYTE *pubOld = _pubOld;
+  //UBYTE *pubOld = _pubOld;
   UBYTE *pubNew = _pubNew;
   SLONG slSizeOldStream = 0;
-  SLONG slSizeOutStream = 0;
+  //SLONG slSizeOutStream = 0;
   // get header with size of files
   if (*(SLONG*)pubNew!=DIFF) {
     ThrowF_t(TRANS("Not a DIFF stream!"));
   }
   pubNew+=sizeof(SLONG);
   slSizeOldStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
-  slSizeOutStream = *(SLONG*)pubNew; pubNew+=sizeof(SLONG);
+  /* slSizeOutStream = *(SLONG*)pubNew; */ pubNew+=sizeof(SLONG);
   ULONG ulCRC =  *(ULONG*)pubNew; pubNew+=sizeof(ULONG);
 
   CRC_Start(_ulCRC);
@@ -314,7 +314,7 @@ void Cleanup(void)
 void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
 {
   try {
-    CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
+    //CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
 
     _slSizeOld = pstrmOld->GetStreamSize()-pstrmOld->GetPos_t();
     _pubOld = (UBYTE*)AllocMemory(_slSizeOld);
@@ -332,7 +332,7 @@ void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
 
     MakeDiff_t();
 
-    CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
+    //CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
     //CPrintF("diff encoded in %.2gs\n", (tv1-tv0).GetSeconds());
 
     Cleanup();
@@ -347,7 +347,7 @@ void DIFF_Diff_t(CTStream *pstrmOld, CTStream *pstrmNew, CTStream *pstrmDiff)
 void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew)
 {
   try {
-    CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
+    //CTimerValue tv0 = _pTimer->GetHighPrecisionTimer();
 
     _slSizeOld = pstrmOld->GetStreamSize()-pstrmOld->GetPos_t();
     _pubOld = (UBYTE*)AllocMemory(_slSizeOld);
@@ -361,7 +361,7 @@ void DIFF_Undiff_t(CTStream *pstrmOld, CTStream *pstrmDiff, CTStream *pstrmNew)
 
     UnDiff_t();
 
-    CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
+    //CTimerValue tv1 = _pTimer->GetHighPrecisionTimer();
     //CPrintF("diff decoded in %.2gs\n", (tv1-tv0).GetSeconds());
 
     Cleanup();

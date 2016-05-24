@@ -202,13 +202,14 @@ void CTerrain::CreateEmptyTerrain_t(PIX pixWidth,PIX pixHeight)
 void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
 {
   _ptrTerrain = this;
-  BOOL bResizeTerrain = FALSE;
+  //BOOL bResizeTerrain = FALSE;
 
   // Load targa file 
   CImageInfo iiHeightMap;
   iiHeightMap.LoadAnyGfxFormat_t(fnHeightMap);
 
-  // if new width and height are same 
+  // if new width and height are same
+  /* unused
   if(tr_pixHeightMapWidth==iiHeightMap.ii_Width && tr_pixHeightMapHeight==iiHeightMap.ii_Height) {
     // Clear terrain data without removing layers
     bResizeTerrain = FALSE;
@@ -217,6 +218,7 @@ void CTerrain::ImportHeightMap_t(CTFileName fnHeightMap, BOOL bUse16b/*=TRUE*/)
     bResizeTerrain = TRUE;
   }
   bResizeTerrain = TRUE;
+  */
 
   FLOAT fLogWidht  = Log2(iiHeightMap.ii_Width-1);
   FLOAT fLogHeight = Log2(iiHeightMap.ii_Height-1);
@@ -359,15 +361,15 @@ static void CropMap(INDEX iNewWidth, INDEX iNewHeight, INDEX iOldWidth, INDEX iO
 template <class Type>
 static void StretchMap(INDEX iNewWidth, INDEX iNewHeight, INDEX iOldWidth, INDEX iOldHeight, Type *pNewData, Type *pOldData)
 {
-  int a=0;
+  //int a=0;
   CropMap(iNewWidth,iNewHeight,iOldWidth,iOldHeight,pNewData,pOldData);
 }
 
 template <class Type>
 static void ShrinkMap(INDEX iNewWidth, INDEX iNewHeight, INDEX iOldWidth, INDEX iOldHeight, Type *pNewData, Type *pOldData)
 {
-  FLOAT fWidth  = iNewWidth;
-  FLOAT fHeight = iNewHeight;
+  //FLOAT fWidth  = iNewWidth;
+  //FLOAT fHeight = iNewHeight;
   FLOAT fDiffX = (FLOAT)iNewWidth  / iOldWidth;
   FLOAT fDiffY = (FLOAT)iNewHeight / iOldHeight;
 
@@ -800,7 +802,7 @@ void CTerrain::AddAllTilesToRegenQueue()
   // for each terrain tile
   for(INDEX itt=0;itt<tr_ctTiles;itt++) {
     // Add tile to reqen queue
-    CTerrainTile &tt = tr_attTiles[itt];
+    //CTerrainTile &tt = tr_attTiles[itt];
     AddTileToRegenQueue(itt);
   }
 }
@@ -842,6 +844,7 @@ __forceinline void CopyPixel(COLOR *pubSrc,COLOR *pubDst,FLOAT fMaskStrength)
   pcolSrc->ub.a = 255;
 }
 
+#if 0 // DG: unused.
 static INDEX _ctSavedTopMaps=0;
 static void SaveAsTga(CTextureData *ptdTex)
 {
@@ -879,6 +882,7 @@ static void SaveAsTga(CTextureData *ptdTex)
   */
 
 }
+#endif // 0
 
 static void AddTileLayerToTopMap(CTerrain *ptrTerrain, INDEX iTileIndex, INDEX iLayer)
 {
@@ -1004,7 +1008,7 @@ void CTerrain::UpdateTopMap(INDEX iTileIndex, Rect *prcDest/*=NULL*/)
   INDEX iFirstInMask = 0;
   INDEX iMaskWidth = tr_pixHeightMapWidth;
   INDEX iTiling = 1;
-  INDEX iSrcMipWidth = 1;
+  //INDEX iSrcMipWidth = 1;
   
 
   // destionation texture (must have set allocated memory)
@@ -1587,7 +1591,7 @@ void CTerrain::BuildQuadTree(void)
   INDEX ctQuadLevels = tr_aqtlQuadTreeLevels.Count();
   // for each quadtree level after first
   for(INDEX iql=1;iql<ctQuadLevels;iql++) {
-    QuadTreeLevel &qtl = tr_aqtlQuadTreeLevels[iql];
+    //QuadTreeLevel &qtl = tr_aqtlQuadTreeLevels[iql];
     QuadTreeLevel &qtlPrev = tr_aqtlQuadTreeLevels[iql-1];
     // for each quadtree node row
     for(INDEX ir=0;ir<qtlPrev.qtl_ctNodesRow;ir+=2) {
@@ -1737,7 +1741,7 @@ static void ShowTerrainInfo(CAnyProjection3D &apr, CDrawPort *pdp, CTerrain *ptr
   strInfo +=strTemp;
 
   // Show memory usage
-  SLONG slUsedMemory=0;
+  //SLONG slUsedMemory=0;
   // Height map usage
   SLONG slHeightMap = ptrTerrain->tr_pixHeightMapWidth*ptrTerrain->tr_pixHeightMapHeight*sizeof(UWORD);
   // Edge map usage

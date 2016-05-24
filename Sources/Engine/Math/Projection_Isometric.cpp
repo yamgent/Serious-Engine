@@ -43,7 +43,9 @@ void CIsometricProjection3D::Prepare(void)
   BOOL bYInverted = pr_ObjectStretch(2)<0;
   BOOL bZInverted = pr_ObjectStretch(3)<0;
 
-  pr_bInverted = bXInverted!=bYInverted!=bZInverted;
+  // DG: this is true if either one of X,Y,Z is inverted, or all three
+  //     but not if two or none are inverted.
+  pr_bInverted = (bXInverted != bYInverted) != bZInverted;
 
   // if the projection is mirrored
   if (pr_bMirror) {

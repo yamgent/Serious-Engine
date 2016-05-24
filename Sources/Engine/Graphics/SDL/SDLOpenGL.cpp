@@ -89,14 +89,13 @@ void *CGfxLibrary::OGL_GetProcAddress(const char *procname)
 // prepares pixel format for OpenGL context
 BOOL CGfxLibrary::SetupPixelFormat_OGL( HDC hdc, BOOL bReport/*=FALSE*/)
 {
-  SDL_Window *window = (SDL_Window *) hdc;
+  //SDL_Window *window = (SDL_Window *) hdc;
   const DisplayDepth dd  = gl_dmCurrentDisplayMode.dm_ddDepth;
 
   // clamp depth/stencil values
   extern INDEX gap_iDepthBits;
   extern INDEX gap_iStencilBits;
-       if( gap_iDepthBits <12) gap_iDepthBits   = 0;
-  else if( gap_iDepthBits <22) gap_iDepthBits   = 16;
+       if( gap_iDepthBits <22) gap_iDepthBits   = 16; // this includes 0; 16 is a safe default
   else if( gap_iDepthBits <28) gap_iDepthBits   = 24;
   else                         gap_iDepthBits   = 32;
        if( gap_iStencilBits<3) gap_iStencilBits = 0;

@@ -67,7 +67,9 @@ CTCriticalSection zip_csLock; // critical section for access to zlib functions
 
 
 // to keep system gamma table
+#ifdef PLATFORM_WIN32 // DG: other platforms don't (currently?) use this
 static UWORD auwSystemGamma[256*3];
+#endif
 
 
 // OS info
@@ -818,7 +820,7 @@ ENGINE_API void SE_UpdateWindowHandle( HWND hwndMain)
   _bFullScreen = _pGfx!=NULL && (_pGfx->gl_ulFlags&GLF_FULLSCREEN);
 }
 
-
+#ifdef PLATFORM_WIN32
 static BOOL TouchBlock(UBYTE *pubMemoryBlock, INDEX ctBlockSize)
 {
 #if (defined __MSC_VER)
@@ -856,12 +858,13 @@ touchLoop:
   // !!! More importantly, will this help if the system is paging to disk
   // !!! like mad anyhow? Leaving this as a no-op for most systems seems safe
   // !!! to me.  --ryan.
+  // DG: put this into #ifdef PLATFORM_WIN32 because otherwise the function is not called anyway
 
 #endif
 
   return TRUE;
 }
-
+#endif // PLATFORM_WIN32
 
 // pretouch all memory commited by process
 BOOL _bNeedPretouch = FALSE;

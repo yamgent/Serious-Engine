@@ -266,7 +266,7 @@ void CMGButton::Render( CDrawPort *pdp)
     CTString str = mg_strText;
     if (pdp->dp_FontData->fd_bFixedWidth) {
       str = str.Undecorated();
-      INDEX iLen = str.Length();
+      //INDEX iLen = str.Length();
       INDEX iMaxLen = ClampDn(box.Size()(1)/(pdp->dp_pixTextCharSpacing+pdp->dp_FontData->fd_pixCharWidth), 1);
       if (iCursor>=iMaxLen) {
         str.TrimRight(iCursor);
@@ -768,7 +768,7 @@ void CMGTrigger::Render( CDrawPort *pdp)
     CTextureObject to;
     try {
       to.SetData_t(mg_strValue);
-      CTextureData *ptd = (CTextureData *)to.GetData();
+      //CTextureData *ptd = (CTextureData *)to.GetData();
       PIX pixSize = box.Size()(2);
       PIX pixCX = box.Max()(1)-pixSize/2;
       PIX pixCY = box.Center()(2);
@@ -1393,7 +1393,7 @@ void CMGServerList::Render(CDrawPort *pdp)
   BOOL bFocusedBefore = mg_bFocused;
   mg_bFocused = FALSE;
 
-  PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
+  //PIXaabbox2D box = FloatBoxToPixBox(pdp, mg_boxOnScreen);
   COLOR col = GetCurrentColor();
 
   PIX pixDPSizeI = pdp->GetWidth();
@@ -1404,7 +1404,7 @@ void CMGServerList::Render(CDrawPort *pdp)
   PIX pixSliderSizeI = 10;
   PIX pixOuterMargin = 20;
   
-  INDEX ctSessions = _lhServers.Count();
+  //INDEX ctSessions = _lhServers.Count();
   INDEX iSession=0;
 
   INDEX ctColumns[7];
@@ -1430,7 +1430,7 @@ void CMGServerList::Render(CDrawPort *pdp)
   apixSeparatorI[2] = apixSeparatorI[3]-pixSizePing-pixLineSize;
   apixSeparatorI[1] = apixSeparatorI[2]-pixSizeMapName-pixLineSize;
   apixSeparatorI[1] = apixSeparatorI[2]-pixSizeMapName-pixLineSize;
-  PIX pixSizeServerName = apixSeparatorI[1]-apixSeparatorI[0]-pixLineSize;
+  //PIX pixSizeServerName = apixSeparatorI[1]-apixSeparatorI[0]-pixLineSize;
 
   PIX pixTopJ = (PIX) (pixDPSizeJ*0.15f);
   PIX pixBottomJ = (PIX) (pixDPSizeJ*0.82f);
@@ -1470,7 +1470,7 @@ void CMGServerList::Render(CDrawPort *pdp)
   PIXaabbox2D boxHandle = GetScrollBarHandleBox();
   pdp->Fill(boxHandle.Min()(1)+2, boxHandle.Min()(2)+2, boxHandle.Size()(1)-3, boxHandle.Size()(2)-3, col|CT_OPAQUE);
 
-  PIX pixJ = pixTopJ+pixLineSize*2+1;
+  //PIX pixJ = pixTopJ+pixLineSize*2+1;
 
   mg_ctOnScreen = ctSessionsOnScreen;
   AdjustFirstOnScreen();
@@ -1755,7 +1755,7 @@ void CMGKeyDefinition::SetBindingNames(BOOL bDefining)
 {
   // find the button
   INDEX ict=0;
-  INDEX iDik=0;
+  //INDEX iDik=0;
   FOREACHINLIST( CButtonAction, ba_lnNode, _pGame->gm_ctrlControlsExtra->ctrl_lhButtonActions, itba) {
     if( ict == mg_iControlNumber) {
       CButtonAction &ba = *itba;

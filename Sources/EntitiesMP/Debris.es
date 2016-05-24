@@ -99,7 +99,7 @@ functions:
   {
     // cannot be damaged immediately after spawning
     if ((_pTimer->CurrentTick()-m_tmStarted<1.0f)
-      ||(dmtType==DMT_CANNONBALL_EXPLOSION) && (_pTimer->CurrentTick()-m_tmStarted<5.0f)) {
+      ||((dmtType==DMT_CANNONBALL_EXPLOSION) && (_pTimer->CurrentTick()-m_tmStarted<5.0f))) {
       return;
     }
     CMovableModelEntity::ReceiveDamage(penInflictor, dmtType, fDamageAmmount, vHitPoint, vDirection);

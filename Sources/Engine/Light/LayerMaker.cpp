@@ -329,8 +329,8 @@ void CLayerMaker::SpreadShadowMaskOutwards(void)
     PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
     PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
     PIX pixLayerSizeV = lm_pixLayerSizeV>>iMipmap;
-    PIX pixSizeU = lm_pixSizeU>>iMipmap;
-    PIX pixSizeV = lm_pixSizeV>>iMipmap;
+    //PIX pixSizeU = lm_pixSizeU>>iMipmap;
+    //PIX pixSizeV = lm_pixSizeV>>iMipmap;
     PIX pixSizeULog2 = FastLog2(lm_pixSizeU)-iMipmap;
     UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMipmap];
     UBYTE *pubPolygonMask = lm_pubPolygonMask+lm_mmtPolygonMask.mmt_aslOffsets[iMipmap];
@@ -419,8 +419,8 @@ void CLayerMaker::SpreadShadowMaskInwards(void)
     PIX pixLayerMinV = lm_pixLayerMinV>>iMipmap;
     PIX pixLayerSizeU = lm_pixLayerSizeU>>iMipmap;
     PIX pixLayerSizeV = lm_pixLayerSizeV>>iMipmap;
-    PIX pixSizeU = lm_pixSizeU>>iMipmap;
-    PIX pixSizeV = lm_pixSizeV>>iMipmap;
+    //PIX pixSizeU = lm_pixSizeU>>iMipmap;
+    //PIX pixSizeV = lm_pixSizeV>>iMipmap;
     PIX pixSizeULog2 = FastLog2(lm_pixSizeU)-iMipmap;
     UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMipmap];
     UBYTE *pubPolygonMask = lm_pubPolygonMask+lm_mmtPolygonMask.mmt_aslOffsets[iMipmap];
@@ -526,7 +526,7 @@ void CLayerMaker::MakePolygonMask(void)
     UBYTE *pub = lm_pubPolygonMask;
     // for each mip-map
     for (INDEX iMipmap=0; iMipmap<lm_mmtPolygonMask.mmt_ctMipmaps; iMipmap++) {
-      UBYTE *pubForSaving = pub;
+      //UBYTE *pubForSaving = pub;
       // start at the first pixel
       FLOAT3D vRow = lm_vO+(lm_vStepU+lm_vStepV)*(FLOAT(1<<iMipmap)/2.0f);
       // for each pixel in the shadow map
@@ -565,8 +565,8 @@ void CLayerMaker::MakePolygonMask(void)
 // flip shadow mask around V axis (for parallel lights)
 void CLayerMaker::FlipShadowMask(INDEX iMip)
 {
-  PIX pixLayerMinU  = lm_pixLayerMinU>>iMip;
-  PIX pixLayerMinV  = lm_pixLayerMinV>>iMip;
+  //PIX pixLayerMinU  = lm_pixLayerMinU>>iMip;
+  //PIX pixLayerMinV  = lm_pixLayerMinV>>iMip;
   PIX pixLayerSizeU = lm_pixLayerSizeU>>iMip;
   PIX pixLayerSizeV = lm_pixLayerSizeV>>iMip;
   UBYTE *pubLayer = lm_pubLayer+lm_mmtLayer.mmt_aslOffsets[iMip];
@@ -632,7 +632,7 @@ ULONG CLayerMaker::MakeShadowMask(CBrushShadowLayer *pbsl)
 
   // allocate shadow mask for the light (+8 is safety wall for fast conversions)
   lm_pubLayer = (UBYTE *)AllocMemory(lm_mmtLayer.mmt_slTotalSize+8);
-  const FLOAT fEpsilon = (1<<lm_iMipLevel)/1024.0f;
+  //const FLOAT fEpsilon = (1<<lm_iMipLevel)/1024.0f;
 
   ULONG ulLighted=BSLF_ALLLIGHT|BSLF_ALLDARK;
   // if this polygon requires exact shadows

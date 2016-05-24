@@ -3531,7 +3531,7 @@ procedures:
         // ignore twister
         bHit &= !IsOfClass(epass.penOther, "Twister");
         if (epass.penOther!=m_penLauncher) {
-   bHit = bHit ;
+          // bHit = bHit ; // FIXME: DG: what was this supposed to achieve?
         }
         if (bHit) {
           ProjectileTouch(epass.penOther);

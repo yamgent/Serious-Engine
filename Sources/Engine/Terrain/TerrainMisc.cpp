@@ -53,6 +53,7 @@ FLOATaabbox3D _bboxDrawTwo;
 #define LEFT	  1
 #define MIDDLE	2
 
+#if 0 // DG: unused.
 // Test AABBox agains ray
 static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATaabbox3D &bbox)
 {
@@ -122,7 +123,6 @@ static BOOL HitBoundingBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOAT
   }
 	return (TRUE);				/* ray hits box */
 }
-
 
 // Test AABBox agains ray
 static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATaabbox3D &bbox)
@@ -201,11 +201,12 @@ static BOOL RayHitsAABBox(FLOAT3D &vOrigin, FLOAT3D &vDir, FLOAT3D &vHit, FLOATa
   vHit = FLOAT3D(coord[0],coord[1],coord[2]);
 	return TRUE;
 }
+#endif // 0 (unused)
 
 // Get exact hit location in tile
 FLOAT GetExactHitLocation(INDEX iTileIndex, FLOAT3D &vOrigin, FLOAT3D &vTarget, FLOAT3D &vHitLocation)
 {
-  CTerrainTile &tt  = _ptrTerrain->tr_attTiles[iTileIndex];
+  //CTerrainTile &tt  = _ptrTerrain->tr_attTiles[iTileIndex];
   QuadTreeNode &qtn = _ptrTerrain->tr_aqtnQuadTreeNodes[iTileIndex];
 
   GFXVertex *pavVertices;
@@ -341,7 +342,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
 
   INDEX iFirst = iStartX + iStartY * ptrTerrain->tr_pixHeightMapWidth;
   INDEX iPitchX = ptrTerrain->tr_pixHeightMapWidth  - iWidth;
-  INDEX iPitchY = ptrTerrain->tr_pixHeightMapHeight - iHeight;
+  //INDEX iPitchY = ptrTerrain->tr_pixHeightMapHeight - iHeight;
 
   // get first pixel in height map
   UWORD *puwHeight = &ptrTerrain->tr_auwHeightMap[iFirst];
@@ -385,7 +386,7 @@ Rect ExtractPolygonsInBox(CTerrain *ptrTerrain, const FLOATaabbox3D &bboxExtract
   }
 
   INDEX ivx=0;
-  INDEX ind=0;
+  //INDEX ind=0;
   INDEX iFacing=iFirst;
 
   GFXVertex *pavExtVtx = &_avExtVertices[0];
@@ -493,7 +494,7 @@ void ExtractVerticesInRect(CTerrain *ptrTerrain, Rect &rc, GFXVertex4 **pavVtx,
 
   INDEX *pauiIndices = &_aiExtIndices[0];
   INDEX ivx=0;
-  INDEX ind=0;
+  //INDEX ind=0;
   INDEX iFacing=iFirstHeight;
   // for each row
   for(iy=0;iy<iHeight-1;iy++) {
@@ -903,7 +904,7 @@ static FLOATaabbox3D AbsoluteToRelative(const CTerrain *ptrTerrain, const FLOATa
   return bboxRelative;
 }
 
-static ULONG ulTemp = 0xFFFFFFFF;
+//static ULONG ulTemp = 0xFFFFFFFF;
 
 void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NULL*/, BOOL bAbsoluteSpace/*=FALSE*/)
 {
@@ -952,8 +953,8 @@ void UpdateTerrainShadowMap(CTerrain *ptrTerrain, FLOATaabbox3D *pboxUpdate/*=NU
   // Get pointer to world that holds this terrain
   CWorld *pwldWorld = penEntity->en_pwoWorld;
   
-  PIX pixWidth  = ptrTerrain->GetShadowMapWidth();
-  PIX pixHeight = ptrTerrain->GetShadowMapHeight();
+  //PIX pixWidth  = ptrTerrain->GetShadowMapWidth();
+  //PIX pixHeight = ptrTerrain->GetShadowMapHeight();
 
   CTextureData &tdShadowMap = ptrTerrain->tr_tdShadowMap;
   ASSERT(tdShadowMap.td_pulFrames!=NULL);

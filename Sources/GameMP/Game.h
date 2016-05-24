@@ -76,7 +76,7 @@ class CButtonAction {
 public:
   // default constructor
   CButtonAction();
-  ~CButtonAction() {}
+  virtual ~CButtonAction() {}
   CListNode ba_lnNode;
   INDEX ba_iFirstKey;
   BOOL ba_bFirstKeyDown;

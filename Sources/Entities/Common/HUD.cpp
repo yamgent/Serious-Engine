@@ -234,6 +234,7 @@ static int qsort_CompareDeaths( const void *ppPEN0, const void *ppPEN1) {
   else              return  0;
 }
 
+#if 0 // DG: unused
 static int qsort_CompareLatencies( const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en0 = **(CPlayer**)ppPEN0;
   CPlayer &en1 = **(CPlayer**)ppPEN1;
@@ -243,6 +244,7 @@ static int qsort_CompareLatencies( const void *ppPEN0, const void *ppPEN1) {
   else if( sl0>sl1) return -1;
   else              return  0;
 }
+#endif // 0 (unused)
 
 // prepare color transitions
 static void PrepareColorTransitions( COLOR colFine, COLOR colHigh, COLOR colMedium, COLOR colLow,
@@ -690,7 +692,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
   _fCustomScaling = ClampDn( _fCustomScaling*0.8f, 0.5f);
   const FLOAT fOneUnitS  = fOneUnit  *0.8f;
   const FLOAT fAdvUnitS  = fAdvUnit  *0.8f;
-  const FLOAT fNextUnitS = fNextUnit *0.8f;
+  //const FLOAT fNextUnitS = fNextUnit *0.8f;
   const FLOAT fHalfUnitS = fHalfUnit *0.8f;
 
   // prepare postition and ammo quantities
@@ -868,7 +870,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       if( iHealth>25) colHealth = _colHUD;
       if( iArmor >25) colArmor  = _colHUD;
       // eventually print it out
-      if( hud_iShowPlayers==1 || hud_iShowPlayers==-1 && !bSinglePlay) {
+      if( hud_iShowPlayers==1 || (hud_iShowPlayers==-1 && !bSinglePlay)) {
         // printout location and info aren't the same for deathmatch and coop play
         const FLOAT fCharWidth = (PIX)((_pfdDisplayFont->GetWidth()-2) *fTextScale);
         if( bCooperative) { 

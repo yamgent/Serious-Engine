@@ -337,7 +337,7 @@ void CTriangularizer::MakeEdgesForTriangularization(void)
   // get number of edges in polygon
   INDEX ctEdges = tr_abpeOriginalEdges.Count();
   // create that much edges in the array
-  CBrushEdge *pbedEdges = tr_abedEdges.New(ctEdges);
+  /* CBrushEdge *pbedEdges = */ tr_abedEdges.New(ctEdges);
 
   tr_abedEdges.Lock();
 
@@ -480,7 +480,7 @@ void CTriangularizer::FindExistingTriangleEdges(void)
 
   // for each edge
   FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed) {
-    CBrushEdge *pbed = itbed;
+    //CBrushEdge *pbed = itbed;
 
     // if it is the bottom edge of the triangle
     if (tr_pbedBottom == itbed) {
@@ -517,7 +517,7 @@ BOOL CTriangularizer::CheckTriangleAgainstEdges(void)
 {
   // for each edge
   FOREACHINDYNAMICARRAY(tr_abedEdges, CBrushEdge, itbed) {
-    CBrushEdge *pbed = itbed;
+    //CBrushEdge *pbed = itbed;
 
     // if it is the bottom edge of the triangle
     if (tr_pbedBottom == itbed) {

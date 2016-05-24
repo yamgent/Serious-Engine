@@ -1009,8 +1009,8 @@ functions:
     }
     // find current breathing parameters
     BOOL bCanBreathe = 
-      (ctUp.ct_ulFlags&CTF_BREATHABLE_LUNGS) && (en_ulPhysicsFlags&EPF_HASLUNGS) ||
-      (ctUp.ct_ulFlags&CTF_BREATHABLE_GILLS) && (en_ulPhysicsFlags&EPF_HASGILLS);
+      ((ctUp.ct_ulFlags&CTF_BREATHABLE_LUNGS) && (en_ulPhysicsFlags&EPF_HASLUNGS)) ||
+      ((ctUp.ct_ulFlags&CTF_BREATHABLE_GILLS) && (en_ulPhysicsFlags&EPF_HASGILLS));
     TIME tmNow = _pTimer->CurrentTick();
     TIME tmBreathDelay = tmNow-en_tmLastBreathed;
     // if entity can breathe now
@@ -1207,8 +1207,8 @@ functions:
 
     // if polygon's steepness is too high
     CSurfaceType &stReference = en_pwoWorld->wo_astSurfaceTypes[pbpo->bpo_bppProperties.bpp_ubSurfaceType];
-    if (fCos>=-stReference.st_fClimbSlopeCos&&fCos<0
-      ||stReference.st_ulFlags&STF_SLIDEDOWNSLOPE) {
+    if ((fCos >= -stReference.st_fClimbSlopeCos && fCos<0)
+      || stReference.st_ulFlags&STF_SLIDEDOWNSLOPE) {
       // it cannot be below
       _pfPhysicsProfile.StopTimer((INDEX) CPhysicsProfile::PTI_ISSTANDINGONPOLYGON);
       return FALSE;
@@ -1529,11 +1529,11 @@ out:;
           // going up or
           iStep==0 || 
           // going forward and hit stairs or
-          iStep==1 && bHitStairsNow || 
+          (iStep==1 && bHitStairsNow) || 
           // going down and ends on something that is not high slope
-          iStep==2 && 
+          (iStep==2 && 
             (vHitPlane%en_vGravityDir<-stHit.st_fClimbSlopeCos ||
-             bHitStairsNow);
+             bHitStairsNow));
 
         // if early clip is allowed
         if (bEarlyClipAllowed || bSlidingAllowed) {
@@ -2322,8 +2322,8 @@ out:;
         FLOAT fPlaneYAbs = Abs(fPlaneY);
         FLOAT fFriction = stReference.st_fFriction;
         // if on a steep slope
-        if (fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0
-          ||(stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f) {
+        if ((fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0)
+          ||((stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f)) {
           en_ulPhysicsFlags|=EPF_ONSTEEPSLOPE;
           // accellerate horizontaly towards desired absolute translation
           AddAccelerationOnPlane2(
@@ -2737,8 +2737,8 @@ out:;
 /* old */        FLOAT fPlaneYAbs = Abs(fPlaneY);
 /* old */        FLOAT fFriction = stReference.st_fFriction;
 /* old */        // if on a steep slope
-/* old */        if (fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0
-/* old */          ||(stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f) {
+/* old */        if ((fPlaneY>=-stReference.st_fClimbSlopeCos&&fPlaneY<0)
+/* old */          ||((stReference.st_ulFlags&STF_SLIDEDOWNSLOPE)&&fPlaneY>-0.99f)) {
 /* old */          en_ulPhysicsFlags|=EPF_ONSTEEPSLOPE;
 /* old */          // accellerate horizontaly towards desired absolute translation
 /* old */          AddAccelerationOnPlane2(
@@ -2863,7 +2863,7 @@ out:;
 
     _pfPhysicsProfile.IncrementCounter((INDEX) CPhysicsProfile::PCI_DOMOVING);
 
-    FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
+    //FLOAT fTickQuantum=_pTimer->TickQuantum; // used for normalizing from SI units to game ticks
 
     // if rotation and translation are synchronized
     if (en_ulPhysicsFlags&EPF_RT_SYNCHRONIZED) {
@@ -2878,7 +2878,7 @@ out:;
       if ((en_ulPhysicsFlags&EPF_ONBLOCK_MASK)==EPF_ONBLOCK_PUSH) {
         penPusher = this;
       }
-      BOOL bMoveSuccessfull = TryToMove(penPusher, TRUE, TRUE);
+      /* BOOL bMoveSuccessfull = */ TryToMove(penPusher, TRUE, TRUE);
 
     // if rotation and translation are asynchronious
     } else {

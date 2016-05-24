@@ -98,10 +98,10 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   _vOffset = vOffset = pmd->md_vCompressedCenter;
   
   // check if object is inverted (in mirror)
-  BOOL bXInverted = vStretch(1)<0;
-  BOOL bYInverted = vStretch(2)<0;
-  BOOL bZInverted = vStretch(3)<0;
-  BOOL bInverted  = bXInverted!=bYInverted!=bZInverted;
+  //BOOL bXInverted = vStretch(1)<0;
+  //BOOL bYInverted = vStretch(2)<0;
+  //BOOL bZInverted = vStretch(3)<0;
+  //BOOL bInverted  = bXInverted!=bYInverted!=bZInverted;
 
   // if dynamic stretch factor should be applied
   if( mo_Stretch != FLOAT3D( 1.0f, 1.0f, 1.0f)) {
@@ -113,7 +113,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
   // get current mip model using mip factor
   INDEX iMipLevel = GetMipModel( fMipFactor);
   // get current vertices mask
-  ULONG ulVtxMask = (1L) << iMipLevel;
+  //ULONG ulVtxMask = (1L) << iMipLevel;
   struct ModelMipInfo *pmmiMip = &pmd->md_MipInfos[iMipLevel];
 
   // allocate space for vertices
@@ -188,7 +188,7 @@ void CModelObject::GetModelVertices( CStaticStackArray<FLOAT3D> &avVertices, FLO
     CAttachmentModelObject *pamo = itamo;
     CModelData *pmd=pamo->amo_moModelObject.GetData();
     ASSERT(pmd!=NULL);
-    if(pmd==NULL || pmd->md_Flags&(MF_FACE_FORWARD|MF_HALF_FACE_FORWARD)) continue;
+    if(pmd==NULL || (pmd->md_Flags & (MF_FACE_FORWARD|MF_HALF_FACE_FORWARD))) continue;
     FLOATmatrix3D mNew = mRotation;
     FLOAT3D vNew = vPosition;
     // get new rotation and position matrices

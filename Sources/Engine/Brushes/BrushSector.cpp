@@ -53,8 +53,8 @@ CBrushSector::CBrushSector(void)
 , bsc_ulFlags2(0)
 , bsc_ulTempFlags(0)
 , bsc_ulVisFlags(0)
-, bsc_strName("")
 , bsc_bspBSPTree(*new DOUBLEbsptree3D)
+, bsc_strName("")
 {
 
 };
@@ -622,9 +622,9 @@ void CBrushSector::TriangularizeMarkedPolygons( void)
         bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge = &abedEdgesNew[iEdge+2];
         bpoNew.bpo_abpePolygonEdges[2].bpe_bReverse = FALSE;
 
-        CBrushEdge &edg0 = *bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge;
-        CBrushEdge &edg1 = *bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge;
-        CBrushEdge &edg2 = *bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge;
+        //CBrushEdge &edg0 = *bpoNew.bpo_abpePolygonEdges[0].bpe_pbedEdge;
+        //CBrushEdge &edg1 = *bpoNew.bpo_abpePolygonEdges[1].bpe_pbedEdge;
+        //CBrushEdge &edg2 = *bpoNew.bpo_abpePolygonEdges[2].bpe_pbedEdge;
 
         // set brush vertex ptrs
         bpoNew.bpo_apbvxTriangleVertices.New(3);

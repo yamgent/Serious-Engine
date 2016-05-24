@@ -1068,7 +1068,7 @@ void CModelData::IndicesToPtrs()
     {
       FOREACHINSTATICARRAY(it1.Current().mp_PolygonVertices, ModelPolygonVertex, it2)
       {
-        struct ModelPolygonVertex * pMPV = &it2.Current();
+        //struct ModelPolygonVertex * pMPV = &it2.Current();
         // DG: this looks like a 64-bit issue but is most probably ok, as the pointers
         //     should contain indices from PtrToIndices()
         j = (INDEX) (size_t) it2.Current().mpv_ptvTransformedVertex;
@@ -1397,9 +1397,11 @@ void CModelData::Read_t( CTStream *pFile) // throw char *
     if( cidVerticesChunk == CChunkID("AV16"))
     {
       CChunkID cidDummy = pFile->GetID_t();
+      (void)cidDummy; // shut up about unused variable, compiler.
       ULONG ulDummy;
       // skip chunk size
       *pFile >> ulDummy;
+      (void)ulDummy; // shut up about unused variable, compiler.
       for( INDEX iVtx=0; iVtx<md_VerticesCt * md_FramesCt; iVtx++)
       {
         (*pFile)>>md_FrameVertices16[iVtx];
@@ -2859,22 +2861,26 @@ void CModelObject::AutoSetTextures(void)
       if( id == CChunkID("WTEX"))
       {
         CChunkID idDummy = strmIni.GetID_t();
+        (void)idDummy; // shut up about unused variable, compiler.
         strmIni >> ctDiffuseTextures;
         strmIni >> fnDiffuse;
       }
       else if( id == CChunkID("FXTR"))
       {
         CChunkID idDummy = strmIni.GetID_t();
+        (void)idDummy; // shut up about unused variable, compiler.
         strmIni >> fnReflection;
       }
       else if( id == CChunkID("FXTS"))
       {
         CChunkID idDummy = strmIni.GetID_t();
+        (void)idDummy; // shut up about unused variable, compiler.
         strmIni >> fnSpecular;
       }
       else if( id == CChunkID("FXTB"))
       {
         CChunkID idDummy = strmIni.GetID_t();
+        (void)idDummy; // shut up about unused variable, compiler.
         strmIni >> fnBump;
       }
       else
@@ -2914,6 +2920,7 @@ void CModelObject::AutoSetAttachments(void)
       if( id == CChunkID("ATTM"))
       {
         CChunkID idDummy = strmIni.GetID_t();
+        (void)idDummy; // shut up about unused variable, compiler.
         // try to load attached models
         INDEX ctAttachedModels;
         strmIni >> ctAttachedModels;

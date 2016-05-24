@@ -186,6 +186,8 @@ void BSPVertexContainer<Type, iDimensions>::Sort(void)
 template<class Type, int iDimensions>
 void BSPVertexContainer<Type, iDimensions>::ElliminatePairedVertices(void)
 {
+  // FIXME: DG: am I missing something or is this function not actually changing anything?
+
   // if there are no vertices, or the container is not line
   if (bvc_aVertices.Count()==0 || IsPlannar()) {
     // do not attempt to sort
@@ -416,9 +418,9 @@ template<class Type, int iDimensions>
 BSPNode<Type, iDimensions>::BSPNode(const Plane<Type, iDimensions> &plSplitPlane, size_t ulPlaneTag,
                  BSPNode<Type, iDimensions> &bnFront, BSPNode<Type, iDimensions> &bnBack)
   : Plane<Type, iDimensions>(plSplitPlane)
+  , bn_bnlLocation(BNL_BRANCH)
   , bn_pbnFront(&bnFront)
   , bn_pbnBack(&bnBack)
-  , bn_bnlLocation(BNL_BRANCH)
   , bn_ulPlaneTag(ulPlaneTag)
 {
 }
@@ -956,7 +958,6 @@ template<class Type, int iDimensions>
 BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicArray<BSPPolygon<Type, iDimensions> > &abpoPolygons)
 {
   // local declarations, to fix macro expansion in FOREACHINDYNAMICARRAY
-  typedef BSPEdge<Type, iDimensions> edge_t;
   typedef BSPPolygon<Type, iDimensions> polygon_t;
   ASSERT(abpoPolygons.Count()>=1);
 
@@ -1042,8 +1043,6 @@ BSPNode<Type, iDimensions> *BSPTree<Type, iDimensions>::CreateSubTree(CDynamicAr
 template<class Type, int iDimensions>
 void BSPTree<Type, iDimensions>::Create(CDynamicArray<BSPPolygon<Type, iDimensions> > &abpoPolygons)
 {
-  typedef BSPPolygon<Type, iDimensions> polygon_t; // local declaration, to fix macro expansion in FOREACHINDYNAMICARRAY
-
   // free eventual existing tree
   Destroy();
 

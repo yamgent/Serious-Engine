@@ -762,7 +762,7 @@ void CRenderer::AddZoningSectorsAroundBox(const FLOATaabbox3D &boxNear)
       continue;
     }
     // if it is not zoning brush
-    if (iten->en_RenderType!=CEntity::RT_BRUSH && iten->en_RenderType!=CEntity::RT_FIELDBRUSH
+    if ((iten->en_RenderType!=CEntity::RT_BRUSH && iten->en_RenderType!=CEntity::RT_FIELDBRUSH)
       ||!(iten->en_ulFlags&ENF_ZONING)) {
       // skip it
       continue;

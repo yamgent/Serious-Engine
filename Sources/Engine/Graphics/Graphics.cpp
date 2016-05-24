@@ -548,7 +548,7 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
 {
   // prepare ...
   ULONG *pulSrcMipmap = pulMipmaps + GetMipmapOffset( i1stMipmapToColorize, pixWidth, pixHeight);
-  ULONG *pulDstMipmap;
+  //ULONG *pulDstMipmap;
   PIX pixCurrWidth  = pixWidth >>i1stMipmapToColorize;
   PIX pixCurrHeight = pixHeight>>i1stMipmapToColorize;
   PIX pixMipSize;
@@ -561,7 +561,7 @@ void ColorizeMipmaps( INDEX i1stMipmapToColorize, ULONG *pulMipmaps, PIX pixWidt
   while( pixCurrWidth>1 && pixCurrHeight>1)
   { // prepare current mip-level
     pixMipSize   = pixCurrWidth*pixCurrHeight;
-    pulDstMipmap = pulSrcMipmap + pixMipSize;
+    //pulDstMipmap = pulSrcMipmap + pixMipSize;
     // mask mipmap
     const ULONG ulColorMask = ByteSwap( _acolMips[iTableOfs] | 0x3F3F3FFF);
     for( INDEX iPix=0; iPix<pixMipSize; iPix++) pulSrcMipmap[iPix] &= ulColorMask;
@@ -665,6 +665,7 @@ void DitherBitmap( INDEX iDitherType, ULONG *pulSrc, ULONG *pulDst, PIX pixWidth
   ASSERT( pixCanvasWidth>=pixWidth && pixCanvasHeight>=pixHeight);
   SLONG slModulo      = (pixCanvasWidth-pixWidth) *BYTES_PER_TEXEL;
   SLONG slWidthModulo = pixWidth*BYTES_PER_TEXEL +slModulo;
+  (void)slWidthModulo; // shut up compiler, this is used if inline ASM is used
 
   // if bitmap is smaller than 4x2 pixels
   if( pixWidth<4 || pixHeight<2)
@@ -2673,7 +2674,7 @@ void DrawTriangle_Mask( UBYTE *pubMaskPlane, SLONG slMaskWidth, SLONG slMaskHeig
   // find row counter and max delta J
   SLONG ctJShort1 = pixMdJ - pixUpJ;
   SLONG ctJShort2 = pixDnJ - pixMdJ;
-  SLONG ctJLong   = pixDnJ - pixUpJ;
+  //SLONG ctJLong   = pixDnJ - pixUpJ;
 
   FLOAT currK, curr1oK, currUoK, currVoK;
   PIX   pixJ = pixUpJ;

@@ -78,6 +78,7 @@ static __forceinline CTStream &operator>>(CTStream &strm, PCXHeader &t) {
   return strm;
 }
 
+#if 0 // DG: unused.
 static __forceinline CTStream &operator<<(CTStream &strm, const PCXHeader &t) {
   strm<<t.MagicID;
   strm<<t.Version;
@@ -99,6 +100,7 @@ static __forceinline CTStream &operator<<(CTStream &strm, const PCXHeader &t) {
   strm.Write_t(t.Filler, sizeof (t.Filler));
   return strm;
 }
+#endif // 0
 
 // TARGA header structure
 struct TGAHeader
@@ -129,6 +131,7 @@ static __forceinline CTStream &operator>>(CTStream &strm, TGAHeader &t) {
   return(strm);
 }
 
+#if 0 // DG: unused.
 static __forceinline CTStream &operator<<(CTStream &strm, const TGAHeader &t) {
   strm<<t.IdLength;
   strm<<t.ColorMapType;
@@ -142,6 +145,7 @@ static __forceinline CTStream &operator<<(CTStream &strm, const TGAHeader &t) {
   strm<<t.Descriptor;
   return(strm);
 }
+#endif // 0 (unused)
 
 
 /******************************************************

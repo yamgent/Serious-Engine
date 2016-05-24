@@ -271,6 +271,7 @@ static int qsort_CompareFrags( const void *ppPEN0, const void *ppPEN1) {
   else              return -qsort_CompareDeaths(ppPEN0, ppPEN1);
 }
 
+#if 0 // DG: unused.
 static int qsort_CompareLatencies( const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en0 = **(CPlayer**)ppPEN0;
   CPlayer &en1 = **(CPlayer**)ppPEN1;
@@ -280,6 +281,7 @@ static int qsort_CompareLatencies( const void *ppPEN0, const void *ppPEN1) {
   else if( sl0>sl1) return -1;
   else              return  0;
 }
+#endif // 0 (unused)
 
 // prepare color transitions
 static void PrepareColorTransitions( COLOR colFine, COLOR colHigh, COLOR colMedium, COLOR colLow,
@@ -560,7 +562,8 @@ static void DrawAspectCorrectTextureCentered( class CTextureObject *_pTO, FLOAT 
   CTextureData *ptd = (CTextureData*)_pTO->GetData();
   FLOAT fTexSizeI = ptd->GetPixWidth();
   FLOAT fTexSizeJ = ptd->GetPixHeight();
-  FLOAT fHeight = fWidth*fTexSizeJ/fTexSizeJ;
+  FLOAT fHeight = fWidth*fTexSizeJ/fTexSizeJ; // FIXME: not fTexSizeJ/fTexSizeI ??
+  STUBBED("fWidth*fTexSizeJ/fTexSizeJ is most likely not intended!");
   
   _pDP->InitTexture( _pTO);
   _pDP->AddTexture( fX-fWidth*0.5f, fY-fHeight*0.5f, fX+fWidth*0.5f, fY+fHeight*0.5f, 0, 0, 1, 1, col);
@@ -580,8 +583,8 @@ static void HUD_DrawSniperMask( void )
   COLOR colMask = C_WHITE|CT_OPAQUE;
   
   CTextureData *ptd = (CTextureData*)_toSniperMask.GetData();
-  const FLOAT fTexSizeI = ptd->GetPixWidth();
-  const FLOAT fTexSizeJ = ptd->GetPixHeight();
+  //const FLOAT fTexSizeI = ptd->GetPixWidth();
+  //const FLOAT fTexSizeJ = ptd->GetPixHeight();
 
   // main sniper mask
   _pDP->InitTexture( &_toSniperMask);
@@ -925,7 +928,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
   _fCustomScaling = ClampDn( _fCustomScaling*0.8f, 0.5f);
   const FLOAT fOneUnitS  = fOneUnit  *0.8f;
   const FLOAT fAdvUnitS  = fAdvUnit  *0.8f;
-  const FLOAT fNextUnitS = fNextUnit *0.8f;
+  //const FLOAT fNextUnitS = fNextUnit *0.8f;
   const FLOAT fHalfUnitS = fHalfUnit *0.8f;
 
   // prepare postition and ammo quantities
@@ -1178,7 +1181,7 @@ extern void DrawHUD( const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOO
       if( iHealth>25) colHealth = _colHUD;
       if( iArmor >25) colArmor  = _colHUD;
       // eventually print it out
-      if( hud_iShowPlayers==1 || hud_iShowPlayers==-1 && !bSinglePlay) {
+      if( hud_iShowPlayers==1 || (hud_iShowPlayers==-1 && !bSinglePlay)) {
         // printout location and info aren't the same for deathmatch and coop play
         const FLOAT fCharWidth = (PIX)((_pfdDisplayFont->GetWidth()-2) *fTextScale);
         if( bCooperative) { 
