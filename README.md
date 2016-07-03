@@ -28,11 +28,60 @@ These have been modified to run correctly under the recent version of Windows. (
 Building
 --------
 
+### Windows
+
 To build Serious Engine 1, you'll need Visual Studio 2013 or 2015, Professional or Community edition ( https://www.visualstudio.com/post-download-vs?sku=community ).
 
 Do not use spaces in the path to the solution.
 
 Once you've installed Visual Studio and (optionally) DirectX8 SDK, you can build the engine solution (`/Sources/All.sln`). Press F7 or Build -> Build solution. The libraries and executables will be put into `\Bin\` directory (or `\Bin\Debug\` if you are using the Debug configuration).
+
+### Linux
+
+#### Setting up the repository
+
+Type this in your terminal:
+
+```
+git clone https://github.com/rcgordon/Serious-Engine.git
+cd Serious-Engine
+```
+
+#### Copy official game data (optional)
+
+If you have access to a copy of the game (either by CD or through Steam),
+you can copy the *.gro files from the game directory to the repository.
+
+#### Building (only for SS:TSE)
+
+Type this in your terminal:
+
+```
+Sources/build-linux64.sh            # use build-linux32.sh for 32-bits
+cp Sources/cmake-build/ssam Bin/
+cp Sources/cmake-build/Debug/* Bin/Debug/
+```
+
+#### Building (only for SS:TFE)
+
+Same as SS:SE, but note the following:
+
+- Before running build-linux64.sh, modify the file by passing `-DTFE=TRUE` to cmake.
+- After building, you need to copy 'ssam**-tfe**' instead of 'ssam', as shown:
+
+  ```
+  cp Sources/cmake-build/ssam-tfe Bin/
+  ```
+
+#### Running
+
+Type this in your terminal:
+
+```
+Bin/ssam
+```
+
+(or `ssam-tfe` if you are running TFE)
 
 Optional features
 -----------------
