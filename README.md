@@ -38,6 +38,8 @@ Once you've installed Visual Studio and (optionally) DirectX8 SDK, you can build
 
 ### Linux
 
+The following instructions assume that you are executing the terminal commands with the git repository as the current working directory (`pwd`).
+
 #### Setting up the repository
 
 Type this in your terminal:
