@@ -74,6 +74,11 @@ Same as SS:SE, but note the following:
   ```
   cp Sources/cmake-build/ssam-tfe Bin/
   ```
+  
+#### ModEXT.txt
+
+* For TFE: Ensure that ModEXT.txt is empty, or is deleted.
+* For TSE: Ensure that ModEXT.txt contains the text 'MP' (without the quotes). By default, this repository already have such a file.
 
 #### Running
 
