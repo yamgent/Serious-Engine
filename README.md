@@ -52,7 +52,13 @@ cd Serious-Engine
 #### Copy official game data (optional)
 
 If you have access to a copy of the game (either by CD or through Steam),
-you can copy the *.gro files from the game directory to the repository.
+you can copy the \*.gro files from the game directory to the root directory
+of the repository (**not** in `Bin/`!).
+
+
+**For TFE:** Other than copying the .gro file, you also need to copy the
+contents of the `Levels/` directory from your CD/Steam into the repository's
+`Levels/` directory.
 
 #### Building (only for SS:TSE)
 
