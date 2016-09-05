@@ -93,3 +93,5 @@ Sources/SeriousSkaStudio/Scanner.cpp
 *.swp
 *.swo
 
+# TODO: Remove this when workaround is removed (see issue #1)
+Sources/Ecc/parser.cpp.h

@@ -290,13 +290,25 @@ macro(add_parser_and_scanner _PARSER _SCANNER)
         ARGS -o${_PARSER}.cpp ${_PARSER}.y -d
     )
 
-    add_custom_command(
-        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.h"
-        MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.hpp"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy ${_PARSER}.hpp ${_PARSER}.h
-    )
+    # Windows currently needs workaround for filename problem (see issue #1)
+    # TODO: Fix this
+    if (NOT WINDOWS)
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.h"
+            MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.hpp"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            COMMAND ${CMAKE_COMMAND}
+            ARGS -E copy ${_PARSER}.hpp ${_PARSER}.h
+        )
+    else()
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.h"
+            MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.hpp"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            COMMAND ${CMAKE_COMMAND}
+            ARGS -E copy ${_PARSER}.cpp.h ${_PARSER}.h
+        )
+    endif()
 endmacro()
 
 # Build ECC from source if there wasn't a prebuilt-one specified on the command line.
