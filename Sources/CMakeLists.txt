@@ -71,6 +71,25 @@ if(MSVC)
     SET(WINDOWS TRUE)
 endif()
 
+set(FLEX "flex")
+set(BISON "bison")
+
+# On Windows, not everyone has Flex or Bison installed and might require
+# the repo's version
+if(WINDOWS)
+    option(USE_SYSTEM_FLEX "Use system's flex program" Off)
+    option(USE_SYSTEM_BISON "Use system's bison program" Off)
+    
+    if (NOT USE_SYSTEM_FLEX)
+        set(FLEX "../Tools.Win32/Flex.exe")
+    endif()
+    
+    if (NOT USE_SYSTEM_BISON)
+        set(BISON "../Tools.Win32/Bison.exe")
+    endif()
+endif()
+
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "None Debug Release RelWithDebInfo MinSizeRel" FORCE)
 endif()
@@ -259,7 +278,7 @@ macro(add_parser_and_scanner _PARSER _SCANNER)
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_SCANNER}.cpp"
         MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_SCANNER}.l"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMAND flex
+        COMMAND ${FLEX}
         ARGS -o${_SCANNER}.cpp ${_SCANNER}.l
     )
 
@@ -267,7 +286,7 @@ macro(add_parser_and_scanner _PARSER _SCANNER)
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.hpp"
         MAIN_DEPENDENCY "${CMAKE_CURRENT_SOURCE_DIR}/${_PARSER}.y"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        COMMAND bison
+        COMMAND ${BISON}
         ARGS -o${_PARSER}.cpp ${_PARSER}.y -d
     )
 
