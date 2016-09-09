@@ -318,8 +318,16 @@ static void sdl_event_handler(const SDL_Event *event)
 
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
-            if (event->button.button <= 5)
-                _abKeysPressed[KID_MOUSE1 + (event->button.button-1)] = (event->button.state == SDL_PRESSED) ? TRUE : FALSE;
+            if (event->button.button <= 5) {
+              int button = KID_MOUSE1;
+              switch(event->button.button) {
+                case SDL_BUTTON_RIGHT: button = KID_MOUSE2; break;
+                case SDL_BUTTON_MIDDLE: button = KID_MOUSE3; break;
+                case 4: button = KID_MOUSE4; break;
+                case 5: button = KID_MOUSE5; break;
+              }
+              _abKeysPressed[button] = (event->button.state == SDL_PRESSED) ? TRUE : FALSE;
+            }
             break;
 
         case SDL_MOUSEWHEEL:
@@ -716,6 +724,7 @@ void CInput::GetInput(BOOL bPreScan)
     // clear button's buffer
     memset( inp_ubButtonsBuffer, 0, sizeof( inp_ubButtonsBuffer));
 
+    Uint8 *keystate = SDL_GetKeyboardState(NULL);
     // for each Key
     for (INDEX iKey=0; iKey<ARRAYCOUNT(_akcKeys); iKey++) {
       const KeyConversion &kc = _akcKeys[iKey];
@@ -724,11 +733,11 @@ void CInput::GetInput(BOOL bPreScan)
       //INDEX iScan = kc.kc_iScanCode;
       INDEX iVirt = kc.kc_iVirtKey;
       // if reading async keystate
-      if (inp_iKeyboardReadingMethod==0) {
+      if (0/*inp_iKeyboardReadingMethod==0*/) {
         // if there is a valid virtkey
         if (iVirt>=0) {
           // is state is pressed
-          if (SDL_GetKeyboardState(NULL)[SDL_GetScancodeFromKey((SDL_Keycode)iVirt)]) {
+          if (keystate[SDL_GetScancodeFromKey((SDL_Keycode)iVirt)]) {
             // mark it as pressed
             inp_ubButtonsBuffer[iKID] = 0xFF;
           }

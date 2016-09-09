@@ -281,6 +281,8 @@ static void UpdatePauseState(void)
 // limit current frame rate if neeeded
 void LimitFrameRate(void)
 {
+  // do not limit FPS on the Pandora, it's not powerfull enough and doesn't "iconise" games either
+  #ifndef PLATFORM_PANDORA
   // measure passed time for each loop
   static CTimerValue tvLast(-1.0f);
   CTimerValue tvNow   = _pTimer->GetHighPrecisionTimer();
@@ -299,6 +301,7 @@ void LimitFrameRate(void)
   
   // remember new time
   tvLast = _pTimer->GetHighPrecisionTimer();
+  #endif
 }
 
 // load first demo
